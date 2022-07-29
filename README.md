@@ -1,8 +1,8 @@
 # transcendence
 :sparkles:
 
-* [Study_Resources](#Study_Resources)
 * [FrontEnd_Setup](#FrontEnd_Setup)
+* [Study_Resources](#Study_Resources)
 
 ## FrontEnd_Setup
 
