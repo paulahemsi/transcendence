@@ -1,10 +1,13 @@
 # transcendence
 :sparkles:
 
-* [FrontEnd_Setup](#FrontEnd_Setup)
+* [Setup](#Setup)
+	* [FrontEnd](#FrontEnd)
 * [Study_Resources](#Study_Resources)
 
-## FrontEnd_Setup
+## Setup
+
+## FrontEnd
 
 **NodeJS Installation step-by-step:**
 
@@ -23,13 +26,15 @@
 
 * Install the current stable LTS release of Node.js
 
-`nvm install --lts` last estable version
+`nvm install --lts` 
 
-**Create React App**
+
+**Create React App:**
 
 * Start a new Create React App project with TypeScript
 
 `npx create-react-app my-app --template typescript`
+
 
 **Usefull commands:**
 
