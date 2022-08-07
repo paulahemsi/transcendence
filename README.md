@@ -3,6 +3,9 @@
 
 * [Setup](#Setup)
 	* [FrontEnd](#FrontEnd)
+* [Flow](#Flow)
+	* [Login_flow](#Login_flow)
+
 * [Study_Resources](#Study_Resources)
 
 ## Setup
@@ -49,6 +52,11 @@
 * Check npm version
 
 `npm --version`
+
+## Login_flow
+
+![image](https://user-images.githubusercontent.com/63563271/183310442-5225eff1-63fc-45d5-9f1f-a71486b0f86a.png)
+
 
 ## Study_Resources
 
