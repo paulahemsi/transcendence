@@ -55,7 +55,7 @@
 
 ## Login_flow
 
-![image](https://user-images.githubusercontent.com/63563271/183310442-5225eff1-63fc-45d5-9f1f-a71486b0f86a.png)
+![image](https://user-images.githubusercontent.com/63563271/183547441-88032c14-87a4-45d2-9e51-b2b379e818ea.png)
 
 
 ## Study_Resources
