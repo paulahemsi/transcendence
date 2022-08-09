@@ -3,11 +3,10 @@
 
 * [Setup](#Setup)
 	* [FrontEnd](#FrontEnd)
+	* [BackEnd](#BackEnd)
 * [Study_Resources](#Study_Resources)
 
 ## Setup
-
-### FrontEnd
 
 **NodeJS Installation step-by-step:**
 
@@ -23,18 +22,9 @@
 
 `command -v nvm` prompt should return `nvm`, if not close your current terminal, reopen it, and try again
 
-
 * Install the current stable LTS release of Node.js
 
-`nvm install --lts` 
-
-
-**Create React App:**
-
-* Start a new Create React App project with TypeScript
-
-`npx create-react-app my-app --template typescript`
-
+`nvm install --lts`
 
 **Usefull commands:**
 
@@ -49,6 +39,39 @@
 * Check npm version
 
 `npm --version`
+
+
+### FrontEnd
+
+**Create React App:**
+
+* Start a new Create React App project with TypeScript
+
+`npx create-react-app my-app --template typescript`
+
+**Running the application**
+
+`npm start`
+
+
+### BackEnd
+
+**Create a new Nest project** 
+
+`npm i -g @nestjs/cli`
+
+`nest new project-name`
+
+**Running the application**
+
+* To watch for changes in your files
+
+`npm run start`
+
+* Command will watch your files, automatically recompiling and reloading the server
+
+`npm run start:dev`
+
 
 ## Study_Resources
 
