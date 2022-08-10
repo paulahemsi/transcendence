@@ -2,9 +2,10 @@
 :sparkles:
 
 * [Setup](#Setup)
-	* [FrontEnd](#FrontEnd)
-	* [BackEnd](#BackEnd)
+* [FrontEnd](#FrontEnd)
+* [BackEnd](#BackEnd)
 * [CORS](#Cors)
+* [Login_flow](#Login_flow)
 * [Study_Resources](#Study_Resources)
 
 ## Setup
@@ -90,6 +91,11 @@ const app = await NestFactory.create(AppModule);
 app.enableCors();
 await app.listen(3000);
 ```
+
+## Login_flow
+
+![image](https://user-images.githubusercontent.com/63563271/183547441-88032c14-87a4-45d2-9e51-b2b379e818ea.png)
+
 
 ## Study_Resources
 
