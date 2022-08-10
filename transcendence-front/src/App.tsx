@@ -1,8 +1,17 @@
 import React from 'react';
 import avocado from './avocado.svg';
 import './App.css';
+import axios from 'axios';
 
-function App() {
+const handleClick = () => {
+  axios
+  .get("http://localhost:4444/Abacate")
+  .then(response => {
+    console.log(response.data);
+  });
+  }
+  
+  function App() {
   return (
     <div className="App">
       <header className="App-header">
@@ -10,14 +19,9 @@ function App() {
         <p>
           MINIHELL TEAM IS BACK, BABY!
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          React Documentation
-        </a>
+        <button onClick={handleClick} className="Button">
+          <p>Hello, Abacatinho</p>
+        </button>
       </header>
     </div>
   );
