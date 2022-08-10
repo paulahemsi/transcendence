@@ -10,14 +10,9 @@ function App() {
         <p>
           MINIHELL TEAM IS BACK, BABY!
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          React Documentation
-        </a>
+        <button onClick={handleClick} className="Button">
+          <p>Hello, Abacatinho</p>
+        </button>
       </header>
     </div>
   );
