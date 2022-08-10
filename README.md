@@ -4,6 +4,7 @@
 * [Setup](#Setup)
 	* [FrontEnd](#FrontEnd)
 	* [BackEnd](#BackEnd)
+* [CORS](#Cors)
 * [Study_Resources](#Study_Resources)
 
 ## Setup
@@ -72,6 +73,23 @@
 
 `npm run start:dev`
 
+## Cors
+
+Cross-origin resource sharing (CORS) is a mechanism that allows restricted resources on a web page to be requested from another domain outside the domain from which the first resource was served.
+
+CORS defines a way in which a browser and server can interact to determine whether it is safe to allow the cross-origin request. It allows for more freedom and functionality than purely same-origin requests, but is more secure than simply allowing all cross-origin requests.
+
+From [wikipedia](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
+
+**Enable Cors in Nest.js**
+
+To enable CORS, call the enableCors() method on the Nest application object:
+
+```ts
+const app = await NestFactory.create(AppModule);
+app.enableCors();
+await app.listen(3000);
+```
 
 ## Study_Resources
 
