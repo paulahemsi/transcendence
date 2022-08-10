@@ -24,8 +24,14 @@
   color: rgb(0, 0, 0);
 }
 
-.App-link {
-  color: #000000;
+.Button {
+  color: #02270a;
+  background-color: #00ff0d;
+  margin: 2rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border-radius: 2rem;
+  border-style: initial;
 }
 
 @keyframes App-avocado-spin {
