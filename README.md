@@ -55,6 +55,25 @@
 
 `npm start`
 
+**Material UI Installation**
+
+`npm install @mui/material @emotion/react @emotion/styled`
+
+**Roboto font Installation**
+
+`npm install @fontsource/roboto`
+
+**Icons Installation**
+
+`npm install @mui/icons-material`
+
+**Import Icon**
+
+`import IconNameIcon from '@mui/icons-material/IconName';`
+
+**Colors theme Installation**
+
+`npm install material-ui-colors`
 
 ### BackEnd
 
