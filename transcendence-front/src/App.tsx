@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from '@mui/material/Button';
 import avocado from './avocado.svg';
 import './App.css';
 import axios from 'axios';
@@ -19,9 +20,9 @@ const handleClick = () => {
         <p>
           MINIHELL TEAM IS BACK, BABY!
         </p>
-        <button onClick={handleClick} className="Button">
+        <Button variant="contained" onClick={handleClick} color="secondary">
           <p>Hello, Abacatinho</p>
-        </button>
+        </Button>
       </header>
     </div>
   );
