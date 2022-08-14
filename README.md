@@ -91,6 +91,11 @@ Benefits achieved by dividing the software into layers:
 
 From [The Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 
+**Nest.js layer architecture**
+
+![image](https://user-images.githubusercontent.com/63563271/184553647-a02ee6b1-0ac9-480f-855e-33f1d9c2669f.png)
+
+
 ## Cors
 
 Cross-origin resource sharing (CORS) is a mechanism that allows restricted resources on a web page to be requested from another domain outside the domain from which the first resource was served.
