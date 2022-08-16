@@ -5,7 +5,7 @@ import * as passport from 'passport';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const PORT = 4444;
+  const PORT = process.env.PORT;
   app.enableCors();
   app.use(
     session({
