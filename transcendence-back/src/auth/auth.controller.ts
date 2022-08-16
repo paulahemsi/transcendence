@@ -1,7 +1,5 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
-import { AuthGuard } from '@nestjs/passport';
-import { AuthService } from './auth.service';
 import { Intra42AuthGuard } from './guards/intra42.guard';
 
 @Controller('auth')
