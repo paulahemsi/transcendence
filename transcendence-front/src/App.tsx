@@ -2,6 +2,7 @@ import React from 'react';
 import avocado from './avocado.svg';
 import './App.css';
 import axios from 'axios';
+import { useCallback, useState } from 'react';
 
 const handleClick = () => {
   axios
@@ -20,7 +21,7 @@ const handleClick = () => {
           MINIHELL TEAM IS BACK, BABY!
         </p>
         <button onClick={handleClick} className="Button">
-          <p>Hello, Abacatinho</p>
+          <p>Faz login, Abacatinho</p>
         </button>
       </header>
     </div>
