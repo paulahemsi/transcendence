@@ -6,7 +6,7 @@ import { Strategy } from 'passport-42';
 // This UserProfile type is temporary and for test purposes only.
 
 type UserProfile = {
-  id: string;
+  id: number;
   username: string;
   emails: string[];
   photos: string[];
@@ -19,11 +19,9 @@ export class Intra42Strategy extends PassportStrategy(Strategy, '42') {
     private readonly authService: AuthenticationInterface,
   ) {
     super({
-      clientID:
-        '27c3a814c14f4a5923a143c3dea7afb3c7e309a4f38dee462e80d5bbb282b69b',
-      clientSecret:
-        'f988d1a3ff8ae9a5fee4a332a480e5d3513768b6c254838a8eb2e5c9bd714712',
-      callbackURL: 'http://localhost:4444/auth/redirect',
+      clientID: process.env.INTRA42_CLIENT_ID,
+      clientSecret: process.env.INTRA42_CLIENT_SECRET,
+      callbackURL: process.env.INTRA42_CALLBACK_URL,
       scope: ['public'],
     });
   }
