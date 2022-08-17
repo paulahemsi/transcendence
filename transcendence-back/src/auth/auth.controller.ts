@@ -4,6 +4,7 @@ import { Intra42AuthGuard } from './guards/intra42.guard';
 
 @Controller('auth')
 export class AuthController {
+
   @Get('login')
   @UseGuards(Intra42AuthGuard)
   intraLogin() {
