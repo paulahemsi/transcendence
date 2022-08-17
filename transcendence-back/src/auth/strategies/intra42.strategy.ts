@@ -5,7 +5,7 @@ import { Strategy } from 'passport-42';
 
 // This UserProfile type is temporary and for test purposes only.
 
-type UserProfile = {
+export type UserProfile = {
   id: number;
   username: string;
   emails: string[];
