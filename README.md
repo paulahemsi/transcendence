@@ -4,6 +4,7 @@
 * [Setup](#Setup)
 * [FrontEnd](#FrontEnd)
 * [BackEnd](#BackEnd)
+* [Architecture](#Architecture)
 * [CORS](#Cors)
 * [Login_flow](#Login_flow)
 * [Study_Resources](#Study_Resources)
@@ -73,6 +74,27 @@
 * Command will watch your files, automatically recompiling and reloading the server
 
 `npm run start:dev`
+
+## Architecture
+
+Benefits achieved by dividing the software into layers:
+
+* Independent of Frameworks. The architecture does not depend on the existence of some library of feature laden software. This allows you to use such frameworks as tools, rather than having to cram your system into their limited constraints.
+
+* Testable. The business rules can be tested without the UI, Database, Web Server, or any other external element.
+
+* Independent of UI. The UI can change easily, without changing the rest of the system. A Web UI could be replaced with a console UI, for example, without changing the business rules.
+
+* Independent of Database. You can swap out Oracle or SQL Server, for Mongo, BigTable, CouchDB, or something else. Your business rules are not bound to the database.
+
+* Independent of any external agency. In fact your business rules simply don’t know anything at all about the outside world.
+
+From [The Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+
+**Nest.js layer architecture**
+
+![image](https://user-images.githubusercontent.com/63563271/184553647-a02ee6b1-0ac9-480f-855e-33f1d9c2669f.png)
+
 
 ## Cors
 
