@@ -15,10 +15,21 @@ export class User {
   username: string;
 
   @Column({
-    nullable: false,
-    default: 'Player',
+    nullable: true,
+    default: '',
   })
-  password: string;
+  email: string;
+
+  @Column({
+    nullable: false,
+  })
+  external_id: number;
+
+  @Column({
+    nullable: true,
+    default: '',
+  })
+  image_url: string;
 
   @Column({
     nullable: false,
