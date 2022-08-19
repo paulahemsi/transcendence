@@ -8,7 +8,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { CreateUserDto } from 'src/users/dto/users.dtos';
+import { CreateUserDto } from 'src/dto/users.dtos';
 import { UsersService } from './users.service';
 
 @Controller('users')
