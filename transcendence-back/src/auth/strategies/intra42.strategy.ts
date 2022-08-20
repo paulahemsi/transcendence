@@ -1,6 +1,5 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { AuthenticationInterface, AuthService } from '../auth.service';
 import { Strategy } from 'passport-42';
 
 // This UserProfile type is temporary and for test purposes only.
@@ -14,10 +13,7 @@ export type UserProfile = {
 
 @Injectable()
 export class Intra42Strategy extends PassportStrategy(Strategy, '42') {
-  constructor(
-    @Inject(AuthService)
-    private readonly authService: AuthenticationInterface,
-  ) {
+  constructor() {
     console.log('intra 42 strategy constructor');
     super({
       clientID: process.env.INTRA42_CLIENT_ID,
