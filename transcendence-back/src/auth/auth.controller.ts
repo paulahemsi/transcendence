@@ -12,7 +12,6 @@ export class AuthController {
   }
 
   @Get('redirect')
-  @UseGuards(Intra42AuthGuard)
   intraRedirect(@Res() res: Response) {
     res.send(200);
   }
