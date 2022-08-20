@@ -4,7 +4,6 @@ import { Intra42AuthGuard } from './guards/intra42.guard';
 
 @Controller('auth')
 export class AuthController {
-
   @Get('login')
   @UseGuards(Intra42AuthGuard)
   intraLogin() {
@@ -12,13 +11,17 @@ export class AuthController {
   }
 
   @Get('redirect')
-  intraRedirect(@Res() res: Response) {
-    res.send(200);
+  intraRedirect(@Res() response: Response) {
+    response.send(200);
   }
 
   @Get('status')
-  getUserStatus() { }
+  getUserStatus(@Res() response: Response) {
+    response.send(501);
+  }
 
   @Get('logout')
-  logoutUser() { }
+  logoutUser(@Res() response: Response) {
+    response.send(501);
+  }
 }
