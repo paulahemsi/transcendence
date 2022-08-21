@@ -10,21 +10,8 @@ export class UsersService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  createUser(createUserDto: CreateUserDto) {
-    const newUser = this.userRepository.create(createUserDto);
-    return this.userRepository.save(newUser);
-  }
-
   getUsers() {
     return this.userRepository.find();
-  }
-
-  getRankedUsers() {
-    return this.userRepository.find({
-      order: {
-        rating: 'DESC',
-      },
-    });
   }
 
   findUsersById(id: number) {

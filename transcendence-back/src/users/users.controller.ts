@@ -20,19 +20,9 @@ export class UsersController {
     return this.userService.getUsers();
   }
 
-  @Get('id/:id')
+  @Get(':id')
   findUsersById(@Param('id', ParseIntPipe) id: number) {
     return this.userService.findUsersById(id);
   }
 
-  @Get('ranked')
-  getRankedUsers() {
-    return this.userService.getRankedUsers();
-  }
-
-  @Post('create')
-  @UsePipes(ValidationPipe)
-  createUsers(@Body() createUserDto: CreateUserDto) {
-    return this.userService.createUser(createUserDto);
-  }
 }
