@@ -32,4 +32,10 @@ export class UsersService {
       where: { id: id },
     });
   }
+
+  findUsersByExternalId(externalId: number) {
+    return this.userRepository.find({
+      where: { external_id: externalId },
+    });
+  }
 }
