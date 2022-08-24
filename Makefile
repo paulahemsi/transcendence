@@ -14,3 +14,7 @@ front:
 
 back:
 		cd transcendence-back ; npm run start:dev
+
+update-dependencies:
+		cd transcendence-front ; npm install 
+		cd transcendence-back ; npm install 
