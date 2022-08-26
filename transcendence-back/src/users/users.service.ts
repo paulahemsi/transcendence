@@ -14,7 +14,7 @@ export class UsersService {
     return this.userRepository.find();
   }
 
-  findUsersById(id: number) {
+  findUsersById(id: string) {
     return this.userRepository.find({
       where: { id: id },
     });
@@ -24,5 +24,16 @@ export class UsersService {
     return this.userRepository.find({
       where: { external_id: externalId },
     });
+  }
+
+  createUser(userInfo: any): Promise<CreateUserDto> {
+    const newUser: CreateUserDto = this.userRepository.create({
+      username: userInfo.username,
+      email: userInfo.email,
+      external_id: userInfo.external_id,
+      image_url: userInfo.image_url,
+      rating: 0,
+    });
+    return this.userRepository.save(newUser);
   }
 }
