@@ -14,15 +14,24 @@ export class UsersService {
     return this.userRepository.find();
   }
 
-  findUsersById(id: string) {
+  findUser(id: string) {
     return this.userRepository.find({
       where: { id: id },
     });
   }
 
-  findUsersByExternalId(externalId: number) {
-    return this.userRepository.find({
-      where: { external_id: externalId },
+  async intra42UserExists(external_id: number): Promise<boolean> {
+    const existingUser = await this.userRepository.find({
+      where: { external_id: external_id },
+    });
+
+    if (Object.keys(existingUser).length == 0) return false;
+    return true;
+  }
+
+  validateUser(user: any) {
+    this.intra42UserExists(user.external_id).then((userExists: boolean) => {
+      if (userExists == false) this.createUser(user);
     });
   }
 
