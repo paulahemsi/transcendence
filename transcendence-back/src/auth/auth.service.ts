@@ -10,12 +10,13 @@ export class AuthService {
   ) {}
 
   validateUser(user: any) {
-    const existingUser = this.usersService.findUsersByExternalId(
-      user.external_id,
-    );
-    if (Object.keys(existingUser).length == 0) {
-      this.usersService.createUser(user);
-    }
+    this.usersService
+      .findUsersByExternalId(user.external_id)
+      .then((existingUser) => {
+        if (Object.keys(existingUser).length == 0) {
+          this.usersService.createUser(user);
+        }
+      });
   }
 
   async login(response: any, user: any): Promise<any> {
