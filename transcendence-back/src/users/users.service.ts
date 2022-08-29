@@ -19,6 +19,19 @@ export class UsersService {
       where: { id: id },
     });
   }
+  
+  async getUserProfile(id: string) {
+    
+    const {username, rating} = await this.userRepository.findOne({
+      where: { id: id },
+    })
+    const profile = {
+      "name": username,
+      "status": "online",
+      "rating": rating,
+    }
+    return profile;
+  }
 
   async intra42UserExists(external_id: number): Promise<boolean> {
     const existingUser = await this.userRepository.find({
