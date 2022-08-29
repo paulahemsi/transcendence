@@ -15,3 +15,13 @@ export class UsersController {
     return this.userService.findUser(id);
   }
 }
+
+@Controller('user')
+export class UserController {
+  constructor(private readonly userService: UsersService) {}
+
+  @Get(':id/profile')
+  getUserProfile(@Param('id', ParseUUIDPipe) id: string) {
+    return this.userService.getUserProfile(id);
+  }
+}
