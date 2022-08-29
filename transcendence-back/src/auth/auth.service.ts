@@ -9,13 +9,17 @@ export class AuthService {
     private usersService: UsersService,
   ) {}
 
-  async login(response: any, user: any): Promise<any> {
-    const payload = {
+  private createPayload(user: any) {
+    return {
       username: user.username,
       external_id: user.external_id,
       email: user.email,
     };
-    this.usersService.validateUser(user);
+  }
+
+  async login(response: any, user: any): Promise<any> {
+    const payload = this.createPayload(user);
+    this.usersService.validate(user);
     response.cookie('accessToken', this.jwtService.sign(payload));
   }
 }

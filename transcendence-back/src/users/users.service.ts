@@ -29,13 +29,13 @@ export class UsersService {
     return true;
   }
 
-  validateUser(user: any) {
+  validate(user: any) {
     this.intra42UserExists(user.external_id).then((userExists: boolean) => {
-      if (userExists == false) this.createUser(user);
+      if (userExists == false) this.create(user);
     });
   }
 
-  createUser(userInfo: any): Promise<CreateUserDto> {
+  create(userInfo: any): Promise<CreateUserDto> {
     const newUser: CreateUserDto = this.userRepository.create({
       username: userInfo.username,
       email: userInfo.email,
