@@ -33,4 +33,10 @@ export class User {
     default: 0,
   })
   rating: number;
+  
+  @Column({
+    nullable: false,
+    default: 'offline',
+  })
+  status: string;
 }
