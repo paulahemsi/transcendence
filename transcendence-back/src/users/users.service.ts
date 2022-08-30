@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateUserDto } from 'src/dto/users.dtos';
+import { CreateUserDto, UpdateUserDto } from 'src/dto/users.dtos';
 import { User } from 'src/entity';
 import { Repository } from 'typeorm';
 
@@ -15,9 +15,15 @@ export class UsersService {
   }
 
   findUser(id: string) {
-    return this.userRepository.find({
-      where: { id: id },
-    });
+    return this.userRepository.findOneBy({ id });
+  }
+
+  private async exist(id: string) {
+    const user = await this.findUser(id);
+    if (user) {
+      return true;
+    }
+    return false;
   }
 
   async intra42UserExists(external_id: number): Promise<boolean> {
@@ -44,5 +50,15 @@ export class UsersService {
       rating: 0,
     });
     return this.userRepository.save(newUser);
+  }
+
+  async update(id: string, userDto: UpdateUserDto) {
+    const userNotExist = !(await this.exist(id));
+    if (userNotExist) {
+      throw new NotFoundException();
+    }
+    const user = await this.findUser(id);
+    user.update(userDto);
+    return this.userRepository.save(user);
   }
 }
