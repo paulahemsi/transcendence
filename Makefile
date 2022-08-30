@@ -10,7 +10,7 @@ down:
 		docker-compose -f $(COMPOSE_FILE) down 
 
 front:
-		cd transcendence-front ; npm start
+		cd transcendence-front ; npm run dev
 
 back:
 		cd transcendence-back ; npm run start:dev
