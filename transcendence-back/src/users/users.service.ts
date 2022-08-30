@@ -18,14 +18,6 @@ export class UsersService {
     return this.userRepository.findOneBy({ id });
   }
 
-  private async exist(id: string) {
-    const user = await this.findUser(id);
-    if (user) {
-      return true;
-    }
-    return false;
-  }
-
   async intra42UserExists(external_id: number): Promise<boolean> {
     const existingUser = await this.userRepository.find({
       where: { external_id: external_id },
@@ -53,11 +45,10 @@ export class UsersService {
   }
 
   async update(id: string, userDto: UpdateUserDto) {
-    const userNotExist = !(await this.exist(id));
-    if (userNotExist) {
+    const user = await this.findUser(id);
+    if (!user) {
       throw new NotFoundException();
     }
-    const user = await this.findUser(id);
     user.update(userDto);
     return this.userRepository.save(user);
   }
