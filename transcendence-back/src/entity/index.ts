@@ -1,6 +1,7 @@
 import { User } from './user.entity';
+import { MatchHistory } from './match-history.entity';
 
-const entities = [User];
+const entities = [User, MatchHistory];
 
-export { User };
+export { User, MatchHistory };
 export default entities;
