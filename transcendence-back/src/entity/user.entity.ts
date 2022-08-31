@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { UpdateUserDto } from 'src/dto/users.dtos';
 
 @Entity()
 export class User {
@@ -33,10 +34,27 @@ export class User {
     default: 0,
   })
   rating: number;
-  
+
   @Column({
     nullable: false,
     default: 'offline',
   })
   status: string;
+
+  private updateUsername(username: string) {
+    this.username = username;
+  }
+
+  private updateImage(image: string) {
+    this.image_url = image;
+  }
+
+  update(userDto: UpdateUserDto) {
+    if (userDto.username) {
+      this.updateUsername(userDto.username);
+    }
+    if (userDto.image_url) {
+      this.updateImage(userDto.image_url);
+    }
+  }
 }

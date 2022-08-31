@@ -4,6 +4,7 @@ import {
   IsPositive,
   IsEmail,
   IsUrl,
+  IsOptional,
 } from 'class-validator';
 
 export class CreateUserDto {
@@ -23,4 +24,15 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsPositive()
   rating: number;
+}
+
+export class UpdateUserDto {
+  @IsOptional()
+  @IsNotEmpty()
+  @MinLength(3)
+  username: string;
+
+  @IsOptional()
+  @IsUrl()
+  image_url: string;
 }
