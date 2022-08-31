@@ -50,6 +50,6 @@ export class UsersService {
       throw new NotFoundException();
     }
     user.update(userDto);
-    return this.userRepository.save(user);
+    this.userRepository.save(user);
   }
 }

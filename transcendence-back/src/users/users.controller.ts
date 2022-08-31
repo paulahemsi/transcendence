@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -24,6 +25,7 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @HttpCode(204)
   updateUser(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() userDto: UpdateUserDto,
