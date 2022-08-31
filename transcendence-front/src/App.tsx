@@ -2,30 +2,28 @@ import React from 'react';
 import Button from '@mui/material/Button';
 import avocado from './avocado.svg';
 import './App.css';
-import axios from 'axios';
 import { useCallback, useState } from 'react';
-
-const handleClick = () => {
-  axios
-  .get("http://localhost:4444/Abacate")
-  .then(response => {
-    console.log(response.data);
-  });
-  }
+import { Box } from '@mui/material';
+import LoginCard from './components/LoginCard'
   
   function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={avocado} className="App-avocado" alt="avocado" />
-        <p>
-          MINIHELL TEAM IS BACK, BABY!
-        </p>
-        <Button variant="contained" onClick={handleClick} color="secondary">
-          <p>Hello, Abacatinho</p>
-        </Button>
-      </header>
-    </div>
+    <>
+      <head>
+        <title>ft_transcendence</title>
+        <meta name="description" content="ft_transcendence" />
+        <link rel="icon" href="/42.svg" />
+      </head>
+
+      <main>
+        <Box  display="flex" 
+              alignItems="center"
+              justifyContent="center"
+        >
+          <LoginCard/>
+        </Box>
+      </main>
+    </>
   );
 }
 
