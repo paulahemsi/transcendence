@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ResolveConfigOptions } from 'prettier';
 import { CreateUserDto, UpdateUserDto } from 'src/dto/users.dtos';
 import { User } from 'src/entity';
 import { MatchHistory } from 'src/entity';
@@ -26,10 +27,42 @@ export class UsersService {
   findUser(id: string) {
     return this.userRepository.findOneBy({ id });
   }
-
-  async buildMatchHistory(id: string) {
-    
-    const matches: MatchHistory[] = await this.matchHistoryRepository.find({
+/****/
+  isPlayer1theWinner(match: MatchHistory) : boolean {
+    return match.player1Score > match.player2Score;
+  }
+  
+  isPlayer1(id: string, match: MatchHistory) : boolean {
+    return match.player1.id === id;
+  }
+  
+  setOpponentsName(isUserPlayer1: boolean, match: MatchHistory) : string {
+    if (isUserPlayer1) {
+      return match.player2.username;
+    }
+    return match.player1.username;
+  }
+  
+  setUserScore(isUserPlayer1: boolean, match: MatchHistory) : number {
+    if (isUserPlayer1) {
+      return (match.player1Score);
+    }
+    return match.player2Score;
+  }
+  
+  setOpponentScore(isUserPlayer1: boolean, match: MatchHistory) : number {
+    if (isUserPlayer1) {
+      return match.player2Score;
+    }
+    return match.player1Score;
+  }
+  
+  isUserTheWinner(matchInfo: matchInfos) : boolean {
+    return matchInfo.userScore > matchInfo.opponentScore;
+  }
+  
+  async executeMatchHistoryQuery(id: string) : Promise<MatchHistory[]> {
+    return await this.matchHistoryRepository.find({
       select: {
         player1Score: true,
         player2Score: true,
@@ -43,20 +76,27 @@ export class UsersService {
         { player2: { id: id } },
       ]
     });
+  }
+  
+  async buildMatchHistory(id: string) {
+    
+    const matches: Awaited<Promise<MatchHistory[]>> = await this.executeMatchHistoryQuery(id);
     
     let matchHistory: Array<matchInfos> = [];
     
     matches.map( (match) => {
-      let matchInfo : matchInfos = new matchInfos();
+        let matchInfo : matchInfos = new matchInfos();
+        let isUserPlayer1 : boolean = this.isPlayer1(id, match);
 
-      matchInfo.opponent = match.player1.id === id ? match.player2.username : match.player1.username;
-      matchInfo.userScore = match.player1.id === id ? match.player1Score : match.player2Score;
-      matchInfo.opponentScore = match.player1.id === id ? match.player2Score : match.player1Score;
-      matchInfo.isWinner = matchInfo.userScore > matchInfo.opponentScore ? true : false;
+        matchInfo.opponent = this.setOpponentsName(isUserPlayer1, match);
+        matchInfo.userScore = this.setUserScore(isUserPlayer1, match);
+        matchInfo.opponentScore = this.setOpponentScore(isUserPlayer1, match);
+        matchInfo.isWinner = this.isUserTheWinner(matchInfo);
 
-      matchHistory.push(matchInfo);
-    }
+        matchHistory.push(matchInfo);
+      }
     )
+    
     return matchHistory;
   }
   
