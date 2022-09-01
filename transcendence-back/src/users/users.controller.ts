@@ -32,4 +32,9 @@ export class UsersController {
   ) {
     return this.userService.update(id, userDto);
   }
+
+  @Get(':id/profile')
+  getUserProfile(@Param('id', ParseUUIDPipe) id: string) {
+    return this.userService.getUserProfile(id);
+  }
 }

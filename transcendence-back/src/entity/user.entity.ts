@@ -35,6 +35,12 @@ export class User {
   })
   rating: number;
 
+  @Column({
+    nullable: false,
+    default: 'offline',
+  })
+  status: string;
+
   private updateUsername(username: string) {
     this.username = username;
   }

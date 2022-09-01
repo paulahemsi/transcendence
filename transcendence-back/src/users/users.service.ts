@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto, UpdateUserDto } from 'src/dto/users.dtos';
 import { User } from 'src/entity';
+import { MatchHistory } from 'src/entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -16,6 +17,18 @@ export class UsersService {
 
   findUser(id: string) {
     return this.userRepository.findOneBy({ id });
+  }
+
+  async getUserProfile(id: string) {
+    const { username, rating, status } = await this.findUser(id);
+
+    const profile = {
+      name: username,
+      status: status,
+      rating: rating,
+    };
+
+    return profile;
   }
 
   async intra42UserExists(external_id: number): Promise<boolean> {
