@@ -32,11 +32,6 @@ export class UsersController {
   ) {
     return this.userService.update(id, userDto);
   }
-}
-
-@Controller('user')
-export class UserController {
-  constructor(private readonly userService: UsersService) {}
 
   @Get(':id/profile')
   getUserProfile(@Param('id', ParseUUIDPipe) id: string) {

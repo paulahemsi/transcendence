@@ -20,9 +20,7 @@ export class UsersService {
   }
 
   async getUserProfile(id: string) {
-    const { username, rating, status } = await this.userRepository.findOne({
-      where: { id: id },
-    });
+    const { username, rating, status } = await this.findUser(id);
 
     const profile = {
       name: username,
