@@ -5,10 +5,13 @@ import { User } from 'src/entity';
 import { MatchHistory } from 'src/entity';
 import { Repository } from 'typeorm';
 
+type matchHistory = Awaited<Promise<MatchHistory[]>>;
+
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(MatchHistory) private readonly matchHistoryRepository: Repository<MatchHistory>,
   ) {}
 
   getUsers() {
@@ -22,10 +25,22 @@ export class UsersService {
   async getUserProfile(id: string) {
     const { username, rating, status } = await this.findUser(id);
 
+    const matches: matchHistory = await this.matchHistoryRepository.find({
+      relations: {
+        player1: true,
+        player2: true,
+    },
+      where: [
+        { player1: { id: id } },
+        { player2: { id: id } },
+      ]
+    });
+
     const profile = {
       name: username,
       status: status,
       rating: rating,
+      matchHistory: matches,
     };
 
     return profile;
