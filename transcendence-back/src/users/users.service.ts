@@ -5,11 +5,11 @@ import { User } from 'src/entity';
 import { MatchHistory } from 'src/entity';
 import { Repository } from 'typeorm';
 
-type matchInfos = {
-  'opponent': string,
-  'userScore': number,
-  'opponentScore': number,
-  'isWinner': boolean,
+export class matchInfos {
+  opponent: string;
+  userScore: number;
+  opponentScore: number;
+  isWinner: boolean;
 }
 
 @Injectable()
@@ -46,20 +46,14 @@ export class UsersService {
     
     let matchHistory: Array<matchInfos> = [];
     
-    
-    
     matches.map( (match) => {
-      let matchInfo : matchInfos = {
-        'opponent': '',
-        'userScore': null,
-        'opponentScore': null,
-        'isWinner': true,
-      };
-      matchInfo.userScore = match.player1.id === id ? match.player1Score : match.player2Score;
+      let matchInfo : matchInfos = new matchInfos();
+
       matchInfo.opponent = match.player1.id === id ? match.player2.username : match.player1.username;
+      matchInfo.userScore = match.player1.id === id ? match.player1Score : match.player2Score;
       matchInfo.opponentScore = match.player1.id === id ? match.player2Score : match.player1Score;
       matchInfo.isWinner = matchInfo.userScore > matchInfo.opponentScore ? true : false;
-      console.log(matchInfo);
+
       matchHistory.push(matchInfo);
     }
     )
@@ -67,17 +61,14 @@ export class UsersService {
   }
   
   async getUserProfile(id: string) {
-    const { username, rating, status } = await this.findUser(id);
 
-    let matchHistory: Array<matchInfos>;
-    
-    matchHistory = await this.buildMatchHistory(id);
+    const { username, rating, status } = await this.findUser(id);
 
     const profile = {
       name: username,
       status: status,
       rating: rating,
-      matchHistory: matchHistory,
+      matchHistory: await this.buildMatchHistory(id),
     };
 
     return profile;
