@@ -5,8 +5,6 @@ import { User } from 'src/entity';
 import { MatchHistory } from 'src/entity';
 import { Repository } from 'typeorm';
 
-type matchHistory = Awaited<Promise<MatchHistory[]>>;
-
 @Injectable()
 export class UsersService {
   constructor(
@@ -22,10 +20,9 @@ export class UsersService {
     return this.userRepository.findOneBy({ id });
   }
 
-  async getUserProfile(id: string) {
-    const { username, rating, status } = await this.findUser(id);
-
-    const matches: matchHistory = await this.matchHistoryRepository.find({
+  async buildMatchHistory(matchHistory: Object, id: string) {
+    
+    const matches: MatchHistory[] = await this.matchHistoryRepository.find({
       select: {
         player1Score: true,
         player2Score: true,
@@ -39,12 +36,30 @@ export class UsersService {
         { player2: { id: id } },
       ]
     });
+    
+    matchHistory['opponent'] = matches[0].player1.id === id ? matches[0].player2.username : matches[0].player1.username;
+    matchHistory['userScore'] = matches[0].player1.id === id ? matches[0].player1Score : matches[0].player2Score;
+    matchHistory['opponentScore'] = matches[0].player1.id === id ? matches[0].player2Score : matches[0].player1Score;
+    matchHistory['isWinner'] = matchHistory['userScore'] > matchHistory['opponentScore'] ? true : false;
+  }
+  
+  async getUserProfile(id: string) {
+    const { username, rating, status } = await this.findUser(id);
+
+    let matchHistory = {
+      'opponent': '',
+      'userScore': null,
+      'opponentScore': null,
+      'isWinner': true,
+    }
+    
+    await this.buildMatchHistory(matchHistory, id);
 
     const profile = {
       name: username,
       status: status,
       rating: rating,
-      matchHistory: matches,
+      matchHistory: matchHistory,
     };
 
     return profile;
