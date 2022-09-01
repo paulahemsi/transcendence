@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ResolveConfigOptions } from 'prettier';
 import { CreateUserDto, UpdateUserDto } from 'src/dto/users.dtos';
 import { User } from 'src/entity';
 import { MatchHistory } from 'src/entity';
