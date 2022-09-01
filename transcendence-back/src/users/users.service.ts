@@ -26,6 +26,10 @@ export class UsersService {
     const { username, rating, status } = await this.findUser(id);
 
     const matches: matchHistory = await this.matchHistoryRepository.find({
+      select: {
+        player1Score: true,
+        player2Score: true,
+    },
       relations: {
         player1: true,
         player2: true,
