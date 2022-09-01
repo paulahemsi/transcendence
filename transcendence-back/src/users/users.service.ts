@@ -5,6 +5,13 @@ import { User } from 'src/entity';
 import { MatchHistory } from 'src/entity';
 import { Repository } from 'typeorm';
 
+type matchInfos = {
+  'opponent': string,
+  'userScore': number,
+  'opponentScore': number,
+  'isWinner': boolean,
+}
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -20,7 +27,7 @@ export class UsersService {
     return this.userRepository.findOneBy({ id });
   }
 
-  async buildMatchHistory(matchHistory: Object, id: string) {
+  async buildMatchHistory(id: string) {
     
     const matches: MatchHistory[] = await this.matchHistoryRepository.find({
       select: {
@@ -37,23 +44,34 @@ export class UsersService {
       ]
     });
     
-    matchHistory['opponent'] = matches[0].player1.id === id ? matches[0].player2.username : matches[0].player1.username;
-    matchHistory['userScore'] = matches[0].player1.id === id ? matches[0].player1Score : matches[0].player2Score;
-    matchHistory['opponentScore'] = matches[0].player1.id === id ? matches[0].player2Score : matches[0].player1Score;
-    matchHistory['isWinner'] = matchHistory['userScore'] > matchHistory['opponentScore'] ? true : false;
+    let matchHistory: Array<matchInfos> = [];
+    
+    
+    
+    matches.map( (match) => {
+      let matchInfo : matchInfos = {
+        'opponent': '',
+        'userScore': null,
+        'opponentScore': null,
+        'isWinner': true,
+      };
+      matchInfo.userScore = match.player1.id === id ? match.player1Score : match.player2Score;
+      matchInfo.opponent = match.player1.id === id ? match.player2.username : match.player1.username;
+      matchInfo.opponentScore = match.player1.id === id ? match.player2Score : match.player1Score;
+      matchInfo.isWinner = matchInfo.userScore > matchInfo.opponentScore ? true : false;
+      console.log(matchInfo);
+      matchHistory.push(matchInfo);
+    }
+    )
+    return matchHistory;
   }
   
   async getUserProfile(id: string) {
     const { username, rating, status } = await this.findUser(id);
 
-    let matchHistory = {
-      'opponent': '',
-      'userScore': null,
-      'opponentScore': null,
-      'isWinner': true,
-    }
+    let matchHistory: Array<matchInfos>;
     
-    await this.buildMatchHistory(matchHistory, id);
+    matchHistory = await this.buildMatchHistory(id);
 
     const profile = {
       name: username,
