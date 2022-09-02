@@ -51,4 +51,9 @@ export class UsersController {
   ) {
     return this.friedshipService.addFriend(userId, friend.id);
   }
+
+  @Get(':id/friends')
+  getFriends(@Param('id', ParseUUIDPipe) userId: string) {
+    return this.friedshipService.getFriends(userId);
+  }
 }
