@@ -6,13 +6,19 @@ import {
   Param,
   ParseUUIDPipe,
   Patch,
+  Post,
 } from '@nestjs/common';
+import { AddFriendDto } from 'src/dto/friend.dtos';
 import { UpdateUserDto } from 'src/dto/users.dtos';
+import { FriendshipService } from '../friendship/friendship.service';
 import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly userService: UsersService) {}
+  constructor(
+    private readonly userService: UsersService,
+    private readonly friedshipService: FriendshipService,
+  ) {}
 
   @Get()
   getUsers() {
@@ -36,5 +42,13 @@ export class UsersController {
   @Get(':id/profile')
   getUserProfile(@Param('id', ParseUUIDPipe) id: string) {
     return this.userService.getUserProfile(id);
+  }
+
+  @Post(':id/friend')
+  addFriend(
+    @Param('id', ParseUUIDPipe) userId: string,
+    @Body() friend: AddFriendDto,
+  ) {
+    return this.friedshipService.addFriend(userId, friend.id);
   }
 }
