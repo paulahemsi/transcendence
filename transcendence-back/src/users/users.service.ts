@@ -16,7 +16,7 @@ export class matchInfos {
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    private matchHistoryService: MatchHistoryService,
+    private readonly matchHistoryService: MatchHistoryService,
     ) {}
 
   getUsers() {
