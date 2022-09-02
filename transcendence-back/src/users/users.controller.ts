@@ -44,7 +44,7 @@ export class UsersController {
     return this.userService.getUserProfile(id);
   }
 
-  @Post(':id/friend')
+  @Post(':id/friends')
   addFriend(
     @Param('id', ParseUUIDPipe) userId: string,
     @Body() friend: AddFriendDto,
