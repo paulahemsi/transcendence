@@ -4,7 +4,7 @@ import { MatchHistory } from 'src/entity';
 import { Repository } from 'typeorm';
 
 export class matchInfos {
-  opponent: string;
+  opponentName: string;
   userScore: number;
   opponentScore: number;
   isWinner: boolean;
@@ -72,7 +72,7 @@ export class MatchHistoryService {
 			let matchInfo : matchInfos = new matchInfos();
 			let isUserPlayer1 : boolean = this.isPlayer1(id, match);
 	
-			matchInfo.opponent = this.setOpponentsName(isUserPlayer1, match);
+			matchInfo.opponentName = this.setOpponentsName(isUserPlayer1, match);
 			matchInfo.userScore = this.setUserScore(isUserPlayer1, match);
 			matchInfo.opponentScore = this.setOpponentScore(isUserPlayer1, match);
 			matchInfo.isWinner = this.isUserTheWinner(matchInfo);
