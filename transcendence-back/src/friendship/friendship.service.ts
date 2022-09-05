@@ -26,6 +26,15 @@ export class FriendshipService {
     }
     console.log('implementação');
   }
+
+  async deleteFriend(userId: string, friendId: string) {
+    const user = await this.userService.findUser(userId);
+    const friend = await this.userService.findUser(friendId);
+    if (!friend || !user) {
+      throw new NotFoundException();
+    }
+    console.log('delete');
+  }
   
   executeFriendshipQuery(userId: string) : Promise<Friendship[]> {
     
