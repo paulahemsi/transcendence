@@ -18,3 +18,7 @@ back:
 update-dependencies:
 		cd transcendence-front ; npm install 
 		cd transcendence-back ; npm install 
+
+reset:
+	cd transcendence-front ; rm -rf node_modules; npm install 
+	cd transcendence-back ; rm -rf node_modules; npm install 
