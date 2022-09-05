@@ -45,7 +45,7 @@ export class FriendshipService {
     });
   }
 
-  async getUserAndFriend(userId: string, friendId: string) {
+  async checkUserAndFriend(userId: string, friendId: string) {
     const user = await this.userService.findUser(userId);
     const friend = await this.userService.findUser(friendId);
     if (!friend || !user) {
@@ -63,7 +63,7 @@ export class FriendshipService {
   }
 
   async deleteFriend(userId: string, friendId: string) {
-    await this.getUserAndFriend(userId, friendId);
+    await this.checkUserAndFriend(userId, friendId);
     const friendship = await this.findOneFriendship(userId, friendId); 
     if (!friendship) {
       throw new NotFoundException();
