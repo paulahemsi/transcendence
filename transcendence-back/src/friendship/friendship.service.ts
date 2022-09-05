@@ -27,9 +27,9 @@ export class FriendshipService {
     console.log('implementação');
   }
   
-  async executeFriendshipQuery(userId: string) : Promise<Friendship[]> {
+  executeFriendshipQuery(userId: string) : Promise<Friendship[]> {
     
-    const friendships = await this.friedshipRepository.find({
+    const friendships = this.friedshipRepository.find({
       relations: {
         user: true,
         friend: true,
