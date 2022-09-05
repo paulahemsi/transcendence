@@ -18,6 +18,41 @@ export class FriendshipService {
     private readonly userService: UsersService,
   ) {}
 
+  findOneFriendship(userId: string, friendId: string) : Promise<Friendship> {
+      
+    return this.friedshipRepository.findOne({
+      relations: {
+        user: true,
+        friend: true,
+      },
+      where: {
+        user: { id: userId },
+        friend: { id: friendId}
+      }
+    })
+  }
+    
+  findAllFriends(userId: string) : Promise<Friendship[]> {
+    
+    return this.friedshipRepository.find({
+      relations: {
+        user: true,
+        friend: true,
+      },
+      where: [
+        { user: { id: userId } }
+      ]
+    });
+  }
+
+  async getUserAndFriend(userId: string, friendId: string) {
+    const user = await this.userService.findUser(userId);
+    const friend = await this.userService.findUser(friendId);
+    if (!friend || !user) {
+      throw new NotFoundException();
+    }
+  }
+  
   async addFriend(userId: string, friendId: string) {
     const user = await this.userService.findUser(userId);
     const friend = await this.userService.findUser(friendId);
@@ -28,36 +63,21 @@ export class FriendshipService {
   }
 
   async deleteFriend(userId: string, friendId: string) {
-    const user = await this.userService.findUser(userId);
-    const friend = await this.userService.findUser(friendId);
-    if (!friend || !user) {
+    await this.getUserAndFriend(userId, friendId);
+    const friendship = await this.findOneFriendship(userId, friendId); 
+    if (!friendship) {
       throw new NotFoundException();
     }
-    console.log('delete');
+    this.friedshipRepository.delete(friendship.id)
   }
-  
-  executeFriendshipQuery(userId: string) : Promise<Friendship[]> {
-    
-    const friendships = this.friedshipRepository.find({
-      relations: {
-        user: true,
-        friend: true,
-      },
-      where: [
-        { user: { id: userId } }
-      ]
-    });
-    
-    return friendships;
-  }
-  
+
   async getFriends(userId: string) {
 
-    const friendships: Awaited<Promise<Friendship[]>> = await this.executeFriendshipQuery(userId); 
+    const friendshipList: Awaited<Promise<Friendship[]>> = await this.findAllFriends(userId); 
     
     let friends: Array<friendInfo> = [];
     
-    friendships.map( (friendship) => {
+    friendshipList.map( (friendship) => {
       let friend : friendInfo = new friendInfo();
 
 			friend.username = friendship.friend.username;
