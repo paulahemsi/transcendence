@@ -45,8 +45,8 @@ export class MatchHistoryService {
 		return matchInfo.userScore > matchInfo.opponentScore;
 	}
 	
-	async executeMatchHistoryQuery(id: string) : Promise<MatchHistory[]> {
-		return await this.matchHistoryRepository.find({
+	executeMatchHistoryQuery(id: string) : Promise<MatchHistory[]> {
+		return this.matchHistoryRepository.find({
 		  select: {
 			player1Score: true,
 			player2Score: true,
