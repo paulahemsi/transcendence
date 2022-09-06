@@ -4,7 +4,7 @@ import { Friendship } from 'src/entity';
 import { Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
 
-export class friendInfo {
+type friendInfo = {
   username: string;
   status: string;
   rating: number;
@@ -74,15 +74,14 @@ export class FriendshipService {
   async getFriends(userId: string) {
 
     const friendshipList: Awaited<Promise<Friendship[]>> = await this.findAllFriends(userId); 
-    
     let friends: Array<friendInfo> = [];
-    
-    friendshipList.map( (friendship) => {
-      let friend : friendInfo = new friendInfo();
 
-			friend.username = friendship.friend.username;
-			friend.status = friendship.friend.status;
-			friend.rating = friendship.friend.rating;
+    friendshipList.map( (friendship) => {
+      let friend = {} as friendInfo;
+
+      friend.username = friendship.friend.username;
+      friend.status = friendship.friend.status;
+      friend.rating = friendship.friend.rating;
       friends.push(friend);
     })
     
