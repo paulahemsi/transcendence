@@ -4,7 +4,7 @@ import { Friendship } from 'src/entity';
 import { Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
 
-export class friendInfo {
+type friendInfo = {
   username: string;
   status: string;
   rating: number;
@@ -49,7 +49,7 @@ export class FriendshipService {
     let friends: Array<friendInfo> = [];
     
     friendships.map( (friendship) => {
-      let friend : friendInfo = new friendInfo();
+      let friend = {} as friendInfo;
 
 			friend.username = friendship.friend.username;
 			friend.status = friendship.friend.status;
