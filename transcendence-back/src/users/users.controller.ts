@@ -44,11 +44,16 @@ export class UsersController {
     return this.userService.getUserProfile(id);
   }
 
-  @Post(':id/friend')
+  @Post(':id/friends')
   addFriend(
     @Param('id', ParseUUIDPipe) userId: string,
     @Body() friend: AddFriendDto,
   ) {
     return this.friedshipService.addFriend(userId, friend.id);
+  }
+
+  @Get(':id/friends')
+  getFriends(@Param('id', ParseUUIDPipe) userId: string) {
+    return this.friedshipService.getFriends(userId);
   }
 }
