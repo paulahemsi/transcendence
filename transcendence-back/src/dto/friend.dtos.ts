@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsUUID } from 'class-validator';
 
-export class AddFriendDto {
+export class FriendDto {
   @IsNotEmpty()
   @IsUUID()
   id: string;

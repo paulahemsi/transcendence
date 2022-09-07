@@ -7,8 +7,9 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Delete,
 } from '@nestjs/common';
-import { AddFriendDto } from 'src/dto/friend.dtos';
+import { FriendDto } from 'src/dto/friend.dtos';
 import { UpdateUserDto } from 'src/dto/users.dtos';
 import { FriendshipService } from '../friendship/friendship.service';
 import { UsersService } from './users.service';
@@ -47,7 +48,7 @@ export class UsersController {
   @Post(':id/friends')
   addFriend(
     @Param('id', ParseUUIDPipe) userId: string,
-    @Body() friend: AddFriendDto,
+    @Body() friend: FriendDto,
   ) {
     return this.friedshipService.addFriend(userId, friend.id);
   }
@@ -55,5 +56,13 @@ export class UsersController {
   @Get(':id/friends')
   getFriends(@Param('id', ParseUUIDPipe) userId: string) {
     return this.friedshipService.getFriends(userId);
+  }
+
+  @Delete(':id/friends')
+  deleteFriend(
+    @Param('id', ParseUUIDPipe) userId: string,
+    @Body() friend: FriendDto,
+  ) {
+    return this.friedshipService.deleteFriend(userId, friend.id);
   }
 }
