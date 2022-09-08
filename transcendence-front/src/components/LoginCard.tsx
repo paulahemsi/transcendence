@@ -11,6 +11,7 @@ const LoginCardButton = () => {
 					height: 55,
 					textTransform: 'lowercase',
 					background: '#9575CD',
+					':hover': { background: '#311B92'},
 					fontFamily: 'Orbitron',
 					fontSize: 20}}>
 				login
