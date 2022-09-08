@@ -55,7 +55,15 @@ export class FriendshipService {
     if (!friend || !user) {
       throw new NotFoundException();
     }
-    console.log('implementação');
+    let friendship = await this.findOneFriendship(userId, friendId);
+    if (friendship) {
+      return;
+    }
+    friendship = this.friedshipRepository.create({
+      user: user,
+      friend: friend,
+    });
+    return this.friedshipRepository.save(friendship);
   }
 
   async deleteFriend(userId: string, friendId: string) {
