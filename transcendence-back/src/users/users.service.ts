@@ -2,14 +2,22 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto, UpdateUserDto } from 'src/dto/users.dtos';
 import { User } from 'src/entity';
-import { MatchHistory } from 'src/entity';
 import { Repository } from 'typeorm';
+import { MatchHistoryService} from 'src/match-history/match-history.service';
+
+export class matchInfos {
+  opponent: string;
+  userScore: number;
+  opponentScore: number;
+  isWinner: boolean;
+}
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-  ) {}
+    private readonly matchHistoryService: MatchHistoryService,
+    ) {}
 
   getUsers() {
     return this.userRepository.find();
@@ -20,12 +28,14 @@ export class UsersService {
   }
 
   async getUserProfile(id: string) {
+
     const { username, rating, status } = await this.findUser(id);
 
     const profile = {
       name: username,
       status: status,
       rating: rating,
+      matchHistory: await this.matchHistoryService.buildMatchHistory(id),
     };
 
     return profile;
