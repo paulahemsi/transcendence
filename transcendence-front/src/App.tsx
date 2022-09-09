@@ -2,8 +2,12 @@ import React from 'react';
 import './App.css';
 import { useCallback, useState } from 'react';
 import LoginCard from './components/LoginCard'
-  
+import Home from './components/Home'
+
+
   function App() {
+    let cookie= document.cookie;
+		console.log('cookie', cookie.includes("accessToken"));
   return (
     <>
       <head>
@@ -13,7 +17,9 @@ import LoginCard from './components/LoginCard'
       </head>
 
       <main>
-          <LoginCard/>
+          {cookie.includes("accessToken")
+          ? <Home />
+          : <LoginCard/> }
       </main>
     </>
   );
