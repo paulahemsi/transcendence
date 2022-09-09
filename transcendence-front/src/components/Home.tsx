@@ -1,68 +1,49 @@
 import React from "react";
-import { Button, Card, CardActions, CardContent, Typography, Box } from '@mui/material';
+import { Typography, Box, Button } from '@mui/material';
+import axios from 'axios';
 
-const LoginCardButton = () => {
+const LogoutButton = () => {
 	return (
 		<>
-			<a href="http://localhost:4444/auth/login">
-				<Button variant="contained" size="large"
+			<Button variant="contained" size="small" onClick={() => axios.get('http://localhost:4444/auth/logout')}
 				sx={{ 
-					width: 150,
-					height: 55,
+					width: 110,
+					height: 50,
 					textTransform: 'lowercase',
-					background: '#9575CD',
-					':hover': { background: '#311B92'},
+					background: '#F5F5F5',
+					color: '#311B92',
+					':hover': { background: '#F5F5F5', color: '#9575CD'},
 					fontFamily: 'Orbitron',
-					fontSize: 20}}>
-				LOGADO!
-				</Button>
-			</a>
+					fontSize: 18}}>
+				logout
+			</Button>
 		</>
 	)
 }
 
-const LoginCardActions = () => {
-	return (
-		<>
-			<CardActions sx={{ justifyContent: 'center', paddingTop: 8 }}>
-				<LoginCardButton />
-			</CardActions>
-		</>
-	)
-}
-
-const LoginCardContent = () => {
-	return (
-		<>
-			<CardContent style={{ paddingLeft: 35, paddingTop: 25 }}>
-			<Typography align="left" sx={{ fontSize: 24, fontFamily: 'Orbitron', fontWeight: 500}}>{'> transcend?'}</Typography>
-			</CardContent>
-		</>
-	)
-}
-
-export class LoginCard extends React.Component<{}, {}> {
+export class Home extends React.Component<{}, {}> {
     render() {
         return (
-            <>
-			<Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-				<Card variant="outlined" 
+			<>
+				<Box display="flex" justifyContent="center" alignItems="center" minHeight="90vh"
 					sx={{
-						width: 500,
-						height: 230,
-						background: '#F5F5F5',
-						border: 2,
-						borderColor: '#212121',
-						borderRadius: 3,
-						boxShadow: 5
-						}}>
-					<LoginCardContent />
-					<LoginCardActions />
-				</Card>
-			</Box>
-		</>
+						backgroundColor: '#311B92'
+					}}>
+					<Typography sx={{ fontSize: 90, fontFamily: 'Orbitron', fontWeight: 500, color: '#FFFFFF', textShadow: '0px 0px 6px #FFFFFF'}}>
+						ft_transcendence
+					</Typography>
+				</Box>
+
+				<Box display="flex" justifyContent="right" minHeight="10vh"
+					sx={{
+						backgroundColor: '#311B92',
+						paddingRight: 4
+					}}>
+					<LogoutButton />
+				</Box>
+			</>
         );
     }
 }
 
-export default LoginCard
+export default Home

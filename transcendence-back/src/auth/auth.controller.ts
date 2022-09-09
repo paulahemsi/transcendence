@@ -30,6 +30,8 @@ export class AuthController {
 
   @Get('logout')
   logoutUser(@Res() response: Response) {
-    response.sendStatus(501);
+    console.log('Hello');
+    response.clearCookie('accessToken');
+    response.redirect('http://localhost:3000');
   }
 }
