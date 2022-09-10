@@ -44,8 +44,7 @@ const Greeting = () => {
 	)
 }
 
-export class Home extends React.Component<{}, {}> {
-    render() {
+export const Home = () => {
         return (
 			<>
 				<Box display="flex" justifyContent="center" alignItems="center" minHeight="90vh"
@@ -69,7 +68,6 @@ export class Home extends React.Component<{}, {}> {
 				</Box>
 			</>
         );
-    }
 }
 
 export default Home

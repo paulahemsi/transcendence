@@ -41,8 +41,7 @@ const LoginCardContent = () => {
 	)
 }
 
-export class LoginCard extends React.Component<{}, {}> {
-    render() {
+export const LoginCard = () => {
         return (
             <>
 			<Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
@@ -62,7 +61,6 @@ export class LoginCard extends React.Component<{}, {}> {
 			</Box>
 		</>
         );
-    }
 }
 
 export default LoginCard
