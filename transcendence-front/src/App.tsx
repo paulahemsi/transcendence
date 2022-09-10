@@ -1,24 +1,21 @@
 import React from 'react';
 import './App.css';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import LoginCard from './components/LoginCard'
 import Home from './components/Home'
 
+  function isLoggedIn() {
+    let cookie = document.cookie;
+    return (cookie.includes("accessToken") ? true : false);
+  }
 
   function App() {
-    let cookie= document.cookie;
-		console.log('cookie', cookie.includes("accessToken"));
-  return (
+    const[ loggedIn, setLoggedIn ] = useState(isLoggedIn());
+    return (
     <>
-      <head>
-        <title>ft_transcendence</title>
-        <meta name="description" content="ft_transcendence" />
-        <link rel="icon" href="/42.ico" />
-      </head>
-
       <main>
-          {cookie.includes("accessToken")
-          ? <Home />
+          {loggedIn
+          ? <Home setLoggedIn={setLoggedIn}/>
           : <LoginCard/> }
       </main>
     </>

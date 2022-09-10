@@ -30,7 +30,9 @@ export class AuthController {
   }
 
   @Get('logout')
-  logoutUser(@Res() response: Response) {
-    response.sendStatus(501);
+  async logoutUser(@Res() response: Response) {
+    await this.authService
+      .logout(response)
+      .then(() => response.redirect('http://localhost:3000'));
   }
 }
