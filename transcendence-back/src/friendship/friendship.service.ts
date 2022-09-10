@@ -18,7 +18,10 @@ export class FriendshipService {
     private readonly usersService: UsersService,
   ) {}
 
-  findOneFriendship(userId: string, friendId: string): Promise<Friendship> {
+  private findOneFriendship(
+    userId: string,
+    friendId: string,
+  ): Promise<Friendship> {
     return this.friedshipRepository.findOne({
       relations: {
         user: true,
@@ -31,7 +34,7 @@ export class FriendshipService {
     });
   }
 
-  findAllFriends(userId: string): Promise<Friendship[]> {
+  private findAllFriends(userId: string): Promise<Friendship[]> {
     return this.friedshipRepository.find({
       relations: {
         user: true,
@@ -41,20 +44,17 @@ export class FriendshipService {
     });
   }
 
-  async checkUserAndFriend(userId: string, friendId: string) {
+  private async checkUserAndFriend(userId: string, friendId: string) {
     const user = await this.usersService.findUser(userId);
     const friend = await this.usersService.findUser(friendId);
     if (!friend || !user) {
       throw new NotFoundException();
     }
+    return { user: user, friend: friend };
   }
 
   async addFriend(userId: string, friendId: string) {
-    const user = await this.usersService.findUser(userId);
-    const friend = await this.usersService.findUser(friendId);
-    if (!friend || !user) {
-      throw new NotFoundException();
-    }
+    const { user, friend } = await this.checkUserAndFriend(userId, friendId);
     let friendship = await this.findOneFriendship(userId, friendId);
     if (friendship) {
       return;
