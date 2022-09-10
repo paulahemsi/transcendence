@@ -15,7 +15,7 @@ export class FriendshipService {
   constructor(
     @InjectRepository(Friendship)
     private readonly friedshipRepository: Repository<Friendship>,
-    private readonly userService: UsersService,
+    private readonly usersService: UsersService,
   ) {}
 
   findOneFriendship(userId: string, friendId: string): Promise<Friendship> {
@@ -42,16 +42,16 @@ export class FriendshipService {
   }
 
   async checkUserAndFriend(userId: string, friendId: string) {
-    const user = await this.userService.findUser(userId);
-    const friend = await this.userService.findUser(friendId);
+    const user = await this.usersService.findUser(userId);
+    const friend = await this.usersService.findUser(friendId);
     if (!friend || !user) {
       throw new NotFoundException();
     }
   }
 
   async addFriend(userId: string, friendId: string) {
-    const user = await this.userService.findUser(userId);
-    const friend = await this.userService.findUser(friendId);
+    const user = await this.usersService.findUser(userId);
+    const friend = await this.usersService.findUser(friendId);
     if (!friend || !user) {
       throw new NotFoundException();
     }

@@ -17,7 +17,7 @@ import { UsersService } from './users.service';
 @Controller('users')
 export class UsersController {
   constructor(
-    private readonly userService: UsersService,
+    private readonly usersService: UsersService,
     private readonly friedshipService: FriendshipService,
   ) {}
 
