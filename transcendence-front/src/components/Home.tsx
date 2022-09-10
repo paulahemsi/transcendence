@@ -3,6 +3,12 @@ import { Typography, Box, Button, Stack } from '@mui/material';
 import axios from 'axios';
 import jwt from 'jwt-decode';
 
+type Intra42Token = {
+	username : string;
+	external_id: string;
+	email: string;
+}
+
 const LogoutButton = () => {
 	return (
 		<>
@@ -22,19 +28,14 @@ const LogoutButton = () => {
 	)
 }
 
-type Intra42Token = {
-	username : string;
-	external_id: string;
-	email: string;
-}
-
-function getUsername() {
-	let cookie = document.cookie;
-	let userInfo : Intra42Token = jwt(cookie);
-	return (userInfo.username);
-}
-
 const Greeting = () => {
+
+	const getUsername = () => {
+		let cookie = document.cookie;
+		let userInfo : Intra42Token = jwt(cookie);
+		return (userInfo.username);
+	}
+	
 	return (
 		<>
 			<Typography sx={{ fontSize: 30, fontFamily: 'Orbitron', fontWeight: 500, color: '#F5F5F5'}}>
@@ -44,10 +45,9 @@ const Greeting = () => {
 	)
 }
 
-export const Home = () => {
-        return (
-			<>
-				<Box display="flex" justifyContent="center" alignItems="center" minHeight="90vh"
+const Background = () => {
+	return (
+		<Box display="flex" justifyContent="center" alignItems="center" minHeight="90vh"
 					sx={{
 						backgroundColor: '#311B92'
 					}}>
@@ -57,8 +57,14 @@ export const Home = () => {
 					</Typography>
 					<Greeting />
 					</Stack>
-				</Box>
+		</Box>
+	);
+}
 
+export const Home = () => {
+        return (
+			<>
+				<Background />
 				<Box display="flex" justifyContent="right" minHeight="10vh"
 					sx={{
 						backgroundColor: '#311B92',
