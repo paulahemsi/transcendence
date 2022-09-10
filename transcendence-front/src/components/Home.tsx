@@ -31,7 +31,6 @@ type Intra42Token = {
 function getUsername() {
 	let cookie = document.cookie;
 	let userInfo : Intra42Token = jwt(cookie);
-	console.log(userInfo);
 	return (userInfo.username);
 }
 

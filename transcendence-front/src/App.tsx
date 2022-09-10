@@ -12,12 +12,6 @@ import Home from './components/Home'
   function App() {
   return (
     <>
-      <head>
-        <title>ft_transcendence</title>
-        <meta name="description" content="ft_transcendence" />
-        <link rel="icon" href="/42.ico" />
-      </head>
-
       <main>
           {isLoggedIn()
           ? <Home />
