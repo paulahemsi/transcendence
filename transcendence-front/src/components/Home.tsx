@@ -9,10 +9,16 @@ type Intra42Token = {
 	email: string;
 }
 
-const LogoutButton = () => {
+const LogoutButton = ({ setLoggedIn } : { setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>}) => {
+	
+	const handleLogout = () => {
+		axios.get('http://localhost:3000/auth/logout');
+		setLoggedIn(false);
+	}
+	
 	return (
 		<>
-			<Button variant="contained" size="small" onClick={() => axios.get('http://localhost:3000/auth/logout')}
+			<Button variant="contained" size="small" onClick={handleLogout}
 				sx={{ 
 					width: 110,
 					height: 50,
@@ -61,7 +67,7 @@ const Background = () => {
 	);
 }
 
-export const Home = () => {
+export const Home = ({ setLoggedIn } : { setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>}) => {
         return (
 			<>
 				<Background />
@@ -70,7 +76,7 @@ export const Home = () => {
 						backgroundColor: '#311B92',
 						paddingRight: 4
 					}}>
-					<LogoutButton />
+					<LogoutButton setLoggedIn={setLoggedIn}/>
 				</Box>
 			</>
         );

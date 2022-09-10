@@ -10,11 +10,12 @@ import Home from './components/Home'
   }
 
   function App() {
-  return (
+    const[ loggedIn, setLoggedIn ] = useState(isLoggedIn());
+    return (
     <>
       <main>
-          {isLoggedIn()
-          ? <Home />
+          {loggedIn
+          ? <Home setLoggedIn={setLoggedIn}/>
           : <LoginCard/> }
       </main>
     </>
