@@ -16,9 +16,10 @@ export class AuthController {
 
   @Get('redirect')
   @UseGuards(Intra42AuthGuard)
-  async intraRedirect(@Res() response: Response, @Req() request: Request) {
-    this.authService.login(response, request.user);
-    response.redirect('http://localhost:3000');
+  intraRedirect(@Res() response: Response, @Req() request: Request) {
+    this.authService
+      .login(response, request.user)
+      .then(() => response.redirect('http://localhost:3000'));
   }
 
   @Get('status')
