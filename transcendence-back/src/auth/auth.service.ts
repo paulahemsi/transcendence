@@ -20,6 +20,12 @@ export class AuthService {
   async login(response: any, user: any): Promise<any> {
     const payload = this.createPayload(user);
     this.usersService.validate(user);
-    response.cookie('accessToken', this.jwtService.sign(payload));
+    response.cookie('accessToken', this.jwtService.sign(payload), {
+      sameSite: 'Lax',
+    });
+  }
+
+  async logout(response: any): Promise<any> {
+    response.clearCookie('accessToken', { sameSite: 'Lax' });
   }
 }

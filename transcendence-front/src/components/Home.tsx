@@ -1,11 +1,12 @@
 import React from "react";
-import { Typography, Box, Button } from '@mui/material';
+import { Typography, Box, Button, Stack } from '@mui/material';
 import axios from 'axios';
+import jwt from 'jwt-decode';
 
 const LogoutButton = () => {
 	return (
 		<>
-			<Button variant="contained" size="small" onClick={() => axios.get('http://localhost:4444/auth/logout')}
+			<Button variant="contained" size="small" onClick={() => axios.get('http://localhost:3000/auth/logout')}
 				sx={{ 
 					width: 110,
 					height: 50,
@@ -21,6 +22,29 @@ const LogoutButton = () => {
 	)
 }
 
+type Intra42Token = {
+	username : string;
+	external_id: string;
+	email: string;
+}
+
+function getUsername() {
+	let cookie = document.cookie;
+	let userInfo : Intra42Token = jwt(cookie);
+	console.log(userInfo);
+	return (userInfo.username);
+}
+
+const Greeting = () => {
+	return (
+		<>
+			<Typography sx={{ fontSize: 30, fontFamily: 'Orbitron', fontWeight: 500, color: '#F5F5F5'}}>
+				Welcome, {getUsername()}!
+			</Typography>
+		</>
+	)
+}
+
 export class Home extends React.Component<{}, {}> {
     render() {
         return (
@@ -29,9 +53,12 @@ export class Home extends React.Component<{}, {}> {
 					sx={{
 						backgroundColor: '#311B92'
 					}}>
+					<Stack alignItems="center" spacing={2}>
 					<Typography sx={{ fontSize: 90, fontFamily: 'Orbitron', fontWeight: 500, color: '#FFFFFF', textShadow: '0px 0px 6px #FFFFFF'}}>
 						ft_transcendence
 					</Typography>
+					<Greeting />
+					</Stack>
 				</Box>
 
 				<Box display="flex" justifyContent="right" minHeight="10vh"

@@ -4,10 +4,12 @@ import { useCallback, useState } from 'react';
 import LoginCard from './components/LoginCard'
 import Home from './components/Home'
 
+  function isLoggedIn() {
+    let cookie = document.cookie;
+    return (cookie.includes("accessToken") ? true : false);
+  }
 
   function App() {
-    let cookie= document.cookie;
-		console.log('cookie', cookie.includes("accessToken"));
   return (
     <>
       <head>
@@ -17,7 +19,7 @@ import Home from './components/Home'
       </head>
 
       <main>
-          {cookie.includes("accessToken")
+          {isLoggedIn()
           ? <Home />
           : <LoginCard/> }
       </main>

@@ -29,9 +29,9 @@ export class AuthController {
   }
 
   @Get('logout')
-  logoutUser(@Res() response: Response) {
-    console.log('Hello');
-    response.clearCookie('accessToken');
-    response.redirect('http://localhost:3000');
+  async logoutUser(@Res() response: Response) {
+    await this.authService
+      .logout(response)
+      .then(() => response.redirect('http://localhost:3000'));
   }
 }
