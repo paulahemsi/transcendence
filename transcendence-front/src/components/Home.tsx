@@ -9,7 +9,9 @@ type Intra42Token = {
 	email: string;
 }
 
-const LogoutButton = ({ setLoggedIn } : { setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>}) => {
+type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+
+const LogoutButton = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 	
 	const handleLogout = () => {
 		axios.get('http://localhost:3000/auth/logout');
@@ -67,7 +69,7 @@ const Background = () => {
 	);
 }
 
-export const Home = ({ setLoggedIn } : { setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>}) => {
+export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
         return (
 			<>
 				<Background />
