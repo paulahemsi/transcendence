@@ -23,12 +23,12 @@ export class UsersController {
 
   @Get()
   getUsers() {
-    return this.userService.getUsers();
+    return this.usersService.getUsers();
   }
 
   @Get(':id')
   findUser(@Param('id', ParseUUIDPipe) id: string) {
-    return this.userService.findUser(id);
+    return this.usersService.findUser(id);
   }
 
   @Patch(':id')
@@ -37,12 +37,12 @@ export class UsersController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() userDto: UpdateUserDto,
   ) {
-    return this.userService.update(id, userDto);
+    return this.usersService.update(id, userDto);
   }
 
   @Get(':id/profile')
   getUserProfile(@Param('id', ParseUUIDPipe) id: string) {
-    return this.userService.getUserProfile(id);
+    return this.usersService.getUserProfile(id);
   }
 
   @Post(':id/friends')
