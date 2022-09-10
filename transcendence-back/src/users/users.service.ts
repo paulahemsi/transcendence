@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateUserDto, UpdateUserDto } from 'src/dto/users.dtos';
+import { UpdateUserDto } from 'src/dto/users.dtos';
 import { User } from 'src/entity';
 import { Repository } from 'typeorm';
 import { MatchHistoryService } from 'src/match-history/match-history.service';
+import { Intra42UserData } from 'src/auth/strategies/intra42.strategy';
 
 export class matchInfos {
   opponent: string;
@@ -40,23 +41,19 @@ export class UsersService {
     return profile;
   }
 
-  async intra42UserExists(external_id: number): Promise<boolean> {
-    const existingUser = await this.userRepository.find({
-      where: { external_id: external_id },
-    });
-
-    if (Object.keys(existingUser).length == 0) return false;
-    return true;
+  findUserByExternalId(external_id: number): Promise<User> {
+    const user = this.userRepository.findOneBy({ external_id });
+    return user;
   }
 
-  validate(user: any) {
-    this.intra42UserExists(user.external_id).then((userExists: boolean) => {
-      if (userExists == false) this.create(user);
-    });
+  async validate(intra42User: Intra42UserData) {
+    const user = await this.findUserByExternalId(intra42User.external_id);
+    if (user) return user;
+    return this.create(intra42User);
   }
 
-  create(userInfo: any): Promise<CreateUserDto> {
-    const newUser: CreateUserDto = this.userRepository.create({
+  create(userInfo: Intra42UserData): Promise<User> {
+    const newUser: User = this.userRepository.create({
       username: userInfo.username,
       email: userInfo.email,
       external_id: userInfo.external_id,
