@@ -34,5 +34,5 @@ export class Channel {
   password: string;
 
   @OneToMany(() => Message, (message) => message.id)
-  messages: Message;
+  messages: Message[];
 }
