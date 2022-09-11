@@ -16,7 +16,7 @@ export class Channel {
   })
   name: string;
 
-  @ManyToOne(() => User, (user) => user.id, {
+  @ManyToOne(() => ChannelType, (type) => type.id, {
     nullable: false,
   })
   //?Faz sentido type ser uma tabela a parte? pq não é um define?
