@@ -15,7 +15,9 @@ export class Message {
   })
   message: string;
 
-  @OneToOne(() => Channel)
+  @ManyToOne(() => Channel, (channel) => channel.id, {
+    nullable: false,
+  })
   channel: Channel;
   
   @ManyToOne(() => User, (user) => user.id, {
