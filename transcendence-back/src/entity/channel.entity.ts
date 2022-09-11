@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user.entity';
 import { ChannelType } from './channel-type.entity';
 import { Message } from './message.entity';
@@ -33,7 +33,6 @@ export class Channel {
   //*Nota: aqui lembrar de passar pelo algoritmo de hash 
   password: string;
 
-  @OneToOne(() => Message)
-  @JoinColumn()
+  @OneToMany(() => Message, (message) => message.id)
   messages: Message;
 }
