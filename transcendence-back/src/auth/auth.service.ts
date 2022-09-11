@@ -17,7 +17,7 @@ export class AuthService {
       sameSite: 'Lax',
     });
   }
-  
+
   async logout(response: any): Promise<any> {
     response.clearCookie('accessToken', { sameSite: 'Lax' });
   }

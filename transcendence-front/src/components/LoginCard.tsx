@@ -1,22 +1,27 @@
 import React from "react";
-import { Button, Card, CardActions, CardContent, Typography, Box } from '@mui/material';
+import { Link, Button, Card, CardActions, CardContent, Typography, Box } from '@mui/material';
 
 const LoginCardButton = () => {
 	return (
 		<>
-			<a href="http://localhost:4444/auth/login">
+			<Link href="http://localhost:4444/auth/login" style={{ textDecoration: 'none' }}>
 				<Button variant="contained" size="large"
 				sx={{ 
 					width: 150,
 					height: 55,
-					textTransform: 'lowercase',
 					background: '#9575CD',
-					':hover': { background: '#311B92'},
-					fontFamily: 'Orbitron',
-					fontSize: 20}}>
-				login
+					':hover': { background: '#311B92'}
+				}}>
+					<Typography
+						sx={{
+							textTransform: 'lowercase',
+							fontFamily: 'Orbitron',
+							fontSize: 20
+						}}>
+						login
+					</Typography>
 				</Button>
-			</a>
+			</Link>
 		</>
 	)
 }
