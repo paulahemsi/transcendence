@@ -1,27 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, Button, Card, CardActions, CardContent, Typography, Box } from '@mui/material';
 
 const LoginCardButton = () => {
+	const [loading, setLoading] = useState(false);
+	
+	const handleLoading = () => {
+		setLoading(true);
+	}
+	
 	return (
 		<>
-			<Link href="http://localhost:4444/auth/login" style={{ textDecoration: 'none' }}>
-				<Button variant="contained" size="large"
-				sx={{ 
+			<Button 
+			variant="contained"
+			disabled={loading}
+			onClick={handleLoading}
+			size="large"
+			sx={{ 
+				width: 150,
+				height: 55,
+				background: '#9575CD',
+				':hover': { background: '#311B92'}
+			}}>
+				<Link href="http://localhost:4444/auth/login" style={{ textDecoration: 'none' }} sx={{
 					width: 150,
 					height: 55,
-					background: '#9575CD',
-					':hover': { background: '#311B92'}
+					textTransform: 'lowercase',
+					fontFamily: 'Orbitron',
+					fontSize: 20,
+					color: '#f5f5f5',
+					marginTop: '20%',
 				}}>
-					<Typography
-						sx={{
-							textTransform: 'lowercase',
-							fontFamily: 'Orbitron',
-							fontSize: 20
-						}}>
 						login
-					</Typography>
-				</Button>
-			</Link>
+				</Link>
+			</Button>
 		</>
 	)
 }
