@@ -133,6 +133,10 @@ app.enableCors();
 await app.listen(3000);
 ```
 
+## ORM
+
+`@JoinColumn` must be set only on one side of relation - the side that must have the foreign key in the database table
+
 ## Login_flow
 
 ![image](https://user-images.githubusercontent.com/63563271/183547441-88032c14-87a4-45d2-9e51-b2b379e818ea.png)
