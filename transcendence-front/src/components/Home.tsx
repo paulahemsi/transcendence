@@ -11,16 +11,6 @@ type tokenData = {
 	id: string;
 }
 
-type user = {
-	id: string,
-	username: string;
-	rating: number;
-	email: string;
-	status: string;
-	image_url: string;
-	external_id: number;
-}
-
 const requestUserData = async ({ setUserData } : { setUserData: React.Dispatch<React.SetStateAction<{[key: string]: any}>>}) => {
 	const tokenData: tokenData = jwt(document.cookie);
 	await axios.get('http://localhost:3000/users/' + tokenData.id).then((response) => {setUserData({
@@ -36,13 +26,10 @@ const requestUserData = async ({ setUserData } : { setUserData: React.Dispatch<R
 
 const Background = () => {
 	return (
-		<Box display="flex" justifyContent="center" alignItems="center" minHeight="90vh"
-					sx={{
-						backgroundColor: '#311B92'
-					}}>
-					<Typography sx={{ fontSize: '14vh', fontFamily: 'Orbitron', fontWeight: 500, color: '#FFFFFF', textShadow: '0px 0px 6px #FFFFFF'}}>
+		<Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" sx={{backgroundColor: '#311B92'}}>
+			<Typography sx={{ fontSize: '14vh', fontFamily: 'Orbitron', fontWeight: 500, color: '#FFFFFF', textShadow: '0px 0px 6px #FFFFFF'}}>
 						ft_transcendence
-					</Typography>
+			</Typography>
 		</Box>
 	);
 }
@@ -56,12 +43,6 @@ export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 			<>
 				<Header userData={userData} />
 				<Background />
-				<Box display="flex" justifyContent="right" minHeight="10vh"
-					sx={{
-						backgroundColor: '#311B92',
-						paddingRight: 4
-					}}>
-				</Box>
 				<Footer setLoggedIn={setLoggedIn}/>
 			</>
 		);
