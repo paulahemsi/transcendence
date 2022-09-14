@@ -34,10 +34,10 @@ const Background = () => {
 	);
 }
 
-const FriendsDrawer = () => {
+const FriendsDrawer = ({ setOpenDrawer } : { setOpenDrawer: booleanSetState}) => {
 	return (
 		<>
-		  <Drawer open={true} anchor="right">
+		  <Drawer open={true} onClose={() => setOpenDrawer(false)} anchor="right">
 			VARIAS COISAS DENTRO DO DRAWER
 			<List>
 				<ListItem>AMIGO UM</ListItem>
@@ -51,7 +51,7 @@ const FriendsDrawer = () => {
 }
 
 export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
-
+	
 	const [userData, setUserData] = useState<{[key: string]: any}>({});
 	const [openDrawer, setOpenDrawer] = useState(false)
 
@@ -59,7 +59,7 @@ export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 		return (
 			<>
 				<Header userData={userData} setOpenDrawer={setOpenDrawer}/>
-				{ openDrawer && <FriendsDrawer />}
+				{ openDrawer && <FriendsDrawer setOpenDrawer={setOpenDrawer} />}
 				<Background />
 				<Footer setLoggedIn={setLoggedIn}/>
 			</>
