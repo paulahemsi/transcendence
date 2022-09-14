@@ -3,6 +3,7 @@ import { Typography, Box, Button, AppBar } from '@mui/material';
 import axios from 'axios';
 import jwt from 'jwt-decode';
 import Header from "./header/Header";
+import { Footer } from "./footer/Footer";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -18,32 +19,6 @@ type user = {
 	status: string;
 	image_url: string;
 	external_id: number;
-}
-
-const LogoutButton = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
-	
-	const handleLogout = () => {
-		axios.get('http://localhost:3000/auth/logout');
-		setLoggedIn(false);
-	}
-	
-	return (
-		<>
-			<Button variant="outlined" size="small" onClick={handleLogout}
-				sx={{ 
-					width: 110,
-					height: '5vh',
-					textTransform: 'lowercase',
-					background: '#F5F5F5',
-					borderColor: '#311B92',
-					color: '#311B92',
-					':hover': { background: '#F5F5F5', borderColor: '#9575CD', color: '#9575CD'},
-					fontFamily: 'Orbitron',
-					fontSize: '2.3vh'}}>
-				logout
-			</Button>
-		</>
-	)
 }
 
 const requestUserData = async ({ setUserData } : { setUserData: React.Dispatch<React.SetStateAction<{[key: string]: any}>>}) => {
@@ -87,11 +62,7 @@ export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 						paddingRight: 4
 					}}>
 				</Box>
-				<AppBar position="fixed" sx={{ height: '7vh', background: '#F5F5F5', top: 'auto', bottom: 0 }}>
-					<Box display="flex" justifyContent="right" sx={{ paddingTop: '1vh', paddingRight: '1vh', paddingBottom: '1vh' }}>
-						<LogoutButton setLoggedIn={setLoggedIn}/>
-					</Box>
-				</AppBar>
+				<Footer setLoggedIn={setLoggedIn}/>
 			</>
 		);
 }
