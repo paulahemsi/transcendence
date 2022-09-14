@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Typography, Box, Drawer, List, ListItem } from '@mui/material';
-import axios from 'axios';
+import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import Header from "./header/Header";
 import { Footer } from "./footer/Footer";
@@ -13,7 +13,8 @@ type tokenData = {
 
 const requestUserData = async ({ setUserData } : { setUserData: React.Dispatch<React.SetStateAction<{[key: string]: any}>>}) => {
 	const tokenData: tokenData = jwt(document.cookie);
-	await axios.get('http://localhost:3000/users/' + tokenData.id).then((response) => {setUserData({
+	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+	await axios.get('http://localhost:3000/users/' + tokenData.id, { headers: authToken }).then((response) => {setUserData({
 		id: response.data.id,
 		username: response.data.username,
 		rating: response.data.rating,
