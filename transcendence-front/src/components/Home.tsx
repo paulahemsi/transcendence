@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Typography, Box, Button, AppBar } from '@mui/material';
 import axios from 'axios';
 import jwt from 'jwt-decode';
-import Header from "./Header";
+import Header from "./header/Header";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
