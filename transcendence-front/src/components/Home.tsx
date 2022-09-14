@@ -53,12 +53,13 @@ const FriendsDrawer = () => {
 export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 
 	const [userData, setUserData] = useState<{[key: string]: any}>({});
+	const [openDrawer, setOpenDrawer] = useState(false)
 
-	useEffect(() => {requestUserData({setUserData})}, []);	
+	useEffect(() => {requestUserData({setUserData})}, []);
 		return (
 			<>
-				<Header userData={userData} />
-				<FriendsDrawer />
+				<Header userData={userData} setOpenDrawer={setOpenDrawer}/>
+				{ openDrawer && <FriendsDrawer />}
 				<Background />
 				<Footer setLoggedIn={setLoggedIn}/>
 			</>
