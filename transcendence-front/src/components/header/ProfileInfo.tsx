@@ -1,8 +1,8 @@
 import React from "react";
-import { Stack } from "@mui/material"
 import UserStatus from "./UserStatus";
 import UserImage from "./UserImage";
 import UserName from "./UserName";
+import { Box } from "@mui/material";
 
 const defineColor = (status: string) => {
 	switch( status ) {
@@ -20,13 +20,11 @@ const defineColor = (status: string) => {
 
 export const ProfileInfo = ({ userData } : {[key: string]: any}) => {
 	return(
-		<>
-		<Stack display='flex' flexDirection='row' alignItems="center" sx={{ paddingTop: '0.5vh', paddingLeft: '1.5vh', paddingBottom: '2vh' }}>
+		<Box display='flex' flexDirection='row' alignItems="center">
 			<UserImage imageUrl={userData.image_url}/>
 			<UserName userName={userData.username}/>
 			<UserStatus statusColor={defineColor(userData.status)}/>
-		</Stack>
-		</>
+		</Box>
 	)
 }
 
