@@ -1,11 +1,17 @@
-import { Box, Typography } from "@mui/material";
 import React from "react";
+import { Box, Button, Typography } from "@mui/material";
+
+const handleOpenDrawer = () => {
+	console.log("click")
+}
 
 const Friends = () => {
 	return (
-		<Typography sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '4vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
-					friends
-		</Typography>
+		<Button onClick={handleOpenDrawer}>
+			<Typography sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '4vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
+						2 friends
+			</Typography>
+		</Button>
 	)
 }
 
