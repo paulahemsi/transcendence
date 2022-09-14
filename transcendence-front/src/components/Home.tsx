@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, Drawer, List, ListItem } from '@mui/material';
 import axios from 'axios';
 import jwt from 'jwt-decode';
 import Header from "./header/Header";
@@ -34,6 +34,22 @@ const Background = () => {
 	);
 }
 
+const FriendsDrawer = () => {
+	return (
+		<>
+		  <Drawer open={true} anchor="right">
+			VARIAS COISAS DENTRO DO DRAWER
+			<List>
+				<ListItem>AMIGO UM</ListItem>
+				<ListItem>AMIGO DOIS</ListItem>
+				<ListItem>AMIGO TRES</ListItem>
+			</List>
+				
+		  </Drawer>
+		</>
+	  )
+}
+
 export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 
 	const [userData, setUserData] = useState<{[key: string]: any}>({});
@@ -42,6 +58,7 @@ export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 		return (
 			<>
 				<Header userData={userData} />
+				<FriendsDrawer />
 				<Background />
 				<Footer setLoggedIn={setLoggedIn}/>
 			</>
