@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Box, Button, AppBar, Stack } from '@mui/material';
+import { Typography, Box, Button, AppBar } from '@mui/material';
 import axios from 'axios';
 import jwt from 'jwt-decode';
-import { borderRadius } from "@mui/system";
+import Header from "./Header";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -59,50 +59,6 @@ const requestUserData = async ({ setUserData } : { setUserData: React.Dispatch<R
 })})
 }
 
-const ProfileInfo = (data: {[key: string]: any}) => {
-	let statusColor: string
-	switch( data.userData.status ) {
-		case 'online':
-			statusColor = '#4CAF50';
-			break ;
-		case 'offline':
-			statusColor = '#1E1E1E';
-			break;
-		case 'away':
-			statusColor = '#F39810';
-			break;
-		case 'in_game':
-			statusColor = '#9575CD';
-			break;
-		default: statusColor = '#FF0000';
-	}
-	return(
-		<>
-		<Stack display='flex' flexDirection='row' alignItems="center" sx={{ paddingTop: '0.5vh', paddingLeft: '1.5vh', paddingBottom: '2vh' }}>
-			<Box component='img' src={data.userData.image_url} alt='Profile picture'
-				sx={{
-					height: '5vh',
-					width: '5vh',
-					borderRadius: 2,
-					boxShadow: 1
-				}}>
-			</Box>
-				<Typography sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '4vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
-					{data.userData.username}
-				</Typography>
-			<Box
-			sx={{ 
-				backgroundColor: statusColor,
-				height: '3vh',
-				width: '3vh',
-				borderRadius: 50,
-				boxShadow: 1}}>
-		</Box>
-		</Stack>
-		</>
-	)
-}
-
 const Background = () => {
 	return (
 		<Box display="flex" justifyContent="center" alignItems="center" minHeight="90vh"
@@ -123,9 +79,7 @@ export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 	useEffect(() => {requestUserData({setUserData})}, []);	
 		return (
 			<>
-				<AppBar sx={{ height: '7vh', background: '#F5F5F5'}}>
-					<ProfileInfo userData={userData}/>
-				</AppBar>
+				<Header userData={userData} />
 				<Background />
 				<Box display="flex" justifyContent="right" minHeight="10vh"
 					sx={{
