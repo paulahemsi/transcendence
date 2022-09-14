@@ -8,7 +8,9 @@ import {
   Patch,
   Post,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { FriendDto } from 'src/dto/friend.dtos';
 import { UpdateUserDto } from 'src/dto/users.dtos';
 import { FriendshipService } from '../friendship/friendship.service';
@@ -26,6 +28,7 @@ export class UsersController {
     return this.usersService.getUsers();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findUser(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.findUser(id);
