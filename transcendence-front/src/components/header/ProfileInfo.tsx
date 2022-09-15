@@ -51,11 +51,11 @@ const UserStatus = ({statusColor} : {statusColor : string}) => {
 
 export const ProfileInfo = ({ userData } : {[key: string]: any}) => {
 	return(
-		<>
+		<Box display='flex' flexDirection='row' alignItems="center">
 			<UserImage imageUrl={userData.image_url}/>
 			<UserName userName={userData.username}/>
 			<UserStatus statusColor={defineColor(userData.status)}/>
-		</>
+		</Box>
 	)
 }
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, Drawer, List, ListItem } from '@mui/material';
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import Header from "./header/Header";
@@ -35,14 +35,32 @@ const Background = () => {
 	);
 }
 
+const FriendsDrawer = ({ setOpenDrawer } : { setOpenDrawer: booleanSetState}) => {
+	return (
+		<>
+		  <Drawer open={true} onClose={() => setOpenDrawer(false)} anchor="right">
+			VARIAS COISAS DENTRO DO DRAWER
+			<List>
+				<ListItem>AMIGO UM</ListItem>
+				<ListItem>AMIGO DOIS</ListItem>
+				<ListItem>AMIGO TRES</ListItem>
+			</List>
+				
+		  </Drawer>
+		</>
+	  )
+}
+
 export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
-
+	
 	const [userData, setUserData] = useState<{[key: string]: any}>({});
+	const [openDrawer, setOpenDrawer] = useState(false)
 
-	useEffect(() => {requestUserData({setUserData})}, []);	
+	useEffect(() => {requestUserData({setUserData})}, []);
 		return (
 			<>
-				<Header userData={userData} />
+				<Header userData={userData} setOpenDrawer={setOpenDrawer}/>
+				{ openDrawer && <FriendsDrawer setOpenDrawer={setOpenDrawer} />}
 				<Background />
 				<Footer setLoggedIn={setLoggedIn}/>
 			</>
