@@ -41,9 +41,17 @@ const UserName = ({userName} : {userName : string}) => {
 	)
 }
 
+const UserRating = ({userRating} : {userRating : number}) => {
+	return (
+		<Typography sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '4vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
+					{`| ${userRating}`}
+		</Typography>
+	)
+}
+
 const UserStatus = ({statusColor} : {statusColor : string}) => {
 	return (
-		<Box
+		<Box margin={2}
 			sx={{ 
 				backgroundColor: statusColor,
 				height: '3vh',
@@ -54,14 +62,15 @@ const UserStatus = ({statusColor} : {statusColor : string}) => {
 	)
 }
 
-export const ProfileInfo = ({ userData } : {[key: string]: any}) => {
+export const FriendsInfo = ({ userData } : {[key: string]: any}) => {
 	return(
 		<Box display='flex' flexDirection='row' alignItems="center">
+			<UserStatus statusColor={defineColor(userData.status)}/>
 			<UserImage imageUrl={userData.image_url}/>
 			<UserName userName={userData.username}/>
-			<UserStatus statusColor={defineColor(userData.status)}/>
+			<UserRating userRating={userData.rating}/>
 		</Box>
 	)
 }
 
-export default ProfileInfo
+export default FriendsInfo

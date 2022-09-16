@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Typography, Box, Drawer, List, ListItem } from '@mui/material';
+import React, { useEffect, useState, FunctionComponent } from "react";
+import { Typography, Box, Drawer, List, ListItem, easing } from '@mui/material';
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import Header from "./header/Header";
 import { Footer } from "./footer/Footer";
+import FriendsDrawer from "./friendsDrawer/FriendsDrawer";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -25,6 +26,16 @@ const requestUserData = async ({ setUserData } : { setUserData: React.Dispatch<R
 })})
 }
 
+const requestFriendsData = async ({ setFriendsData } : { setFriendsData: React.Dispatch<React.SetStateAction<{[key: string]: any}>>}) => {
+
+	const tokenData: tokenData = jwt(document.cookie);
+	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+	
+	await axios.get(`http://localhost:3000/users/${tokenData.id}/friends`, { headers: authToken }).then((response) => {
+		setFriendsData(response.data);
+})
+}
+
 const Background = () => {
 	return (
 		<Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" sx={{backgroundColor: '#311B92'}}>
@@ -35,32 +46,18 @@ const Background = () => {
 	);
 }
 
-const FriendsDrawer = ({ setOpenDrawer } : { setOpenDrawer: booleanSetState}) => {
-	return (
-		<>
-		  <Drawer open={true} onClose={() => setOpenDrawer(false)} anchor="right">
-			VARIAS COISAS DENTRO DO DRAWER
-			<List>
-				<ListItem>AMIGO UM</ListItem>
-				<ListItem>AMIGO DOIS</ListItem>
-				<ListItem>AMIGO TRES</ListItem>
-			</List>
-				
-		  </Drawer>
-		</>
-	  )
-}
-
 export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 	
 	const [userData, setUserData] = useState<{[key: string]: any}>({});
 	const [openDrawer, setOpenDrawer] = useState(false)
+	const [friendsData, setFriendsData] = useState<{[key: string]: any}>({});
 
 	useEffect(() => {requestUserData({setUserData})}, []);
+	useEffect(() => {requestFriendsData({setFriendsData})}, []);
 		return (
 			<>
 				<Header userData={userData} setOpenDrawer={setOpenDrawer}/>
-				{ openDrawer && <FriendsDrawer setOpenDrawer={setOpenDrawer} />}
+				{ openDrawer && <FriendsDrawer friendsData={friendsData} setOpenDrawer={setOpenDrawer} />}
 				<Background />
 				<Footer setLoggedIn={setLoggedIn}/>
 			</>
