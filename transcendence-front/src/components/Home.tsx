@@ -56,7 +56,7 @@ export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 	useEffect(() => {requestFriendsData({setFriendsData})}, []);
 		return (
 			<>
-				<Header userData={userData} setOpenDrawer={setOpenDrawer}/>
+				<Header userData={userData} setOpenDrawer={setOpenDrawer} numberOfFriends={friendsData.length}/>
 				{ openDrawer && <FriendsDrawer friendsData={friendsData} setOpenDrawer={setOpenDrawer} />}
 				<Background />
 				<Footer setLoggedIn={setLoggedIn}/>
