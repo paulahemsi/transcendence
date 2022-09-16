@@ -1,4 +1,9 @@
-import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MessagelDto, UpdateChannelDto } from 'src/dto/channel.dtos';
 import { Channel, ChannelAdmin, ChannelMember, Message } from 'src/entity';
@@ -13,7 +18,7 @@ type members = {
 type channelMessage = {
   message: string;
   username: string;
-}
+};
 
 @Injectable()
 export class ChannelsService {
@@ -29,7 +34,7 @@ export class ChannelsService {
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
   ) {}
-  
+
   findChannel(id: number) {
     return this.channelRepository.findOneBy({ id });
   }
@@ -46,12 +51,16 @@ export class ChannelsService {
     const channel = await this.findChannel(channelId);
     const user = await this.usersService.findUser(userId);
     if (!channel || !user) {
-       throw new NotFoundException();
-     }
-     return {channel: channel, user: user}
+      throw new NotFoundException();
+    }
+    return { channel: channel, user: user };
   }
 
-  private async alreadyExists(channelId: number, userId: string, repository: any) {
+  private async alreadyExists(
+    channelId: number,
+    userId: string,
+    repository: any,
+  ) {
     const relationExists = await repository.findOne({
       relations: {
         channel: true,
@@ -59,13 +68,13 @@ export class ChannelsService {
       },
       where: {
         channel: { id: channelId },
-        user: { id: userId}
-      }
-    })
+        user: { id: userId },
+      },
+    });
     if (relationExists) {
       return true;
     }
-    return false
+    return false;
   }
 
   private async getChannelInfos(channelId: number) {
@@ -76,17 +85,17 @@ export class ChannelsService {
       },
       where: {
         channel: { id: channelId },
-      }
-    })
+      },
+    });
     return channels;
   }
 
   async update(id: number, channelDto: UpdateChannelDto) {
     const channel = await this.checkChannel(id);
     channel.update(channelDto);
-    this.channelRepository.save(channel)
+    this.channelRepository.save(channel);
   }
-  
+
   async deleteMember(channelId: number, userId: string) {
     await this.checkChannelAndMember(channelId, userId);
     const member = await this.channelMemberRepository.findOne({
@@ -96,20 +105,25 @@ export class ChannelsService {
       },
       where: {
         channel: { id: channelId },
-        user: { id: userId}
-      }
+        user: { id: userId },
+      },
     });
     this.channelMemberRepository.delete(member.id);
   }
 
   async addMember(channelId: number, userId: string) {
-    const { channel, user } = await this.checkChannelAndMember(channelId, userId);
-    if (await this.alreadyExists(channelId, userId, this.channelMemberRepository)) {
-      return ;
+    const { channel, user } = await this.checkChannelAndMember(
+      channelId,
+      userId,
+    );
+    if (
+      await this.alreadyExists(channelId, userId, this.channelMemberRepository)
+    ) {
+      return;
     }
     const newMember = this.channelMemberRepository.create({
       channel: channel,
-      user: user
+      user: user,
     });
     this.channelMemberRepository.save(newMember);
   }
@@ -124,41 +138,49 @@ export class ChannelsService {
       member.id = element.user.id;
       member.name = element.user.username;
       channelMembers.push(member);
-    })
+    });
     return channelMembers;
   }
 
   async deleteAdmin(channelId: number, userId: string) {
     await this.checkChannelAndMember(channelId, userId);
-     const admin = await this.channelAdminRepository.findOne({
-       relations: {
-         channel: true,
-         user: true,
-       },
-       where: {
-         channel: { id: channelId },
-         user: { id: userId}
-       }
-     });
-     this.channelAdminRepository.delete(admin.id);
-   }
+    const admin = await this.channelAdminRepository.findOne({
+      relations: {
+        channel: true,
+        user: true,
+      },
+      where: {
+        channel: { id: channelId },
+        user: { id: userId },
+      },
+    });
+    this.channelAdminRepository.delete(admin.id);
+  }
 
-   async addAdmin(channelId: number, userId: string) {
-    const { channel, user } = await this.checkChannelAndMember(channelId, userId);
-    if (await this.alreadyExists(channelId, userId, this.channelAdminRepository)) {
-      return ;
+  async addAdmin(channelId: number, userId: string) {
+    const { channel, user } = await this.checkChannelAndMember(
+      channelId,
+      userId,
+    );
+    if (
+      await this.alreadyExists(channelId, userId, this.channelAdminRepository)
+    ) {
+      return;
     }
     const newAdmin = this.channelAdminRepository.create({
       channel: channel,
-      user: user
+      user: user,
     });
     this.channelAdminRepository.save(newAdmin);
-   }
+  }
 
-   async addMessage(channelId: number, messageDto: MessagelDto) {
-    const { channel, user } = await this.checkChannelAndMember(channelId, messageDto.user);
+  async addMessage(channelId: number, messageDto: MessagelDto) {
+    const { channel, user } = await this.checkChannelAndMember(
+      channelId,
+      messageDto.user,
+    );
 
-    const newMessage : Message = this.channelMessageRepository.create({
+    const newMessage: Message = this.channelMessageRepository.create({
       message: messageDto.message,
       channel: channel,
       user: user,
@@ -167,19 +189,19 @@ export class ChannelsService {
   }
 
   async getChannelMessagesInfos(channelId: number) {
-      const messagesInfos = await this.channelMessageRepository.find({
+    const messagesInfos = await this.channelMessageRepository.find({
       relations: {
         channel: true,
         user: true,
       },
       where: {
         channel: { id: channelId },
-      }
+      },
     });
 
     return messagesInfos;
   }
-  
+
   async getMessages(channelId: number) {
     await this.checkChannel(channelId);
 
@@ -191,7 +213,7 @@ export class ChannelsService {
       message.message = element.message;
       message.username = element.user.username;
       channelMessages.push(message);
-    })
+    });
     return channelMessages;
   }
 }

@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as session from 'express-session';
 import * as passport from 'passport';
+import { ValidationPipe } from '@nestjs/common';
 
 const appSession = session({
   cookie: {
@@ -20,6 +21,7 @@ function initialize(app: any) {
   app.use(appSession);
   app.use(passport.initialize());
   app.use(passport.session());
+  app.useGlobalPipes(new ValidationPipe());
 }
 
 async function bootstrap() {
