@@ -1,10 +1,11 @@
-import React, { useEffect, useState, FunctionComponent } from "react";
-import { Typography, Box, Drawer, List, ListItem, easing } from '@mui/material';
+import React, { useEffect, useState } from "react";
+import { Typography, Box } from '@mui/material';
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import Header from "./header/Header";
 import { Footer } from "./footer/Footer";
 import FriendsDrawer from "./friendsDrawer/FriendsDrawer";
+import ProfileCard from "./profileCard/ProfileCard";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -50,13 +51,15 @@ export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 	
 	const [userData, setUserData] = useState<{[key: string]: any}>({});
 	const [openDrawer, setOpenDrawer] = useState(false)
+	const [openCard, setOpenCard] = useState(false)
 	const [friendsData, setFriendsData] = useState<{[key: string]: any}>({});
 
 	useEffect(() => {requestUserData({setUserData})}, []);
 	useEffect(() => {requestFriendsData({setFriendsData})}, []);
 		return (
 			<>
-				<Header userData={userData} setOpenDrawer={setOpenDrawer} numberOfFriends={friendsData.length}/>
+				<Header userData={userData} setOpenDrawer={setOpenDrawer} setOpenCard={setOpenCard} numberOfFriends={friendsData.length}/>
+				{ openCard && <ProfileCard setOpenCard={setOpenCard} userData={userData}/> }
 				{ openDrawer && <FriendsDrawer friendsData={friendsData} setOpenDrawer={setOpenDrawer} />}
 				<Background />
 				<Footer setLoggedIn={setLoggedIn}/>
