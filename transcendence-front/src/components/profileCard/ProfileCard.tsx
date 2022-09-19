@@ -56,7 +56,8 @@ const UserStatus = ({statusColor} : {statusColor : string}) => {
 				height: '3vh',
 				width: '3vh',
 				borderRadius: 50,
-				boxShadow: 1}}>
+				boxShadow: 1,
+				alignSelf: 'center'}}>
 		</Box>
 	)
 }
@@ -69,7 +70,7 @@ const MainInfos = ({userData} : {userData: {[key: string]: any}}) => {
 				<UserName userName={userData.username} />
 				<Box display='flex' alignSelf='flex-end'>
 					<Typography sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '3vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
-						Status: Online
+						Status: {userData.status}
 					</Typography>
 					<UserStatus statusColor={defineColor(userData.status)}/>
 				</Box>
