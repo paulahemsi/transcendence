@@ -39,7 +39,7 @@ const requestFriendsData = async ({ setFriendsData } : { setFriendsData: React.D
 
 const Background = () => {
 	return (
-		<Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" sx={{backgroundColor: '#311B92'}}>
+		<Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" sx={{backgroundImage: 'linear-gradient(to right, #212980 , #6f0162)'}}>
 			<Typography sx={{ fontSize: '14vh', fontFamily: 'Orbitron', fontWeight: 500, color: '#FFFFFF', textShadow: '0px 0px 6px #FFFFFF'}}>
 						ft_transcendence
 			</Typography>
