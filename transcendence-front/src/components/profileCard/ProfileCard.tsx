@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Drawer, Typography } from "@mui/material";
+import { Box, Divider, Drawer, List, ListItem, Typography } from "@mui/material";
 import axios, { AxiosRequestHeaders } from "axios";
 import jwt from 'jwt-decode';
 
@@ -133,6 +133,38 @@ const RatingInfos = ({userProfile} : {userProfile: {[key: string]: any}}) => {
 	)
 }
 
+const MatchDetails = ({opponentName, opponentScore, userName, userScore, userImage } : {opponentName : string, opponentScore : number, userName : string, userScore : number, userImage: string}) => {
+	return (
+		<Box alignSelf='center'>
+			<Typography alignSelf='center' sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '2vh', padding: '1.7vh'}}>
+				{userName} {userScore} X {opponentScore} {opponentName}
+			</Typography>
+		</Box>
+	)
+}
+
+const MatchHistory = ({userProfile} : {userProfile: {[key: string]: any}}) => {
+	const matchHistory = [] as JSX.Element[];
+	if (userProfile.matchHistory) {
+		userProfile.matchHistory.forEach((element : {[key: string]: any}) => {
+			matchHistory.push(
+			<ListItem key={element.username}> <MatchDetails opponentName={element.opponentName} opponentScore={element.opponentScore} userName={userProfile.name} userScore={element.userScore} userImage={userProfile.image_url}/> </ListItem>
+			);
+		})
+	}
+	return (
+		<>
+		<Divider variant='middle' sx={{ borderBottomWidth: 3, margin: 2 }} />
+		<Typography alignSelf='flex-start' sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '3vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
+		match history:
+		</Typography>
+			<List>
+				{matchHistory}
+			</List>
+		</>
+	)
+}
+
 const requestUserProfile = async ({ setUserProfile } : { setUserProfile: React.Dispatch<React.SetStateAction<{[key: string]: any}>>}) => {
 
 	const tokenData: tokenData = jwt(document.cookie);
@@ -153,6 +185,7 @@ export const ProfileCard = ({ setOpenCard } : { setOpenCard: booleanSetState }) 
           }}>
 			<MainInfos userProfile={userProfile}/>
 			<RatingInfos userProfile={userProfile}/>
+			<MatchHistory userProfile={userProfile}/>
 		</Drawer>
 	  </>
 	)
