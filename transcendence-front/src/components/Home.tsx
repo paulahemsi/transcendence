@@ -59,7 +59,7 @@ export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 		return (
 			<>
 				<Header userData={userData} setOpenDrawer={setOpenDrawer} setOpenCard={setOpenCard} numberOfFriends={friendsData.length}/>
-				{ openCard && <ProfileCard setOpenCard={setOpenCard} userData={userData}/> }
+				{ openCard && <ProfileCard setOpenCard={setOpenCard}/> }
 				{ openDrawer && <FriendsDrawer friendsData={friendsData} setOpenDrawer={setOpenDrawer} />}
 				<Background />
 				<Footer setLoggedIn={setLoggedIn}/>

@@ -1,14 +1,13 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { Box, Drawer, Typography } from "@mui/material";
+import axios, { AxiosRequestHeaders } from "axios";
+import jwt from 'jwt-decode';
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
-interface Props {
-    userData: {[key: string]: any};
-    setOpenCard: booleanSetState;
+type tokenData = {
+	id: string;
 }
-
-const AVOCADO_TEMP = 'https://images.vexels.com/media/users/3/185791/isolated/preview/27c69d1413163918103a032d4951213e-abacate-kawaii-winking.png'
 
 const defineColor = (status: string) => {
 	switch( status ) {
@@ -25,9 +24,6 @@ const defineColor = (status: string) => {
 }
 
 const UserImage = ({imageUrl} : {imageUrl: string}) => {
-	if (imageUrl == null) {
-		imageUrl = AVOCADO_TEMP
-	}
 	return (
 		<Box component='img' src={imageUrl} alt='Profile picture'
 				sx={{
@@ -62,24 +58,24 @@ const UserStatus = ({statusColor} : {statusColor : string}) => {
 	)
 }
 
-const MainInfos = ({userData} : {userData: {[key: string]: any}}) => {
+const MainInfos = ({userProfile} : {userProfile: {[key: string]: any}}) => {
 	return (
 		<Box display='flex' justifyContent='space-between'>
-			<UserImage imageUrl={userData.image_url}/>
+			<UserImage imageUrl={userProfile.image_url}/>
 			<Box display='flex' flexDirection='column' justifyContent='space-between'>
-				<UserName userName={userData.username} />
+				<UserName userName={userProfile.username} />
 				<Box display='flex' alignSelf='flex-end'>
 					<Typography sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '3vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
-						Status: {userData.status}
+						Status: {userProfile.status}
 					</Typography>
-					<UserStatus statusColor={defineColor(userData.status)}/>
+					<UserStatus statusColor={defineColor(userProfile.status)}/>
 				</Box>
 			</Box>
 		</Box>
 	)
 }
 
-const RatingInfos = ({userData} : {userData: {[key: string]: any}}) => {
+const RatingInfos = ({userProfile} : {userProfile: {[key: string]: any}}) => {
 	return (
 		<Box display='flex' justifyContent='space-between' padding='4vh'>
 			<Box display='flex' justifyContent='center' flexDirection='column'>
@@ -87,7 +83,7 @@ const RatingInfos = ({userData} : {userData: {[key: string]: any}}) => {
 							Rating:
 				</Typography>
 				<Typography alignSelf='flex-end' sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '8vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
-							{userData.rating}
+							{userProfile.rating}
 				</Typography>
 			</Box>
 			<Box display='flex' flexDirection='column' justifyContent='center'>
@@ -102,14 +98,27 @@ const RatingInfos = ({userData} : {userData: {[key: string]: any}}) => {
 	)
 }
 
-export const ProfileCard : FunctionComponent<Props> = ({ userData, setOpenCard })  => {
+const requestUserProfile = async ({ setUserProfile } : { setUserProfile: React.Dispatch<React.SetStateAction<{[key: string]: any}>>}) => {
+
+	const tokenData: tokenData = jwt(document.cookie);
+	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+	
+	await axios.get(`http://localhost:3000/users/${tokenData.id}/profile`, { headers: authToken }).then((response) => {
+		setUserProfile(response.data);
+})
+}
+
+export const ProfileCard = ({ setOpenCard } : { setOpenCard: booleanSetState })  => {
+	const [userProfile, setUserProfile] = useState<{[key: string]: any}>({});
+
+	useEffect(() => {requestUserProfile({setUserProfile})}, []);
 	return (
 		<>
 		<Drawer open={true} transitionDuration={500} onClose={() => setOpenCard(false)} anchor="left" PaperProps={{
             sx: { width: "40%", padding: '10vh'  },
           }}>
-			<MainInfos userData={userData}/>
-			<RatingInfos userData={userData}/>
+			<MainInfos userProfile={userProfile}/>
+			<RatingInfos userProfile={userProfile}/>
 		</Drawer>
 	  </>
 	)
