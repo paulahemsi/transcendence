@@ -73,7 +73,10 @@ const MainInfos = ({userProfile} : {userProfile: {[key: string]: any}}) => {
 				<UserName userName={userProfile.username} />
 				<Box display='flex' alignSelf='flex-end'>
 					<Typography sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '3vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
-						Status: {userProfile.status}
+						Status: 
+					</Typography>
+					<Typography sx={{ color: '#212980', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '3vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
+						{userProfile.status}
 					</Typography>
 					<UserStatus statusColor={defineColor(userProfile.status)}/>
 				</Box>
@@ -102,7 +105,7 @@ const Rating = ({ rating } : { rating: number }) => {
 				<Typography alignSelf='flex-start' sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '3vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
 							Rating:
 				</Typography>
-				<Typography alignSelf='flex-end' sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '8vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
+				<Typography alignSelf='flex-end' sx={{ color: '#212980', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '8vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
 							{rating}
 				</Typography>
 			</Box>
@@ -148,13 +151,13 @@ const MatchHistory = ({userProfile} : {userProfile: {[key: string]: any}}) => {
 	if (userProfile.matchHistory) {
 		userProfile.matchHistory.forEach((element : {[key: string]: any}) => {
 			matchHistory.push(
-			<ListItem key={element.username}> <MatchDetails opponentName={element.opponentName} opponentScore={element.opponentScore} userName={userProfile.name} userScore={element.userScore} userImage={userProfile.image_url}/> </ListItem>
+			<ListItem key={element.image_url}> <MatchDetails opponentName={element.opponentName} opponentScore={element.opponentScore} userName={userProfile.name} userScore={element.userScore} userImage={userProfile.image_url}/> </ListItem>
 			);
 		})
 	}
 	return (
 		<>
-		<Divider variant='middle' sx={{ borderBottomWidth: 3, margin: 2 }} />
+		<Divider variant='middle' sx={{ borderBottomWidth: 3, margin: 2,  border: "1px solid #B998FF" }} />
 		<Typography alignSelf='flex-start' sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '3vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
 		match history:
 		</Typography>
