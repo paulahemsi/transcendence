@@ -70,7 +70,7 @@ const MainInfos = ({userProfile} : {userProfile: {[key: string]: any}}) => {
 		<Box display='flex' justifyContent='space-between'>
 			<UserImage imageUrl={userProfile.image_url}/>
 			<Box display='flex' flexDirection='column' justifyContent='space-between'>
-				<UserName userName={userProfile.username} />
+				<UserName userName={userProfile.name} />
 				<Box display='flex' alignSelf='flex-end'>
 					<Typography sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '3vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
 						Status: 
