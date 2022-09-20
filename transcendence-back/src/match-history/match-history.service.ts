@@ -7,6 +7,7 @@ export class matchInfos {
   opponentName: string;
   userScore: number;
   opponentScore: number;
+  opponentImage: string;
   isWinner: boolean;
 }
 
@@ -45,6 +46,13 @@ export class MatchHistoryService {
 		return matchInfo.userScore > matchInfo.opponentScore;
 	}
 	
+	getOpponentImage(isUserPlayer1: boolean, match: MatchHistory) : string {
+		if (isUserPlayer1) {
+		  return match.player2.image_url;
+		}
+		return match.player1.image_url;
+	}
+	
 	executeMatchHistoryQuery(id: string) : Promise<MatchHistory[]> {
 		return this.matchHistoryRepository.find({
 		  select: {
@@ -65,7 +73,6 @@ export class MatchHistoryService {
 	async buildMatchHistory(id: string) {
 		
 		const matches: Awaited<Promise<MatchHistory[]>> = await this.executeMatchHistoryQuery(id);
-		
 		let matchHistory: Array<matchInfos> = [];
 		
 		matches.map( (match) => {
@@ -76,7 +83,7 @@ export class MatchHistoryService {
 			matchInfo.userScore = this.setUserScore(isUserPlayer1, match);
 			matchInfo.opponentScore = this.setOpponentScore(isUserPlayer1, match);
 			matchInfo.isWinner = this.isUserTheWinner(matchInfo);
-	
+			matchInfo.opponentImage = this.getOpponentImage(isUserPlayer1, match);
 			matchHistory.push(matchInfo);
 		  }
 		)
