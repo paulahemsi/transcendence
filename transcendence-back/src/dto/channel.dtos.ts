@@ -1,4 +1,11 @@
-import { IsNotEmpty, IsOptional, IsUUID, MinLength } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsOptional,
+  MinLength,
+  IsUUID,
+  IsEnum,
+} from 'class-validator';
+import { channelType } from 'src/entity/channel-type.entity';
 
 export class CreateChannelDto {
   @IsNotEmpty()
@@ -6,7 +13,8 @@ export class CreateChannelDto {
   name: string;
 
   @IsNotEmpty()
-  type: string;
+  @IsEnum(channelType)
+  type: channelType;
 
   @IsNotEmpty()
   @IsUUID()
