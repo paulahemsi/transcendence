@@ -82,7 +82,6 @@ export class ChannelsController {
   @Post()
   @HttpCode(204)
   addChannel(@Body() channel: CreateChannelDto) {
-    console.log(channel);
-    return;
+    return this.channelService.addChannel(channel);
   }
 }

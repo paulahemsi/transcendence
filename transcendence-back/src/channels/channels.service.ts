@@ -7,8 +7,11 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { MessagelDto, UpdateChannelDto } from 'src/dto/channel.dtos';
 import { Channel, ChannelAdmin, ChannelMember, Message } from 'src/entity';
+import { BadRequestException } from '@nestjs/common';
+import { CreateChannelDto } from 'src/dto/channel.dtos';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
+import { ChannelTypeService } from './channel-type.service';
 
 type members = {
   id: string;
@@ -33,6 +36,7 @@ export class ChannelsService {
     private readonly channelMessageRepository: Repository<Message>,
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
+    private readonly channelTypeService: ChannelTypeService,
   ) {}
 
   findChannel(id: number) {
@@ -215,5 +219,35 @@ export class ChannelsService {
       channelMessages.push(message);
     });
     return channelMessages;
+  }
+  private nameAlreadyUsed(name: string): boolean {
+    return false;
+  }
+
+  async addChannel(channelDto: CreateChannelDto) {
+    if (this.nameAlreadyUsed(channelDto.name)) {
+      throw new BadRequestException('Channel name alredy in use');
+    }
+
+    const user = await this.usersService.findUser(channelDto.owner);
+    if (!user) {
+      throw new BadRequestException('Invalid Owner ID');
+    }
+
+    const type = await this.channelTypeService.getChannelType(channelDto.type);
+    if (!type) {
+      throw new BadRequestException('Invalid Channel Type');
+    }
+
+    // TODO: regras de publico e privado
+    // TODO: senha
+
+    const channel = this.channelRepository.create({
+      name: channelDto.name,
+      owner: user,
+      type: type,
+      password: channelDto.password,
+    });
+    return this.channelRepository.save(channel);
   }
 }
