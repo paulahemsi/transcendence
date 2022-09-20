@@ -69,7 +69,7 @@ export const ProfileInfo : FunctionComponent<Props> = ({ setOpenCard, userData }
 	
 	return(
 		<Box display='flex' flexDirection='row' alignItems="center">
-			<Button onClick={handleOpenCard}>
+			<Button onClick={handleOpenCard} sx={{textTransform: 'lowercase',}}>
 				<UserImage imageUrl={userData.image_url}/>
 				<UserName userName={userData.username}/>
 				<UserStatus statusColor={defineColor(userData.status)}/>
