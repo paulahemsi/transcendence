@@ -96,27 +96,39 @@ const getWinsAndLosses = (matchHistory : Array<matchInfos>) => {
 	return { wins, losses };
 }
 
-const RatingInfos = ({userProfile} : {userProfile: {[key: string]: any}}) => {
-	const { wins, losses } = getWinsAndLosses(userProfile.matchHistory);
-
+const Rating = ({ rating } : { rating: number }) => {
 	return (
-		<Box display='flex' justifyContent='space-between' padding='4vh'>
 			<Box display='flex' justifyContent='center' flexDirection='column'>
 				<Typography alignSelf='flex-start' sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '3vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
 							Rating:
 				</Typography>
 				<Typography alignSelf='flex-end' sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '8vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
-							{userProfile.rating}
+							{rating}
 				</Typography>
 			</Box>
-			<Box display='flex' flexDirection='column' justifyContent='center'>
-				<Typography alignSelf='flex-end' sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '3vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
-					wins: {wins}
-				</Typography>
-				<Typography alignSelf='flex-end' sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '3vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
-					losses: {losses}
-				</Typography>
-			</Box>
+	)
+}
+
+const WinsAndLosses = ({ matchHistory } : { matchHistory : Array<matchInfos> }) => {
+	const { wins, losses } = getWinsAndLosses(matchHistory);
+
+	return (
+		<Box display='flex' flexDirection='column' justifyContent='center'>
+			<Typography alignSelf='flex-end' sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '3vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
+				wins: {wins}
+			</Typography>
+			<Typography alignSelf='flex-end' sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '3vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
+				losses: {losses}
+			</Typography>
+		</Box>
+	)
+}
+
+const RatingInfos = ({userProfile} : {userProfile: {[key: string]: any}}) => {
+	return (
+		<Box display='flex' justifyContent='space-between' padding='4vh'>
+			<Rating rating={userProfile.rating}/>
+			<WinsAndLosses matchHistory={userProfile.matchHistory}/>
 		</Box>
 	)
 }
