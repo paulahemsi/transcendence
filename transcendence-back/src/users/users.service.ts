@@ -29,10 +29,11 @@ export class UsersService {
   }
 
   async getUserProfile(id: string) {
-    const { username, rating, status } = await this.findUser(id);
+    const { username, rating, status, image_url } = await this.findUser(id);
 
     const profile = {
       name: username,
+      image_url: image_url,
       status: status,
       rating: rating,
       matchHistory: await this.matchHistoryService.buildMatchHistory(id),
