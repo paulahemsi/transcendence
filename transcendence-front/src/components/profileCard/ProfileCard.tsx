@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Drawer, Typography } from "@mui/material";
 import axios, { AxiosRequestHeaders } from "axios";
 import jwt from 'jwt-decode';
@@ -7,6 +7,13 @@ type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
 type tokenData = {
 	id: string;
+}
+
+type matchInfos = {
+	opponentName: string;
+	userScore: number;
+	opponentScore: number;
+	isWinner: boolean;
 }
 
 const defineColor = (status: string) => {
@@ -75,7 +82,23 @@ const MainInfos = ({userProfile} : {userProfile: {[key: string]: any}}) => {
 	)
 }
 
+const getWinsAndLosses = (matchHistory : Array<matchInfos>) => {
+	let wins : number = 0;
+	let losses : number = 0;
+	if (matchHistory) {
+		matchHistory.forEach(match => {
+			if (match.isWinner) {
+				wins += 1;
+			}
+		})
+		losses = matchHistory.length - wins;
+	}
+	return { wins, losses };
+}
+
 const RatingInfos = ({userProfile} : {userProfile: {[key: string]: any}}) => {
+	const { wins, losses } = getWinsAndLosses(userProfile.matchHistory);
+
 	return (
 		<Box display='flex' justifyContent='space-between' padding='4vh'>
 			<Box display='flex' justifyContent='center' flexDirection='column'>
@@ -88,10 +111,10 @@ const RatingInfos = ({userProfile} : {userProfile: {[key: string]: any}}) => {
 			</Box>
 			<Box display='flex' flexDirection='column' justifyContent='center'>
 				<Typography alignSelf='flex-end' sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '3vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
-					wins: 9
+					wins: {wins}
 				</Typography>
 				<Typography alignSelf='flex-end' sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '3vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
-					losses: 2
+					losses: {losses}
 				</Typography>
 			</Box>
 		</Box>
@@ -103,14 +126,13 @@ const requestUserProfile = async ({ setUserProfile } : { setUserProfile: React.D
 	const tokenData: tokenData = jwt(document.cookie);
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 	
-	await axios.get(`http://localhost:3000/users/${tokenData.id}/profile`, { headers: authToken }).then((response) => {
+	axios.get(`http://localhost:3000/users/${tokenData.id}/profile`, { headers: authToken }).then((response) => {
 		setUserProfile(response.data);
-})
+	})
 }
 
 export const ProfileCard = ({ setOpenCard } : { setOpenCard: booleanSetState })  => {
 	const [userProfile, setUserProfile] = useState<{[key: string]: any}>({});
-
 	useEffect(() => {requestUserProfile({setUserProfile})}, []);
 	return (
 		<>
