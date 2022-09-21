@@ -164,9 +164,9 @@ const MatchDetails = ({opponentName, opponentScore, opponentImage, userName, use
 const MatchHistory = ({userProfile} : {userProfile: {[key: string]: any}}) => {
 	const matchHistory = [] as JSX.Element[];
 	if (userProfile.matchHistory) {
-		userProfile.matchHistory.forEach((element : {[key: string]: any}) => {
+		userProfile.matchHistory.forEach((element: {[key: string]: any}, index: number) => {
 			matchHistory.push(
-			<ListItem key={element.id} sx={{paddingLeft: '15%', paddingTop: '3vh'}}> <MatchDetails opponentName={element.opponentName} opponentScore={element.opponentScore} userName={userProfile.name} userScore={element.userScore} userImage={userProfile.image_url} opponentImage={element.opponentImage}/> </ListItem>
+			<ListItem key={index} sx={{paddingLeft: '15%', paddingTop: '3vh'}}> <MatchDetails opponentName={element.opponentName} opponentScore={element.opponentScore} userName={userProfile.name} userScore={element.userScore} userImage={userProfile.image_url} opponentImage={element.opponentImage}/> </ListItem>
 			);
 		})
 	}
