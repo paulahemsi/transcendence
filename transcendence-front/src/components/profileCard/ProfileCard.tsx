@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Divider, Drawer, List, ListItem, Typography } from "@mui/material";
+import { Box, Divider, Drawer, List, ListItem, Skeleton, Stack, Typography } from "@mui/material";
 import axios, { AxiosRequestHeaders } from "axios";
 import jwt from 'jwt-decode';
 
@@ -183,6 +183,27 @@ const MatchHistory = ({userProfile} : {userProfile: {[key: string]: any}}) => {
 	)
 }
 
+const Loading = () => {
+	return (
+		<Stack spacing={1}>
+			<Skeleton variant="rectangular" width='20vh' height='20vh' />
+			<Skeleton variant="rectangular" width='80vh' height='15vh' />
+			<Skeleton variant="text" sx={{ fontSize: '3vh' }} />
+		</Stack>
+	)
+}
+
+const ProfileInfos = ({userProfile} : {userProfile: {[key: string]: any}}) => {
+	return (
+		<>
+			<MainInfos userProfile={userProfile}/>
+			<RatingInfos userProfile={userProfile}/>
+			<MatchHistory userProfile={userProfile}/>
+		</>
+		
+	)
+}
+
 const requestUserProfile = async ({ setUserProfile } : { setUserProfile: React.Dispatch<React.SetStateAction<{[key: string]: any}>>}) => {
 
 	const tokenData: tokenData = jwt(document.cookie);
@@ -201,9 +222,13 @@ export const ProfileCard = ({ setOpenCard } : { setOpenCard: booleanSetState }) 
 		<Drawer open={true} transitionDuration={500} onClose={() => setOpenCard(false)} anchor="left" PaperProps={{
             sx: { width: "40%", padding: '10vh'  },
           }}>
-			<MainInfos userProfile={userProfile}/>
-			<RatingInfos userProfile={userProfile}/>
-			<MatchHistory userProfile={userProfile}/>
+			{
+				userProfile.image_url ? ( 
+				<ProfileInfos userProfile={userProfile}/>
+				) : ( 
+				<Loading />
+				)
+			}
 		</Drawer>
 	  </>
 	)
