@@ -1,8 +1,13 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { User } from './user.entity';
 import { ChannelType } from './channel-type.entity';
 import { Message } from './message.entity';
-
 
 @Entity()
 export class Channel {
@@ -21,7 +26,7 @@ export class Channel {
   })
   //?Faz sentido type ser uma tabela a parte? pq não é um define?
   type: ChannelType;
-  
+
   @ManyToOne(() => User, (user) => user.id, {
     nullable: false,
   })
@@ -30,7 +35,7 @@ export class Channel {
   @Column({
     nullable: true,
   })
-  //*Nota: aqui lembrar de passar pelo algoritmo de hash 
+  //*Nota: aqui lembrar de passar pelo algoritmo de hash
   password: string;
 
   @OneToMany(() => Message, (message) => message.id)
