@@ -136,13 +136,28 @@ const RatingInfos = ({userProfile} : {userProfile: {[key: string]: any}}) => {
 	)
 }
 
-const MatchDetails = ({opponentName, opponentScore, userName, userScore, userImage } : {opponentName : string, opponentScore : number, userName : string, userScore : number, userImage: string}) => {
+const UserAvatar = ({imageUrl} : {imageUrl: string}) => {
 	return (
-		<Box alignSelf='center'>
-			<Typography alignSelf='center' sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '2vh', padding: '1.7vh'}}>
-				{userName} {userScore} X {opponentScore} {opponentName}
-			</Typography>
+		<Box component='img' src={imageUrl} alt='Profile picture'
+				sx={{
+					height: '5vh',
+					width: '5vh',
+					borderRadius: 2,
+					boxShadow: 1
+				}}>
 		</Box>
+	)
+}
+
+const MatchDetails = ({opponentName, opponentScore, opponentImage, userName, userScore, userImage } : {opponentName : string, opponentScore : number, opponentImage: string, userName : string, userScore : number, userImage: string}) => {
+	return (
+		<>
+			<UserAvatar imageUrl={userImage}/>
+			<Typography alignSelf='center' sx={{ color: '#212980', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '2.5vh', padding: '1.7vh'}}>
+				{userName}  {userScore}  X  {opponentScore}  {opponentName}
+			</Typography>
+			<UserAvatar imageUrl={opponentImage}/>
+		</>
 	)
 }
 
@@ -151,17 +166,17 @@ const MatchHistory = ({userProfile} : {userProfile: {[key: string]: any}}) => {
 	if (userProfile.matchHistory) {
 		userProfile.matchHistory.forEach((element : {[key: string]: any}) => {
 			matchHistory.push(
-			<ListItem key={element.image_url}> <MatchDetails opponentName={element.opponentName} opponentScore={element.opponentScore} userName={userProfile.name} userScore={element.userScore} userImage={userProfile.image_url}/> </ListItem>
+			<ListItem key={element.id} sx={{paddingLeft: '15%', paddingTop: '3vh'}}> <MatchDetails opponentName={element.opponentName} opponentScore={element.opponentScore} userName={userProfile.name} userScore={element.userScore} userImage={userProfile.image_url} opponentImage={element.opponentImage}/> </ListItem>
 			);
 		})
 	}
 	return (
 		<>
-		<Divider variant='middle' sx={{ borderBottomWidth: 3, margin: 2,  border: "1px solid #B998FF" }} />
-		<Typography alignSelf='flex-start' sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '3vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
-		match history:
-		</Typography>
-			<List>
+			<Divider variant='middle' sx={{ borderBottomWidth: 3, margin: 2,  border: "1px solid #B998FF" }} />
+			<Typography alignSelf='flex-start' sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '3vh', paddingLeft: '1.7vh', paddingRight: '1.7vh', paddingBottom: '1.7vh'}}>
+			match history:
+			</Typography>
+			<List sx={{width: '100%', maxHeight: '40%', position: 'relative', overflow: 'auto'}} subheader={<li />}>
 				{matchHistory}
 			</List>
 		</>
