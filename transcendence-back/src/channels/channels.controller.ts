@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, Param, Patch } from '@nestjs/common';
+import { Body, Controller, HttpCode, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
 import { UpdateChannelDto } from 'src/dto/channel.dtos';
 import { ChannelsService } from './channels.service';
 
@@ -13,5 +13,14 @@ export class ChannelsController {
     @Body() updateChannelDto: UpdateChannelDto,
   ) {
     return this.channelService.update(id, updateChannelDto);
+  }
+
+  @Post(':id/members')
+  @HttpCode(204)
+  addFriend(
+    @Param('id') chatId: number,
+    @Body('userId', ParseUUIDPipe) userId: string,
+  ) {
+   console.log(`POST /channels/${chatId}/members`)
   }
 }
