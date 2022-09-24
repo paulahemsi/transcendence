@@ -8,6 +8,7 @@ import {
 import { User } from './user.entity';
 import { ChannelType } from './channel-type.entity';
 import { Message } from './message.entity';
+import { UpdateChannelDto } from 'src/dto/channel.dtos';
 
 @Entity()
 export class Channel {
@@ -39,4 +40,21 @@ export class Channel {
 
   @OneToMany(() => Message, (message) => message.id)
   messages: Message[];
+  
+  private updateName(name: string) {
+    this.name = name;
+  }
+
+  private updatePassword(password: string) {
+    this.password = password;
+  }
+
+  update(updateChannelDto: UpdateChannelDto) {
+    if (updateChannelDto.name) {
+      this.updateName(updateChannelDto.name);
+    }
+    if (updateChannelDto.password) {
+      this.updatePassword(updateChannelDto.password);
+    }
+  }
 }
