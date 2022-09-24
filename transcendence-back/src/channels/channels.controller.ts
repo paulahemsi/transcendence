@@ -1,5 +1,5 @@
 import { Body, Controller, HttpCode, Param, Patch } from '@nestjs/common';
-import { ChannelDto } from 'src/dto/channel.dtos';
+import { UpdateChannelDto } from 'src/dto/channel.dtos';
 import { ChannelsService } from './channels.service';
 
 @Controller('channels')
@@ -10,8 +10,8 @@ export class ChannelsController {
   @HttpCode(204)
   updateUser(
     @Param('id') id: number,
-    @Body() channelDto: ChannelDto,
+    @Body() updateChannelDto: UpdateChannelDto,
   ) {
-    return this.channelService.update(id, channelDto);
+    return this.channelService.update(id, updateChannelDto);
   }
 }
