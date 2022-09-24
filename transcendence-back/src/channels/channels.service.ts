@@ -23,4 +23,8 @@ export class ChannelsService {
     channel.update(channelDto);
     this.channelRepository.save(channel)
   }
+  
+  async addMember(chatId: number, userId: string) {
+   console.log(`POST /channels/${chatId}/members`)
+  }
 }

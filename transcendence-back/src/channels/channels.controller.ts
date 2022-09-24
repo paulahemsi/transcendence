@@ -18,9 +18,9 @@ export class ChannelsController {
   @Post(':id/members')
   @HttpCode(204)
   addFriend(
-    @Param('id') chatId: number,
+    @Param('id') channelId: number,
     @Body('userId', ParseUUIDPipe) userId: string,
   ) {
-   console.log(`POST /channels/${chatId}/members`)
+   return this.channelService.addMember(channelId, userId);
   }
 }
