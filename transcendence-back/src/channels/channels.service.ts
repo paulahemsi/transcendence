@@ -60,6 +60,19 @@ export class ChannelsService {
     return false
   }
 
+  private async getChannelInfos(channelId: number) {
+    const channels = await this.channelMemberRepository.find({
+      relations: {
+        channel: true,
+        user: true,
+      },
+      where: {
+        channel: { id: channelId },
+      }
+    })
+    return channels;
+  }
+
   async update(id: number, channelDto: UpdateChannelDto) {
     const channel = await this.checkChannel(id);
     channel.update(channelDto);
