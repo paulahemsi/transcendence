@@ -71,4 +71,8 @@ export class UsersService {
     user.update(userDto);
     this.userRepository.save(user);
   }
+
+  async getChannels(id: string) {
+    console.log("get Channels");
+  }
 }
