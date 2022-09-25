@@ -5,6 +5,11 @@ import { Channel, ChannelAdmin, ChannelMember } from 'src/entity';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 
+type members = {
+  id: string;
+  name: string;
+};
+
 @Injectable()
 export class ChannelsService {
   constructor(
