@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateChannelDto } from 'src/dto/channel.dtos';
-import { Channel } from 'src/entity';
+import { Channel, ChannelMember } from 'src/entity';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 
@@ -10,6 +10,8 @@ export class ChannelsService {
   constructor(
     @InjectRepository(Channel)
     private readonly channelRepository: Repository<Channel>,
+    @InjectRepository(ChannelMember)
+    private readonly channelMemberRepository: Repository<ChannelMember>,
     private readonly usersService: UsersService,
   ) {}
   
@@ -27,11 +29,15 @@ export class ChannelsService {
   }
   
   async addMember(channelId: number, userId: string) {
-   console.log(`POST /channels/${channelId}/members`)
    const channel = await this.findChannel(channelId);
    const user = await this.usersService.findUser(userId);
-    if (!channel || !user) {
+   if (!channel || !user) {
       throw new NotFoundException();
     }
+    const newMember = this.channelMemberRepository.create({
+      channel: channel,
+      user: user
+    });
+    this.channelMemberRepository.save(newMember);
   }
 }
