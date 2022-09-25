@@ -25,7 +25,15 @@ export class ChannelsService {
   findChannel(id: number) {
     return this.channelRepository.findOneBy({ id });
   }
-  
+
+  private async checkChannel(channelId: number) {
+    const channel = await this.findChannel(channelId);
+    if (!channel) {
+      throw new NotFoundException();
+    }
+    return channel;
+  }
+
   private async checkChannelAndMember(channelId: number, userId: string) {
     const channel = await this.findChannel(channelId);
     const user = await this.usersService.findUser(userId);
@@ -53,10 +61,7 @@ export class ChannelsService {
   }
 
   async update(id: number, channelDto: UpdateChannelDto) {
-    const channel = await this.findChannel(id);
-    if (!channel) {
-      throw new NotFoundException();
-    }
+    const channel = await this.checkChannel(id);
     channel.update(channelDto);
     this.channelRepository.save(channel)
   }
