@@ -31,4 +31,21 @@ export class ChannelsController {
   ) {
     return this.channelService.deleteMember(channelId, userId);
   }
+
+  @Post(':id/admin')
+  @HttpCode(204)
+  addAdmin(
+    @Param('id') channelId: number,
+    @Body('userId', ParseUUIDPipe) userId: string,
+  ) {
+   return this.channelService.addAdmin(channelId, userId);
+  }
+
+  @Delete(':id/admin')
+  deleteAdmin(
+    @Param('id') channelId: number,
+    @Body('userId', ParseUUIDPipe) userId: string,
+  ) {
+    return this.channelService.deleteAdmin(channelId, userId);
+  }
 }

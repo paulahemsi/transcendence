@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateChannelDto } from 'src/dto/channel.dtos';
-import { Channel, ChannelMember } from 'src/entity';
+import { Channel, ChannelAdmin, ChannelMember } from 'src/entity';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 
@@ -12,6 +12,8 @@ export class ChannelsService {
     private readonly channelRepository: Repository<Channel>,
     @InjectRepository(ChannelMember)
     private readonly channelMemberRepository: Repository<ChannelMember>,
+    @InjectRepository(ChannelAdmin)
+    private readonly channelAdminRepository: Repository<ChannelAdmin>,
     private readonly usersService: UsersService,
   ) {}
   
@@ -60,4 +62,28 @@ export class ChannelsService {
     });
     this.channelMemberRepository.save(newMember);
   }
+
+  async deleteAdmin(channelId: number, userId: string) {
+    await this.checkChannelAndMember(channelId, userId);
+     const admin = await this.channelAdminRepository.findOne({
+       relations: {
+         channel: true,
+         user: true,
+       },
+       where: {
+         channel: { id: channelId },
+         user: { id: userId}
+       }
+     });
+     this.channelAdminRepository.delete(admin.id);
+   }
+
+   async addAdmin(channelId: number, userId: string) {
+     const { channel, user } = await this.checkChannelAndMember(channelId, userId);
+     const newAdmin = this.channelAdminRepository.create({
+       channel: channel,
+       user: user
+     });
+     this.channelAdminRepository.save(newAdmin);
+   }
 }
