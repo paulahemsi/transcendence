@@ -106,6 +106,20 @@ export class ChannelsService {
     this.channelMemberRepository.save(newMember);
   }
 
+  async getMembers(channelId: number) {
+    await this.checkChannel(channelId);
+    const channelInfos = await this.getChannelInfos(channelId);
+
+    const channelMembers: Array<members> = [];
+    channelInfos.map((element) => {
+      const member = {} as members;
+      member.id = element.user.id;
+      member.name = element.user.username;
+      channelMembers.push(member);
+    })
+    return channelMembers;
+  }
+
   async deleteAdmin(channelId: number, userId: string) {
     await this.checkChannelAndMember(channelId, userId);
      const admin = await this.channelAdminRepository.findOne({
