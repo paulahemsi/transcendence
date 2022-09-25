@@ -28,6 +28,25 @@ export class ChannelsService {
     this.channelRepository.save(channel)
   }
   
+  async deleteMember(channelId: number, userId: string) {
+   const channel = await this.findChannel(channelId);
+   const user = await this.usersService.findUser(userId);
+   if (!channel || !user) {
+      throw new NotFoundException();
+    }
+    const member = await this.channelMemberRepository.findOne({
+      relations: {
+        channel: true,
+        user: true,
+      },
+      where: {
+        channel: { id: channelId },
+        user: { id: userId}
+      }
+    });
+    this.channelMemberRepository.delete(member.id);
+  }
+
   async addMember(channelId: number, userId: string) {
    const channel = await this.findChannel(channelId);
    const user = await this.usersService.findUser(userId);
