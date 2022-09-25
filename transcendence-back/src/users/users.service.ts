@@ -28,6 +28,14 @@ export class UsersService {
     return this.userRepository.findOneBy({ id });
   }
 
+  private async checkUser(id: string) {
+    const user = await this.findUser(id);
+    if (!user) {
+      throw new NotFoundException();
+    }
+    return user;
+  }
+
   async getUserProfile(id: string) {
     const { username, rating, status } = await this.findUser(id);
 
@@ -64,10 +72,7 @@ export class UsersService {
   }
 
   async update(id: string, userDto: UpdateUserDto) {
-    const user = await this.findUser(id);
-    if (!user) {
-      throw new NotFoundException();
-    }
+    const user = await this.checkUser(id);
     user.update(userDto);
     this.userRepository.save(user);
   }
