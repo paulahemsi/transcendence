@@ -17,7 +17,7 @@ export class ChannelsController {
 
   @Post(':id/members')
   @HttpCode(204)
-  addFriend(
+  addMember(
     @Param('id') channelId: number,
     @Body('userId', ParseUUIDPipe) userId: string,
   ) {
@@ -25,7 +25,7 @@ export class ChannelsController {
   }
 
   @Delete(':id/members')
-  deleteFriend(
+  deleteMember(
     @Param('id') channelId: number,
     @Body('userId', ParseUUIDPipe) userId: string,
   ) {
