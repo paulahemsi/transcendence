@@ -17,7 +17,7 @@ export class ChannelsController {
 
   @Post(':id/members')
   @HttpCode(204)
-  addFriend(
+  addMember(
     @Param('id') channelId: number,
     @Body('userId', ParseUUIDPipe) userId: string,
   ) {
@@ -25,10 +25,27 @@ export class ChannelsController {
   }
 
   @Delete(':id/members')
-  deleteFriend(
+  deleteMember(
     @Param('id') channelId: number,
     @Body('userId', ParseUUIDPipe) userId: string,
   ) {
     return this.channelService.deleteMember(channelId, userId);
+  }
+
+  @Post(':id/admin')
+  @HttpCode(204)
+  addAdmin(
+    @Param('id') channelId: number,
+    @Body('userId', ParseUUIDPipe) userId: string,
+  ) {
+   return this.channelService.addAdmin(channelId, userId);
+  }
+
+  @Delete(':id/admin')
+  deleteAdmin(
+    @Param('id') channelId: number,
+    @Body('userId', ParseUUIDPipe) userId: string,
+  ) {
+    return this.channelService.deleteAdmin(channelId, userId);
   }
 }

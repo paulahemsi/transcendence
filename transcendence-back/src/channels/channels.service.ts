@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateChannelDto } from 'src/dto/channel.dtos';
-import { Channel, ChannelMember } from 'src/entity';
+import { Channel, ChannelAdmin, ChannelMember } from 'src/entity';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 
@@ -12,6 +12,8 @@ export class ChannelsService {
     private readonly channelRepository: Repository<Channel>,
     @InjectRepository(ChannelMember)
     private readonly channelMemberRepository: Repository<ChannelMember>,
+    @InjectRepository(ChannelAdmin)
+    private readonly channelAdminRepository: Repository<ChannelAdmin>,
     private readonly usersService: UsersService,
   ) {}
   
@@ -27,7 +29,24 @@ export class ChannelsService {
      }
      return {channel: channel, user: user}
   }
-  
+
+  private async alreadyExists(channelId: number, userId: string, repository: any) {
+    const relationExists = await repository.findOne({
+      relations: {
+        channel: true,
+        user: true,
+      },
+      where: {
+        channel: { id: channelId },
+        user: { id: userId}
+      }
+    })
+    if (relationExists) {
+      return true;
+    }
+    return false
+  }
+
   async update(id: number, channelDto: UpdateChannelDto) {
     const channel = await this.findChannel(id);
     if (!channel) {
@@ -38,7 +57,7 @@ export class ChannelsService {
   }
   
   async deleteMember(channelId: number, userId: string) {
-   await this.checkChannelAndMember(channelId, userId);
+    await this.checkChannelAndMember(channelId, userId);
     const member = await this.channelMemberRepository.findOne({
       relations: {
         channel: true,
@@ -54,10 +73,40 @@ export class ChannelsService {
 
   async addMember(channelId: number, userId: string) {
     const { channel, user } = await this.checkChannelAndMember(channelId, userId);
+    if (await this.alreadyExists(channelId, userId, this.channelMemberRepository)) {
+      return ;
+    }
     const newMember = this.channelMemberRepository.create({
       channel: channel,
       user: user
     });
     this.channelMemberRepository.save(newMember);
   }
+
+  async deleteAdmin(channelId: number, userId: string) {
+    await this.checkChannelAndMember(channelId, userId);
+     const admin = await this.channelAdminRepository.findOne({
+       relations: {
+         channel: true,
+         user: true,
+       },
+       where: {
+         channel: { id: channelId },
+         user: { id: userId}
+       }
+     });
+     this.channelAdminRepository.delete(admin.id);
+   }
+
+   async addAdmin(channelId: number, userId: string) {
+    const { channel, user } = await this.checkChannelAndMember(channelId, userId);
+    if (await this.alreadyExists(channelId, userId, this.channelAdminRepository)) {
+      return ;
+    }
+    const newAdmin = this.channelAdminRepository.create({
+      channel: channel,
+      user: user
+    });
+    this.channelAdminRepository.save(newAdmin);
+   }
 }
