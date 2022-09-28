@@ -1,5 +1,12 @@
-import React from "react";
-import { Box, Typography } from "@mui/material"
+import React, { FunctionComponent } from "react";
+import { Box, Button, Typography } from "@mui/material"
+
+type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+
+interface Props {
+    setOpenCard: booleanSetState;
+	userData: {[key: string]: any};
+}
 
 const AVOCADO_TEMP = 'https://images.vexels.com/media/users/3/185791/isolated/preview/27c69d1413163918103a032d4951213e-abacate-kawaii-winking.png'
 
@@ -54,12 +61,19 @@ const UserStatus = ({statusColor} : {statusColor : string}) => {
 	)
 }
 
-export const ProfileInfo = ({ userData } : {[key: string]: any}) => {
+export const ProfileInfo : FunctionComponent<Props> = ({ setOpenCard, userData }) => {
+	
+	const handleOpenCard = () => {
+		setOpenCard(true)
+	}
+	
 	return(
 		<Box display='flex' flexDirection='row' alignItems="center">
-			<UserImage imageUrl={userData.image_url}/>
-			<UserName userName={userData.username}/>
-			<UserStatus statusColor={defineColor(userData.status)}/>
+			<Button onClick={handleOpenCard} sx={{textTransform: 'lowercase',}}>
+				<UserImage imageUrl={userData.image_url}/>
+				<UserName userName={userData.username}/>
+				<UserStatus statusColor={defineColor(userData.status)}/>
+			</Button>
 		</Box>
 	)
 }

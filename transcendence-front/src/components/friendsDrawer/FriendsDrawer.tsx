@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { Drawer, List, ListItem, easing } from '@mui/material';
+import { Drawer, List, ListItem } from '@mui/material';
 import FriendsInfo from "./FriendsInfo";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>

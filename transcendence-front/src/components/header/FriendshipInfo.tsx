@@ -16,7 +16,7 @@ const Friends : FunctionComponent<Props> = ({ setOpenDrawer, numberOfFriends }) 
 
 	return (
 		<Button onClick={handleOpenDrawer}>
-			<Typography sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '4vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
+			<Typography sx={{ color: '#1E1E1E', textTransform: 'lowercase', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '4vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
 						{`${numberOfFriends} friends`}
 			</Typography>
 		</Button>
