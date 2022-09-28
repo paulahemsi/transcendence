@@ -8,6 +8,7 @@ type friendInfo = {
   username: string;
   status: string;
   rating: number;
+  image_url: string;
 };
 
 @Injectable()
@@ -86,6 +87,7 @@ export class FriendshipService {
       friend.username = friendship.friend.username;
       friend.status = friendship.friend.status;
       friend.rating = friendship.friend.rating;
+      friend.image_url = friendship.friend.image_url;
       friends.push(friend);
     });
 
