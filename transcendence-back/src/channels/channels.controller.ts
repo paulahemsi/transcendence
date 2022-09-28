@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, HttpCode, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
 import { UpdateChannelDto } from 'src/dto/channel.dtos';
 import { ChannelsService } from './channels.service';
 
@@ -30,6 +30,13 @@ export class ChannelsController {
     @Body('userId', ParseUUIDPipe) userId: string,
   ) {
     return this.channelService.deleteMember(channelId, userId);
+  }
+
+  @Get(':id/members')
+  getMembers(
+    @Param('id') channelId: number,
+  ) {
+    return this.channelService.getMembers(channelId);
   }
 
   @Post(':id/admin')

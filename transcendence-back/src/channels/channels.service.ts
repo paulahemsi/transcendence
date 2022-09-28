@@ -5,6 +5,11 @@ import { Channel, ChannelAdmin, ChannelMember } from 'src/entity';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 
+type members = {
+  id: string;
+  name: string;
+};
+
 @Injectable()
 export class ChannelsService {
   constructor(
@@ -20,7 +25,15 @@ export class ChannelsService {
   findChannel(id: number) {
     return this.channelRepository.findOneBy({ id });
   }
-  
+
+  private async checkChannel(channelId: number) {
+    const channel = await this.findChannel(channelId);
+    if (!channel) {
+      throw new NotFoundException();
+    }
+    return channel;
+  }
+
   private async checkChannelAndMember(channelId: number, userId: string) {
     const channel = await this.findChannel(channelId);
     const user = await this.usersService.findUser(userId);
@@ -47,11 +60,21 @@ export class ChannelsService {
     return false
   }
 
+  private async getChannelInfos(channelId: number) {
+    const channels = await this.channelMemberRepository.find({
+      relations: {
+        channel: true,
+        user: true,
+      },
+      where: {
+        channel: { id: channelId },
+      }
+    })
+    return channels;
+  }
+
   async update(id: number, channelDto: UpdateChannelDto) {
-    const channel = await this.findChannel(id);
-    if (!channel) {
-      throw new NotFoundException();
-    }
+    const channel = await this.checkChannel(id);
     channel.update(channelDto);
     this.channelRepository.save(channel)
   }
@@ -81,6 +104,20 @@ export class ChannelsService {
       user: user
     });
     this.channelMemberRepository.save(newMember);
+  }
+
+  async getMembers(channelId: number) {
+    await this.checkChannel(channelId);
+    const channelInfos = await this.getChannelInfos(channelId);
+
+    const channelMembers: Array<members> = [];
+    channelInfos.map((element) => {
+      const member = {} as members;
+      member.id = element.user.id;
+      member.name = element.user.username;
+      channelMembers.push(member);
+    })
+    return channelMembers;
   }
 
   async deleteAdmin(channelId: number, userId: string) {
