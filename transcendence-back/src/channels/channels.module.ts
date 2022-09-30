@@ -6,7 +6,7 @@ import { ChannelsController } from './channels.controller';
 import { ChannelsService } from './channels.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Channel, ChannelMember, ChannelAdmin]), UsersModule],
+  imports: [TypeOrmModule.forFeature([Channel, ChannelMember, ChannelAdmin, UsersModule]),],
   controllers: [ChannelsController],
   providers: [ChannelsService],
 })

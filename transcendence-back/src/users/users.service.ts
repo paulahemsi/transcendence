@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateUserDto } from 'src/dto/users.dtos';
-import { User } from 'src/entity';
+import { ChannelMember, User } from 'src/entity';
 import { Repository } from 'typeorm';
 import { MatchHistoryService } from 'src/match-history/match-history.service';
 import { Intra42UserData } from 'src/auth/strategies/intra42.strategy';
@@ -18,6 +18,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly matchHistoryService: MatchHistoryService,
+    private readonly channelMemberRepository: Repository<ChannelMember>,
   ) {}
 
   getUsers() {
@@ -75,6 +76,19 @@ export class UsersService {
     const user = await this.checkUser(id);
     user.update(userDto);
     this.userRepository.save(user);
+  }
+
+  async getUserChannelsInfos(userId: string) {
+    const channels = await this.channelMemberRepository.find({
+      relations: {
+        channel: true,
+        user: true,
+      },
+      where: {
+        user: { id: userId },
+      }
+    })
+    return channels;
   }
 
   async getChannels(id: string) {
