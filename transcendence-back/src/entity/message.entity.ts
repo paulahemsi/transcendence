@@ -12,7 +12,6 @@ export class Message {
 
   @Column({
     nullable: false,
-    default: '',
   })
   message: string;
 
