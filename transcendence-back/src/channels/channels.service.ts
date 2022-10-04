@@ -220,13 +220,18 @@ export class ChannelsService {
     });
     return channelMessages;
   }
-  private nameAlreadyUsed(name: string): boolean {
+
+  private async nameAlreadyUsed(name: string) {
+    const channel = await this.channelRepository.findOneBy({ name });
+    if (channel) {
+      return true;
+    }
     return false;
   }
 
   async addChannel(channelDto: CreateChannelDto) {
-    if (this.nameAlreadyUsed(channelDto.name)) {
-      throw new BadRequestException('Channel name alredy in use');
+    if (await this.nameAlreadyUsed(channelDto.name)) {
+      throw new BadRequestException('Channel name alredy exists');
     }
 
     const user = await this.usersService.findUser(channelDto.owner);
