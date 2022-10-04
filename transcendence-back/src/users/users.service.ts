@@ -92,6 +92,7 @@ export class UsersService {
   }
   
   async getChannels(id: string) {
+    await this.checkUser(id);
     const channelsInfos = await this.getUserChannelsInfos(id);
 
     let channels : string[] = [];
