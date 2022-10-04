@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, MinLength } from "class-validator";
+import { IsNotEmpty, IsOptional, IsUUID, MinLength } from "class-validator";
 
 export class ChannelDto {}
 
@@ -11,4 +11,13 @@ export class UpdateChannelDto {
 	@IsOptional()
 	@MinLength(5)
 	password: string;
+  }
+
+export class MessagelDto {
+	@IsNotEmpty()
+	message: string;
+  
+	@IsNotEmpty()
+	@IsUUID()
+	user: string;
   }
