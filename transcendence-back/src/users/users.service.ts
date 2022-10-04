@@ -18,7 +18,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly matchHistoryService: MatchHistoryService,
-    private readonly channelMemberRepository: Repository<ChannelMember>,
+    @InjectRepository(ChannelMember) private readonly channelMemberRepository: Repository<ChannelMember>,
   ) {}
 
   getUsers() {
@@ -79,7 +79,7 @@ export class UsersService {
   }
 
   async getUserChannelsInfos(userId: string) {
-    const channels = await this.channelMemberRepository.find({
+    const channelsInfos = await this.channelMemberRepository.find({
       relations: {
         channel: true,
         user: true,
@@ -88,10 +88,17 @@ export class UsersService {
         user: { id: userId },
       }
     })
-    return channels;
+    return channelsInfos;
   }
-
+  
   async getChannels(id: string) {
-    console.log("get Channels");
+    const channelsInfos = await this.getUserChannelsInfos(id);
+
+    let channels : string[] = [];
+
+    channelsInfos.map((element) => {
+      channels.push(element.channel.name);
+    })
+    return channels;
   }
 }

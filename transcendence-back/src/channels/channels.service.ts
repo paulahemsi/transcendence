@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateChannelDto } from 'src/dto/channel.dtos';
 import { Channel, ChannelAdmin, ChannelMember } from 'src/entity';
@@ -19,6 +19,7 @@ export class ChannelsService {
     private readonly channelMemberRepository: Repository<ChannelMember>,
     @InjectRepository(ChannelAdmin)
     private readonly channelAdminRepository: Repository<ChannelAdmin>,
+    @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
   ) {}
   

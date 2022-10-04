@@ -10,7 +10,7 @@ import { MatchHistoryService } from 'src/match-history/match-history.service';
 @Module({
   imports: [TypeOrmModule.forFeature([User, MatchHistory, Friendship, ChannelMember])],
   controllers: [UsersController],
-  providers: [UsersService, FriendshipService, MatchHistoryService],
+  providers: [UsersService, FriendshipService, MatchHistoryService, ChannelMember],
   exports: [UsersService],
 })
 export class UsersModule {}
