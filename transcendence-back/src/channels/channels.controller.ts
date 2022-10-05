@@ -64,4 +64,11 @@ export class ChannelsController {
   ) {
    return this.channelService.addMessage(channelId, message);
   }
+
+  @Get(':id/messages')
+  getMessages(
+    @Param('id') channelId: number,
+  ) {
+    return this.channelService.getMessages(channelId);
+  }
 }

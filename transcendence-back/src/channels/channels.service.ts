@@ -10,6 +10,11 @@ type members = {
   name: string;
 };
 
+type channelMessage = {
+  message: string;
+  username: string;
+}
+
 @Injectable()
 export class ChannelsService {
   constructor(
@@ -159,5 +164,34 @@ export class ChannelsService {
       user: user,
     });
     this.channelMessageRepository.save(newMessage);
+  }
+
+  async getChannelMessagesInfos(channelId: number) {
+      const messagesInfos = await this.channelMessageRepository.find({
+      relations: {
+        channel: true,
+        user: true,
+      },
+      where: {
+        channel: { id: channelId },
+      }
+    });
+
+    return messagesInfos;
+  }
+  
+  async getMessages(channelId: number) {
+    await this.checkChannel(channelId);
+
+    const messagesInfos = await this.getChannelMessagesInfos(channelId);
+
+    const channelMessages: Array<channelMessage> = [];
+    messagesInfos.map((element) => {
+      const message = {} as channelMessage;
+      message.message = element.message;
+      message.username = element.user.username;
+      channelMessages.push(message);
+    })
+    return channelMessages;
   }
 }
