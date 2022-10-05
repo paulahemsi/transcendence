@@ -75,7 +75,9 @@ const EditButton = ({ setOpen } : { setOpen : booleanSetState }) => {
 const UpdateProfileDialog = ({ setOpen } : { setOpen : booleanSetState }) => {
 	return (
 		<>
-			<DialogTitle>Edit Profile</DialogTitle>
+			<DialogTitle sx={{fontFamily: 'Orbitron'}}>
+				Edit Profile
+			</DialogTitle>
 			<DialogContent>
 			<TextField
 				autoFocus
@@ -88,8 +90,18 @@ const UpdateProfileDialog = ({ setOpen } : { setOpen : booleanSetState }) => {
 			/>
 			</DialogContent>
 			<DialogActions>
-			<Button onClick={() => setOpen(false)}>Cancel</Button>
-			<Button onClick={() => setOpen(false)}>Save</Button>
+			<Button
+				onClick={() => setOpen(false)}
+				sx={{fontFamily: 'Orbitron'}}
+			>
+				Cancel
+			</Button>
+			<Button
+				onClick={() => setOpen(false)}
+				sx={{fontFamily: 'Orbitron'}}
+			>
+				Save
+			</Button>
 			</DialogActions>
 		</>
 	)
