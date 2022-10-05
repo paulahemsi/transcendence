@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { FriendDto } from 'src/dto/friend.dtos';
+import { FriendDto, FriendNameDto } from 'src/dto/friend.dtos';
 import { UpdateUserDto } from 'src/dto/users.dtos';
 import { FriendshipService } from '../friendship/friendship.service';
 import { UsersService } from './users.service';
@@ -55,6 +55,15 @@ export class UsersController {
     @Body() friend: FriendDto,
   ) {
     return this.friedshipService.addFriend(userId, friend.id);
+  }
+
+  @Post(':id/friends/by_name')
+  @HttpCode(204)
+  addFriendByName(
+    @Param('id', ParseUUIDPipe) userId: string,
+    @Body() friend: FriendNameDto,
+  ) {
+    return this.friedshipService.addFriendByName(userId, friend.name);
   }
 
   @Get(':id/friends')

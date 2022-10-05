@@ -67,6 +67,14 @@ export class FriendshipService {
     return this.friedshipRepository.save(friendship);
   }
 
+  async addFriendByName(userId: string, friendName: string) {
+    const friend = await this.usersService.findUserByName(friendName);
+    if (!friend) {
+      throw new NotFoundException();
+    }
+    return this.addFriend(userId, friend.id);
+  }
+
   async deleteFriend(userId: string, friendId: string) {
     await this.checkUserAndFriend(userId, friendId);
     const friendship = await this.findOneFriendship(userId, friendId);

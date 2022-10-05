@@ -28,6 +28,10 @@ export class UsersService {
     return this.userRepository.findOneBy({ id });
   }
 
+  findUserByName(name: string) {
+    return this.userRepository.findOneBy({ username: name });
+  }
+
   async getUserProfile(id: string) {
     const { username, rating, status, image_url } = await this.findUser(id);
 
