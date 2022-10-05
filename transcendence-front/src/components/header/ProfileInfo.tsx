@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from "react";
-import { Box, Button, Typography } from "@mui/material"
+import EditIcon from '@mui/icons-material/Edit';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, TextField, Tooltip, Typography, Zoom } from "@mui/material"
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -61,8 +62,50 @@ const UserStatus = ({statusColor} : {statusColor : string}) => {
 	)
 }
 
+const EditButton = ({ setOpen } : { setOpen : booleanSetState }) => {
+	return (
+		<Tooltip title='edit profile' placement='right' arrow TransitionComponent={Zoom}>
+			<IconButton sx={{ alignSelf: 'flex-start'}} onClick={() => setOpen(true)}>
+				<EditIcon sx={{ color: '#311B92' }}/>
+			</IconButton>
+		</Tooltip>
+	)
+}
+
+const UpdateProfileDialog = ({ setOpen } : { setOpen : booleanSetState }) => {
+	return (
+		<>
+			<DialogTitle>Edit Profile</DialogTitle>
+			<DialogContent>
+			<TextField
+				autoFocus
+				margin="dense"
+				id="name"
+				label="username"
+				type="email"
+				fullWidth
+				variant="standard"
+			/>
+			</DialogContent>
+			<DialogActions>
+			<Button onClick={() => setOpen(false)}>Cancel</Button>
+			<Button onClick={() => setOpen(false)}>Save</Button>
+			</DialogActions>
+		</>
+	)
+}
+
 export const ProfileInfo : FunctionComponent<Props> = ({ setOpenCard, userData }) => {
-	
+	const [open, setOpen] = React.useState(false);
+
+	const handleClickOpen = () => {
+		setOpen(true);
+	};
+
+	const handleClose = () => {
+		setOpen(false);
+	};
+
 	const handleOpenCard = () => {
 		setOpenCard(true)
 	}
@@ -74,6 +117,10 @@ export const ProfileInfo : FunctionComponent<Props> = ({ setOpenCard, userData }
 				<UserName userName={userData.username}/>
 				<UserStatus statusColor={defineColor(userData.status)}/>
 			</Button>
+			<EditButton setOpen={setOpen}/>
+			<Dialog open={open} fullWidth maxWidth="sm" onClose={handleClose}>
+				<UpdateProfileDialog setOpen={setOpen}/>
+			</Dialog>
 		</Box>
 	)
 }
