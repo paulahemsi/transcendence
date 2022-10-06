@@ -122,6 +122,7 @@ const UpdateProfileDialog : FunctionComponent<Props> = ({ setOpen, setUserData }
 				Cancel
 			</Button>
 			<Button
+				variant="contained"
 				onClick={handleSave}
 				sx={{fontFamily: 'Orbitron'}}
 			>
