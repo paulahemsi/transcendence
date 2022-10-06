@@ -1,7 +1,7 @@
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import EditIcon from '@mui/icons-material/Edit';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField, Tooltip, Typography, Zoom } from "@mui/material"
-import axios, { AxiosRequestHeaders } from "axios";
+import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
@@ -11,8 +11,8 @@ type tokenData = {
 }
 
 interface Props {
-    setOpenCard: booleanSetState;
-	userData: {[key: string]: any};
+    setOpen: booleanSetState;
+	setUserData: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>;
 }
 
 const AVOCADO_TEMP = 'https://images.vexels.com/media/users/3/185791/isolated/preview/27c69d1413163918103a032d4951213e-abacate-kawaii-winking.png'
@@ -78,7 +78,7 @@ const EditButton = ({ setOpen } : { setOpen : booleanSetState }) => {
 	)
 }
 
-const UpdateProfileDialog = ({ setOpen } : { setOpen : booleanSetState }) => {
+const UpdateProfileDialog : FunctionComponent<Props> = ({ setOpen, setUserData }) => {
 	const [username, setUsername] = useState("");
 
 	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
@@ -89,8 +89,11 @@ const UpdateProfileDialog = ({ setOpen } : { setOpen : booleanSetState }) => {
 		const tokenData: tokenData = jwt(document.cookie);
 		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 
-		axios.patch(`http://localhost:3000/users/${tokenData.id}`, { "username": username }, { headers: authToken })
-		setOpen(false);
+		axios.patch(`http://localhost:3000/users/${tokenData.id}`, { "username": username }, { headers: authToken }).then( () => {
+			setUserData({ username: username });
+			setOpen(false);
+		}
+		)
 	}
 
 	return (
@@ -129,8 +132,25 @@ const UpdateProfileDialog = ({ setOpen } : { setOpen : booleanSetState }) => {
 	)
 }
 
-export const ProfileInfo : FunctionComponent<Props> = ({ setOpenCard, userData }) => {
+const requestUserData = async ({ setUserData } : { setUserData: React.Dispatch<React.SetStateAction<{[key: string]: any}>>}) => {
+	const tokenData: tokenData = jwt(document.cookie);
+	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+	await axios.get('http://localhost:3000/users/' + tokenData.id, { headers: authToken }).then((response) => {setUserData({
+		id: response.data.id,
+		username: response.data.username,
+		rating: response.data.rating,
+		email: response.data.email,
+		status: response.data.status,
+		image_url: response.data.image_url,
+		external_id: response.data.external_id
+})})
+}
+
+export const ProfileInfo = ({ setOpenCard } : { setOpenCard : booleanSetState }) => {
 	const [open, setOpen] = React.useState(false);
+	const [userData, setUserData] = useState<{[key: string]: any}>({});
+
+	useEffect(() => {requestUserData({setUserData})}, []);
 
 	const handleClickOpen = () => {
 		setOpen(true);
@@ -153,7 +173,7 @@ export const ProfileInfo : FunctionComponent<Props> = ({ setOpenCard, userData }
 			</Button>
 			<EditButton setOpen={setOpen}/>
 			<Dialog open={open} fullWidth maxWidth="sm" onClose={handleClose}>
-				<UpdateProfileDialog setOpen={setOpen}/>
+				<UpdateProfileDialog setOpen={setOpen} setUserData={setUserData}/>
 			</Dialog>
 		</Box>
 	)
