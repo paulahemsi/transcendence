@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UpdateChannelDto } from 'src/dto/channel.dtos';
-import { Channel, ChannelAdmin, ChannelMember } from 'src/entity';
+import { MessagelDto, UpdateChannelDto } from 'src/dto/channel.dtos';
+import { Channel, ChannelAdmin, ChannelMember, Message } from 'src/entity';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 
@@ -9,6 +9,11 @@ type members = {
   id: string;
   name: string;
 };
+
+type channelMessage = {
+  message: string;
+  username: string;
+}
 
 @Injectable()
 export class ChannelsService {
@@ -19,6 +24,8 @@ export class ChannelsService {
     private readonly channelMemberRepository: Repository<ChannelMember>,
     @InjectRepository(ChannelAdmin)
     private readonly channelAdminRepository: Repository<ChannelAdmin>,
+    @InjectRepository(Message)
+    private readonly channelMessageRepository: Repository<Message>,
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
   ) {}
@@ -147,4 +154,44 @@ export class ChannelsService {
     });
     this.channelAdminRepository.save(newAdmin);
    }
+
+   async addMessage(channelId: number, messageDto: MessagelDto) {
+    const { channel, user } = await this.checkChannelAndMember(channelId, messageDto.user);
+
+    const newMessage : Message = this.channelMessageRepository.create({
+      message: messageDto.message,
+      channel: channel,
+      user: user,
+    });
+    this.channelMessageRepository.save(newMessage);
+  }
+
+  async getChannelMessagesInfos(channelId: number) {
+      const messagesInfos = await this.channelMessageRepository.find({
+      relations: {
+        channel: true,
+        user: true,
+      },
+      where: {
+        channel: { id: channelId },
+      }
+    });
+
+    return messagesInfos;
+  }
+  
+  async getMessages(channelId: number) {
+    await this.checkChannel(channelId);
+
+    const messagesInfos = await this.getChannelMessagesInfos(channelId);
+
+    const channelMessages: Array<channelMessage> = [];
+    messagesInfos.map((element) => {
+      const message = {} as channelMessage;
+      message.message = element.message;
+      message.username = element.user.username;
+      channelMessages.push(message);
+    })
+    return channelMessages;
+  }
 }

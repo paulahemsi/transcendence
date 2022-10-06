@@ -38,9 +38,6 @@ export class Channel {
   //*Nota: aqui lembrar de passar pelo algoritmo de hash
   password: string;
 
-  @OneToMany(() => Message, (message) => message.id)
-  messages: Message[];
-  
   private updateName(name: string) {
     this.name = name;
   }
