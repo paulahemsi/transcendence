@@ -1,8 +1,14 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useState } from "react";
 import EditIcon from '@mui/icons-material/Edit';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, TextField, Tooltip, Typography, Zoom } from "@mui/material"
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField, Tooltip, Typography, Zoom } from "@mui/material"
+import axios, { AxiosRequestHeaders } from "axios";
+import jwt from 'jwt-decode';
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+
+type tokenData = {
+	id: string;
+}
 
 interface Props {
     setOpenCard: booleanSetState;
@@ -73,6 +79,20 @@ const EditButton = ({ setOpen } : { setOpen : booleanSetState }) => {
 }
 
 const UpdateProfileDialog = ({ setOpen } : { setOpen : booleanSetState }) => {
+	const [username, setUsername] = useState("");
+
+	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
+		setUsername(event.target.value);
+	}
+
+	const handleSave = () => {
+		const tokenData: tokenData = jwt(document.cookie);
+		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+
+		axios.patch(`http://localhost:3000/users/${tokenData.id}`, { "username": username }, { headers: authToken })
+		setOpen(false);
+	}
+
 	return (
 		<>
 			<DialogTitle sx={{fontFamily: 'Orbitron'}}>
@@ -87,6 +107,8 @@ const UpdateProfileDialog = ({ setOpen } : { setOpen : booleanSetState }) => {
 				type="email"
 				fullWidth
 				variant="standard"
+				value={username}
+				onChange={handleChange}
 			/>
 			</DialogContent>
 			<DialogActions>
@@ -97,7 +119,7 @@ const UpdateProfileDialog = ({ setOpen } : { setOpen : booleanSetState }) => {
 				Cancel
 			</Button>
 			<Button
-				onClick={() => setOpen(false)}
+				onClick={handleSave}
 				sx={{fontFamily: 'Orbitron'}}
 			>
 				Save
