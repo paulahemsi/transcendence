@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { Button, DialogActions, DialogContent, DialogTitle, TextField, } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
@@ -31,6 +31,16 @@ export const UpdateProfileDialog : FunctionComponent<Props> = ({ setOpen, setUse
 		}
 		)
 	}
+	
+	const keyDownHandler = ( event :  React.KeyboardEvent<HTMLInputElement>) => {
+	
+		console.log('User pressed: ', event.key);
+		
+		if (event.key === 'Enter') {
+			event.preventDefault();
+			handleSave();
+		}
+	}
 
 	return (
 		<>
@@ -47,6 +57,7 @@ export const UpdateProfileDialog : FunctionComponent<Props> = ({ setOpen, setUse
 				fullWidth
 				variant="standard"
 				value={username}
+				onKeyDown={keyDownHandler}
 				onChange={handleChange}
 			/>
 			</DialogContent>
