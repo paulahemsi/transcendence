@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { AppBar, Stack } from "@mui/material"
-import ProfileInfo from "./ProfileInfo";
+import ProfileInfo from "./profile-info/ProfileInfo";
 import FriendshipInfo from "./FriendshipInfo";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
