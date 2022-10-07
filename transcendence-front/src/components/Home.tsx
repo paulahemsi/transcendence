@@ -5,7 +5,7 @@ import jwt from 'jwt-decode';
 import Header from "./header/Header";
 import { Footer } from "./footer/Footer";
 import FriendsDrawer from "./friendsDrawer/FriendsDrawer";
-import ProfileCard from "./profileCard/ProfileCard";
+import ProfileCard from "./profileDrawer/ProfileDrawer";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
