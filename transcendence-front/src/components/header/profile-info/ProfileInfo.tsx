@@ -1,6 +1,6 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import EditIcon from '@mui/icons-material/Edit';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField, Tooltip, Zoom } from "@mui/material"
+import { Box, Dialog, IconButton, Tooltip, Zoom } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import { ProfileButton } from "./ProfileButton";
