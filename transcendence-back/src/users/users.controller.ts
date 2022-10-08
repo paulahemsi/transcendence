@@ -78,4 +78,9 @@ export class UsersController {
   ) {
     return this.friedshipService.deleteFriend(userId, friend.id);
   }
+
+  @Get(':id/channels')
+  getChannels(@Param('id', ParseUUIDPipe) userId: string) {
+    return this.usersService.getChannels(userId);
+  }
 }

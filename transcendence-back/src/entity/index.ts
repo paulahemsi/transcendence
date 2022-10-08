@@ -7,7 +7,25 @@ import { ChannelType } from './channel-type.entity';
 import { ChannelMember } from './channel-member.entity';
 import { ChannelAdmin } from './channel-admin.entity';
 
-const entities = [User, MatchHistory, Friendship, Channel, Message, ChannelType, ChannelMember, ChannelAdmin];
+const entities = [
+  User,
+  MatchHistory,
+  Friendship,
+  Channel,
+  Message,
+  ChannelType,
+  ChannelMember,
+  ChannelAdmin,
+];
 
-export { User, MatchHistory, Friendship, Channel, Message, ChannelType, ChannelMember, ChannelAdmin };
+export {
+  User,
+  MatchHistory,
+  Friendship,
+  Channel,
+  Message,
+  ChannelType,
+  ChannelMember,
+  ChannelAdmin,
+};
 export default entities;

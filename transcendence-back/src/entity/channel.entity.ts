@@ -1,13 +1,6 @@
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user.entity';
 import { ChannelType } from './channel-type.entity';
-import { Message } from './message.entity';
 import { UpdateChannelDto } from 'src/dto/channel.dtos';
 
 @Entity()
@@ -38,9 +31,6 @@ export class Channel {
   //*Nota: aqui lembrar de passar pelo algoritmo de hash
   password: string;
 
-  @OneToMany(() => Message, (message) => message.id)
-  messages: Message[];
-  
   private updateName(name: string) {
     this.name = name;
   }
