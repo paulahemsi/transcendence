@@ -38,7 +38,7 @@ export const Chat = () => {
 
 	const handleSendMessage = () => {
 		setMsgList(msgList.concat( `eu: ${msg}`))
-		socket.emit('messageToServer2', msg)
+		socket.emit('messageToServer', msg)
 		setMsg("")
 	}
 
