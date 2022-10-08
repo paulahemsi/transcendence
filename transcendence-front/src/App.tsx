@@ -3,6 +3,7 @@ import './App.css';
 import { useState } from 'react';
 import LoginCard from './components/LoginCard'
 import Home from './components/Home'
+import { PhaserGame } from './components/game/game';
 
   function isLoggedIn() {
     let cookie = document.cookie;
@@ -17,6 +18,9 @@ import Home from './components/Home'
           {loggedIn
           ? <Home setLoggedIn={setLoggedIn}/>
           : <LoginCard/> }
+          <div className="transcendence-pong-game"> 
+            <PhaserGame />
+          </div>
       </main>
     </>
   );
