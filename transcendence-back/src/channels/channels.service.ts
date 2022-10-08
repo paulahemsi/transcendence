@@ -21,6 +21,7 @@ type members = {
 type channelMessage = {
   message: string;
   username: string;
+  creationDate: object;
 };
 
 @Injectable()
@@ -201,6 +202,9 @@ export class ChannelsService {
       where: {
         channel: { id: channelId },
       },
+      order: {
+        createdDate: 'ASC',
+      },
     });
 
     return messagesInfos;
@@ -216,6 +220,7 @@ export class ChannelsService {
       const message = {} as channelMessage;
       message.message = element.message;
       message.username = element.user.username;
+      message.creationDate = element.createdDate;
       channelMessages.push(message);
     });
     return channelMessages;
