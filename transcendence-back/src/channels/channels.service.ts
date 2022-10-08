@@ -12,6 +12,7 @@ import { CreateChannelDto } from 'src/dto/channel.dtos';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { ChannelTypeService } from './channel-type.service';
+import * as bcrypt from 'bcrypt';
 
 type members = {
   id: string;
@@ -245,13 +246,13 @@ export class ChannelsService {
     }
 
     // TODO: regras de publico e privado
-    // TODO: senha
+    const salt = await bcrypt.genSalt();
 
     const channel = this.channelRepository.create({
       name: channelDto.name,
       owner: user,
       type: type,
-      password: channelDto.password,
+      password: await bcrypt.hash(channelDto.password, salt),
     });
     return this.channelRepository.save(channel);
   }
