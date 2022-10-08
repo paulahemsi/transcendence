@@ -11,10 +11,10 @@ import { Server } from 'http';
 import { Socket } from 'socket.io';
 
 @WebSocketGateway()
-export class AppGateway
+export class ChatMessageGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
-  private logger: Logger = new Logger('AppGateway');
+  private logger: Logger = new Logger('ChatMessageGateway');
 
   @WebSocketServer()
   server: Server;
@@ -31,9 +31,8 @@ export class AppGateway
     this.logger.log(`Client disconnected: ${client.id}`);
   }
 
-  @SubscribeMessage('messageToServer')
+  @SubscribeMessage('chatMessage')
   handleMessage(client: Socket, text: string) {
-    this.logger.log(`message to server: ${client.id} ${text}`);
-    client.broadcast.emit('messageToClient', text);
+    client.broadcast.emit('chatMessage', text);
   }
 }

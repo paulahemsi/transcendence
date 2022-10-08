@@ -15,8 +15,6 @@ const transcendenceText = {
 
 export const Chat = () => {
 
-	console.log(socket)
-
 	const [msgList, setMsgList] = useState<Array<string>>([])
 	const [msg, setMsg] = useState("")
 	const messageList = [] as JSX.Element[];
@@ -38,7 +36,7 @@ export const Chat = () => {
 
 	const handleSendMessage = () => {
 		setMsgList(msgList.concat( `eu: ${msg}`))
-		socket.emit('messageToServer', msg)
+		socket.emit('chatMessage', msg)
 		setMsg("")
 	}
 
@@ -49,7 +47,7 @@ export const Chat = () => {
 		}
 	}
 
-	socket.on('messageToClient', (msg) => {
+	socket.on('chatMessage', (msg) => {
 		console.log("message from server: ", msg)
 		setMsgList(msgList.concat(msg))
 	} )
