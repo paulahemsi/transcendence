@@ -33,9 +33,6 @@ export const UpdateProfileDialog : FunctionComponent<Props> = ({ setOpen, setUse
 	}
 	
 	const keyDownHandler = ( event :  React.KeyboardEvent<HTMLInputElement>) => {
-	
-		console.log('User pressed: ', event.key);
-		
 		if (event.key === 'Enter') {
 			event.preventDefault();
 			handleSave();
