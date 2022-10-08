@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
 import { ChannelsModule } from './channels/channels.module';
+import { AppGateway } from './app.gateway';
 
 @Module({
   imports: [
@@ -21,6 +22,6 @@ import { ChannelsModule } from './channels/channels.module';
     PassportModule.register({ session: true }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AppGateway],
 })
 export class AppModule {}
