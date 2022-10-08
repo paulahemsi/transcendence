@@ -2,7 +2,7 @@ import { Box, Button, List, ListItem, TextField, Typography } from "@mui/materia
 import React, { useState } from "react";
 import io from 'socket.io-client';
 
-const socket = io();
+const chatSocket = io('/chat-message');
 
 const transcendenceText = {
     fontSize: '5vh',
@@ -36,7 +36,7 @@ export const Chat = () => {
 
 	const handleSendMessage = () => {
 		setMsgList(msgList.concat( `eu: ${msg}`))
-		socket.emit('chatMessage', msg)
+		chatSocket.emit('chatMessage', msg)
 		setMsg("")
 	}
 
@@ -47,7 +47,7 @@ export const Chat = () => {
 		}
 	}
 
-	socket.on('chatMessage', (msg) => {
+	chatSocket.on('chatMessage', (msg) => {
 		console.log("message from server: ", msg)
 		setMsgList(msgList.concat(msg))
 	} )
