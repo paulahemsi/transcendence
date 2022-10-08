@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user.entity';
 import { Channel } from './channel.entity';
 
@@ -9,7 +9,10 @@ export class Message {
     type: 'bigint',
   })
   id: number;
-
+  
+  @CreateDateColumn()
+  createdDate: Date;
+  
   @Column({
     nullable: false,
   })
