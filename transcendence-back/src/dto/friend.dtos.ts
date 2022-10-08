@@ -5,3 +5,8 @@ export class FriendDto {
   @IsUUID()
   id: string;
 }
+
+export class FriendNameDto {
+  @IsNotEmpty()
+  name: string;
+}
