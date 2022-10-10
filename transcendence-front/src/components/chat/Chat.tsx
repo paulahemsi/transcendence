@@ -17,6 +17,7 @@ export const Chat = () => {
 
 	const [msgList, setMsgList] = useState<Array<string>>([])
 	const [msg, setMsg] = useState("")
+	const [activeRoom, setActiveRoom] = useState(1)
 	const messageList = [] as JSX.Element[];
 
 	msgList.forEach((msg: string) => {
@@ -52,35 +53,57 @@ export const Chat = () => {
 		setMsgList(msgList.concat(msg))
 	} )
 	
-
 	return (
 	<Box display="flex" flexDirection="column" justifyContent="center" sx={{ paddingTop: '1vh', paddingRight: '1vh', paddingBottom: '1vh' }}>
 		<Typography sx={transcendenceText}>
-			CHAT, MUITO MASSA
+			CHAT {activeRoom}
 		</Typography>
-		<TextField
-                autoFocus
-                margin="dense"
-                id="name"
-                label="message"
-                type="email"
-                fullWidth
-                variant="standard"
-                value={msg}
-               	onKeyDown={keyDownHandler}
-                onChange={handleChange}
-		/>
-		<Button
-			variant="contained"
-			onClick={handleSendMessage}
-			sx={{fontFamily: 'Orbitron'}}
-		>
-			Send 
-		</Button>
+		<Box display="flex">
+			<TextField
+					autoFocus
+					margin="dense"
+					id="name"
+					label="message"
+					type="email"
+					variant="standard"
+					value={msg}
+					onKeyDown={keyDownHandler}
+					onChange={handleChange}
+			/>
+			<Button
+				variant="contained"
+				onClick={handleSendMessage}
+				sx={{fontFamily: 'Orbitron'}}
+			>
+				Send 
+			</Button>
+		</Box>
+		<Box display="flex">
+			<Button
+				variant={ activeRoom === 1 ? "contained" : "outlined"}
+				onClick={() => setActiveRoom(1)}
+				sx={{fontFamily: 'Orbitron'}}
+			>
+				chat 1
+			</Button>
+			<Button
+				variant={ activeRoom === 2 ? "contained" : "outlined"}
+				onClick={() => setActiveRoom(2)}
+				sx={{fontFamily: 'Orbitron'}}
+			>
+				chat 2
+			</Button>
+			<Button
+				variant={ activeRoom === 3 ? "contained" : "outlined"}
+				onClick={() => setActiveRoom(3)}
+				sx={{fontFamily: 'Orbitron'}}
+			>
+				chat 3
+			</Button>
+		</Box>
 		<List>
 			{messageList}
 		</List>
-
 	</Box>
 	)
 }
