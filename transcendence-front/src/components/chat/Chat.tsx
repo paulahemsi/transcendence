@@ -17,10 +17,10 @@ export const Chat = () => {
 
 	const [msgList, setMsgList] = useState([["um", "um"], ["dois" , "dois"], ["três", "três"]])
 	const [msg, setMsg] = useState("")
-	const [activeRoom, setActiveRoom] = useState(1)
+	const [activeChannel, setactiveChannel] = useState(1)
 	const messageList = [] as JSX.Element[];
 
-	msgList[activeRoom - 1].forEach((msg: string) => {
+	msgList[activeChannel - 1].forEach((msg: string) => {
 		messageList.push(
 			<ListItem>
 				<Typography sx={transcendenceText}>
@@ -36,8 +36,13 @@ export const Chat = () => {
 	}
 
 	const handleSendMessage = () => {
-		//setMsgList(msgList.concat( `eu: ${msg}`))
-		chatSocket.emit('chatMessage', msg)
+		const msgToSend = {
+			text: msg,
+			channel: activeChannel.toString()
+		}
+		msgList[activeChannel - 1].push( `eu: ${msg}`);
+		setMsgList(msgList);
+		chatSocket.emit('chatMessage', msgToSend)
 		setMsg("")
 	}
 
@@ -56,7 +61,7 @@ export const Chat = () => {
 	return (
 	<Box display="flex" flexDirection="column" justifyContent="center" sx={{ paddingTop: '1vh', paddingRight: '1vh', paddingBottom: '1vh' }}>
 		<Typography sx={transcendenceText}>
-			CHAT {activeRoom}
+			CHAT {activeChannel}
 		</Typography>
 		<Box display="flex">
 			<TextField
@@ -80,22 +85,22 @@ export const Chat = () => {
 		</Box>
 		<Box display="flex">
 			<Button
-				variant={ activeRoom === 1 ? "contained" : "outlined"}
-				onClick={() => setActiveRoom(1)}
+				variant={ activeChannel === 1 ? "contained" : "outlined"}
+				onClick={() => setactiveChannel(1)}
 				sx={{fontFamily: 'Orbitron'}}
 			>
 				chat 1
 			</Button>
 			<Button
-				variant={ activeRoom === 2 ? "contained" : "outlined"}
-				onClick={() => setActiveRoom(2)}
+				variant={ activeChannel === 2 ? "contained" : "outlined"}
+				onClick={() => setactiveChannel(2)}
 				sx={{fontFamily: 'Orbitron'}}
 			>
 				chat 2
 			</Button>
 			<Button
-				variant={ activeRoom === 3 ? "contained" : "outlined"}
-				onClick={() => setActiveRoom(3)}
+				variant={ activeChannel === 3 ? "contained" : "outlined"}
+				onClick={() => setactiveChannel(3)}
 				sx={{fontFamily: 'Orbitron'}}
 			>
 				chat 3
