@@ -10,6 +10,11 @@ import {
 import { Server } from 'http';
 import { Socket } from 'socket.io';
 
+export class message {
+  channel: string;
+  text: string;
+}
+
 @WebSocketGateway({ namespace: '/chat-message' })
 export class ChatMessageGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
@@ -32,7 +37,7 @@ export class ChatMessageGateway
   }
 
   @SubscribeMessage('chatMessage')
-  handleMessage(client: Socket, text: string) {
-    client.broadcast.emit('chatMessage', text);
+  handleMessage(client: Socket, message: message) {
+    client.broadcast.to(message.channel).emit('chatMessage', message.text);
   }
 }
