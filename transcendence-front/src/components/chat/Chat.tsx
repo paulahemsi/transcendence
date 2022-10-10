@@ -15,12 +15,12 @@ const transcendenceText = {
 
 export const Chat = () => {
 
-	const [msgList, setMsgList] = useState<Array<string>>([])
+	const [msgList, setMsgList] = useState([["um", "um"], ["dois" , "dois"], ["três", "três"]])
 	const [msg, setMsg] = useState("")
 	const [activeRoom, setActiveRoom] = useState(1)
 	const messageList = [] as JSX.Element[];
 
-	msgList.forEach((msg: string) => {
+	msgList[activeRoom - 1].forEach((msg: string) => {
 		messageList.push(
 			<ListItem>
 				<Typography sx={transcendenceText}>
@@ -36,7 +36,7 @@ export const Chat = () => {
 	}
 
 	const handleSendMessage = () => {
-		setMsgList(msgList.concat( `eu: ${msg}`))
+		//setMsgList(msgList.concat( `eu: ${msg}`))
 		chatSocket.emit('chatMessage', msg)
 		setMsg("")
 	}
