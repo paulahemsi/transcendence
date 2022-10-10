@@ -2,7 +2,7 @@ import { Box, Button, List, ListItem, TextField, Typography } from "@mui/materia
 import React, { useState } from "react";
 import io from 'socket.io-client';
 
-const chatSocket = io('/chat-message');
+const chatSocket = io('/chat');
 
 const transcendenceText = {
     fontSize: '5vh',

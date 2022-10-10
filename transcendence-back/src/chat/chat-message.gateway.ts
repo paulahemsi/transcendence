@@ -15,7 +15,7 @@ export class message {
   text: string;
 }
 
-@WebSocketGateway({ namespace: '/chat-message' })
+@WebSocketGateway({ namespace: '/chat' })
 export class ChatMessageGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
