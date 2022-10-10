@@ -55,7 +55,9 @@ export const Chat = () => {
 
 	chatSocket.on('chatMessage', (msg) => {
 		console.log("message from server: ", msg)
-		setMsgList(msgList.concat(msg))
+		msgList[msg.channel - 1].push( `eu: ${msg.text}`);
+		setMsgList(msgList);
+		// setMsgList(msgList.concat(msg))
 	} )
 	
 	return (
