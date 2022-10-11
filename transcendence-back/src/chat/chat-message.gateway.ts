@@ -38,7 +38,19 @@ export class ChatMessageGateway
 
   @SubscribeMessage('chatMessage')
   handleMessage(client: Socket, message: message) {
-    console.log(message)
+    console.log(message);
     client.broadcast.to(message.channel).emit('chatMessage', message.text);
+  }
+
+  @SubscribeMessage('joinChannel')
+  handleJoinChannel(client: Socket, channel: string) {
+    client.join(channel);
+    client.emit('joinChannel', channel);
+  }
+
+  @SubscribeMessage('leaveChannel')
+  handleLeaveChannel(client: Socket, channel: string) {
+    client.leave(channel);
+    client.emit('leaveChannel', channel);
   }
 }
