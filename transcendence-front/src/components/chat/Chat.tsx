@@ -15,12 +15,13 @@ const transcendenceText = {
 
 export const Chat = () => {
 
-	const [msgList, setMsgList] = useState([["um", "um"], ["dois" , "dois"], ["três", "três"]])
+	const [msgList, setMsgList] = useState([["zero", "zero"], ["um" , "um"], ["dois", "dois"]])
 	const [msg, setMsg] = useState("")
-	const [activeChannel, setactiveChannel] = useState(1)
+	const [activeChannel, setactiveChannel] = useState(0)
+	const [channels, setChannels] = useState([false, false, false]);
+	
 	const messageList = [] as JSX.Element[];
-
-	msgList[activeChannel - 1].forEach((msg: string) => {
+	msgList[activeChannel].forEach((msg: string) => {
 		messageList.push(
 			<ListItem>
 				<Typography sx={transcendenceText}>
@@ -40,7 +41,7 @@ export const Chat = () => {
 			text: msg,
 			channel: activeChannel.toString()
 		}
-		msgList[activeChannel - 1].push( `eu: ${msg}`);
+		msgList[activeChannel].concat( `eu: ${msg}`);
 		setMsgList(msgList);
 		chatSocket.emit('chatMessage', msgToSend)
 		setMsg("")
@@ -53,11 +54,30 @@ export const Chat = () => {
 		}
 	}
 
+	const isMemberOfActiveChannel = () => {
+		return channels[activeChannel];
+	}
+	
 	chatSocket.on('chatMessage', (msg) => {
-		console.log("message from server: ", msg)
-		msgList[msg.channel - 1].push( `eu: ${msg.text}`);
+		console.log("message from server: ", msg);
+		const channelNumber = +msg.channel;
+		msgList[channelNumber].push(msg.text);
+		console.log("oiiii")
+		console.log(msgList[channelNumber]);
 		setMsgList(msgList);
-		// setMsgList(msgList.concat(msg))
+	} )
+
+	chatSocket.on('joinChannel', (room) => {
+		const roomNumber = +room;
+		channels[roomNumber] = true;
+		setChannels(channels);
+		
+	} )
+
+	chatSocket.on('leaveChannel', (room) => {
+		const roomNumber = +room;
+		channels[roomNumber] = false
+		setChannels(channels);
 	} )
 	
 	return (
@@ -87,6 +107,13 @@ export const Chat = () => {
 		</Box>
 		<Box display="flex">
 			<Button
+				variant={ activeChannel === 0 ? "contained" : "outlined"}
+				onClick={() => setactiveChannel(0)}
+				sx={{fontFamily: 'Orbitron'}}
+			>
+				chat 0
+			</Button>
+			<Button
 				variant={ activeChannel === 1 ? "contained" : "outlined"}
 				onClick={() => setactiveChannel(1)}
 				sx={{fontFamily: 'Orbitron'}}
@@ -100,14 +127,23 @@ export const Chat = () => {
 			>
 				chat 2
 			</Button>
-			<Button
-				variant={ activeChannel === 3 ? "contained" : "outlined"}
-				onClick={() => setactiveChannel(3)}
-				sx={{fontFamily: 'Orbitron'}}
-			>
-				chat 3
-			</Button>
 		</Box>
+		<Button
+			variant={"contained"}
+			onClick={() => {
+				if(isMemberOfActiveChannel()) {
+					console.log("estou saindo")
+					chatSocket.emit('leaveChannel', activeChannel.toString());
+				} else {
+					console.log("estou entrando")
+					chatSocket.emit('joinChannel', activeChannel.toString());
+				}
+			}}
+			color={  isMemberOfActiveChannel() ? "error" : "success" }
+			sx={{ fontFamily: 'Orbitron' }}
+		>
+			{  isMemberOfActiveChannel() ? "leave" : "join" }
+		</Button>
 		<List>
 			{messageList}
 		</List>
