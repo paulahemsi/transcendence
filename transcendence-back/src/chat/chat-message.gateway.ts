@@ -38,7 +38,7 @@ export class ChatMessageGateway
   @SubscribeMessage('chatMessage')
   handleMessage(client: Socket, message: message) {
     console.log(message);
-    client.broadcast.to(message.channel).emit('chatMessage', message);
+    this.server.to(message.channel).emit('chatMessage', message);
   }
 
   @SubscribeMessage('joinChannel')
