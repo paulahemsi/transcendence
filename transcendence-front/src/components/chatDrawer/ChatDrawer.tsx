@@ -1,6 +1,7 @@
 import React, { FunctionComponent } from "react";
-import { Button, Drawer, List, ListItem } from '@mui/material';
+import { Box, Button, Drawer, List, ListItem } from '@mui/material';
 import FriendsInfo from "./FriendsInfo";
+import ChatButton from "./ChatButton";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -31,6 +32,7 @@ export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDraw
 	return (
 		<>
 		  <Drawer open={true} transitionDuration={500} onClose={() => setOpenDrawer(false)} anchor="right">
+			<ChatButton/>
 			<List disablePadding>
 				{friends}
 			</List>
