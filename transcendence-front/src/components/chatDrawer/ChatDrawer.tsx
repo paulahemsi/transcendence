@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { Box, Button, Drawer, List, ListItem } from '@mui/material';
 import FriendsInfo from "./FriendsInfo";
 import ChatButton from "./ChatButton";
@@ -20,6 +20,8 @@ const onHoverFriend = {
 }
 
 export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDrawer }) => {
+	const [direct, setDirect] = useState(true);
+	
 	const friends = [] as JSX.Element[];
 	friendsData.forEach((element : {[key: string]: any}) => {
 		friends.push(
@@ -32,10 +34,16 @@ export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDraw
 	return (
 		<>
 		  <Drawer open={true} transitionDuration={500} onClose={() => setOpenDrawer(false)} anchor="right">
-			<ChatButton/>
-			<List disablePadding>
-				{friends}
-			</List>
+			<ChatButton direct={direct} setDirect={setDirect}/>
+			{
+				direct
+				? <List disablePadding>
+						{friends}
+				</List>
+				: <List disablePadding>
+					{friends}
+				</List>
+			}
 		  </Drawer>
 		</>
 	  )
