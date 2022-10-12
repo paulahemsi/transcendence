@@ -7,8 +7,7 @@ import {
   OnGatewayDisconnect,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Server } from 'http';
-import { Socket } from 'socket.io';
+import { Socket, Server } from 'socket.io';
 
 export class message {
   channel: string;
