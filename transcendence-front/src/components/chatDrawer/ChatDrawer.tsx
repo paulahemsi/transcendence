@@ -3,6 +3,7 @@ import { Drawer } from '@mui/material';
 import ChatButton from "./ChatButton";
 import FriendsList from "./FriendsList";
 import GroupsList from "./GroupsList";
+import ChatAuxiliaryButton from "./ChatAuxiliaryButton";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -18,6 +19,7 @@ export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDraw
 		<>
 		  <Drawer open={true} transitionDuration={500} onClose={() => setOpenDrawer(false)} anchor="right" >
 			<ChatButton direct={direct} setDirect={setDirect}/>
+			<ChatAuxiliaryButton direct={direct}/>
 			{
 				direct
 				? <FriendsList friendsData={friendsData} />
