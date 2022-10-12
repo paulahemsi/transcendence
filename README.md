@@ -7,6 +7,7 @@
 * [Architecture](#Architecture)
 * [CORS](#Cors)
 * [Login_flow](#Login_flow)
+* [Encryption_and_Hashing](#Encryption_and_Hashing)
 * [Study_Resources](#Study_Resources)
 
 ## Setup
@@ -141,6 +142,15 @@ await app.listen(3000);
 
 ![image](https://user-images.githubusercontent.com/63563271/183547441-88032c14-87a4-45d2-9e51-b2b379e818ea.png)
 
+## Encryption_and_Hashing
+
+**Encryption** is the process of *encoding information*. 
+
+This process **converts** the original representation of the information, known as **plaintext**, **into** an alternative form known as **ciphertext**. 
+
+Ideally, *only authorized parties can decipher a ciphertext back to plaintext and access the original information*. Encryption does not itself prevent interference but denies the intelligible content to a would-be interceptor. Encryption is a two-way function; what is encrypted can be decrypted with the proper key.
+
+**Hashing** is the process of *converting a given key into another value*. A hash function is used to generate the new value according to a *mathematical algorithm*. Once hashing has been done, it should be **impossible to go from the output to the input**.
 
 ## Study_Resources
 

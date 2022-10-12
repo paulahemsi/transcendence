@@ -18,7 +18,8 @@ export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly matchHistoryService: MatchHistoryService,
-    @InjectRepository(ChannelMember) private readonly channelMemberRepository: Repository<ChannelMember>,
+    @InjectRepository(ChannelMember)
+    private readonly channelMemberRepository: Repository<ChannelMember>,
   ) {}
 
   getUsers() {
@@ -27,6 +28,10 @@ export class UsersService {
 
   findUser(id: string) {
     return this.userRepository.findOneBy({ id });
+  }
+
+  findUserByName(name: string) {
+    return this.userRepository.findOneBy({ username: name });
   }
 
   private async checkUser(id: string) {
@@ -87,20 +92,20 @@ export class UsersService {
       },
       where: {
         user: { id: userId },
-      }
-    })
+      },
+    });
     return channelsInfos;
   }
-  
+
   async getChannels(id: string) {
     await this.checkUser(id);
     const channelsInfos = await this.getUserChannelsInfos(id);
 
-    let channels : string[] = [];
+    const channels: string[] = [];
 
     channelsInfos.map((element) => {
       channels.push(element.channel.name);
-    })
+    });
     return channels;
   }
 }
