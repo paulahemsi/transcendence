@@ -1,8 +1,22 @@
 import { Box, Button, List, ListItem, TextField, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { FunctionComponent, useState } from "react";
 import io from 'socket.io-client';
 
 const chatSocket = io('/chat');
+
+type numberSetState = React.Dispatch<React.SetStateAction<number>>
+type matrixSetState = React.Dispatch<React.SetStateAction<string[][]>>
+
+interface ActiveChannelProps {
+	activeChannel: number;
+	setActiveChannel: numberSetState;
+}
+
+interface MessageProps {
+	activeChannel: number;
+	msgList: string[][];
+	setMsgList: matrixSetState;
+}
 
 const transcendenceText = {
     fontSize: '5vh',
@@ -13,11 +27,118 @@ const transcendenceText = {
     margin: '2vh'
 }
 
+const Title = ({activeChannel} : {activeChannel : number}) => {
+	return (
+		<Typography sx={transcendenceText}>
+			CHAT {activeChannel}
+		</Typography>
+	)
+}
+
+const RoomsButtons : FunctionComponent<ActiveChannelProps> = ({ activeChannel, setActiveChannel })  => {
+	return (
+		<Box display="flex">
+			<Button
+				variant={ activeChannel === 0 ? "contained" : "outlined"}
+				onClick={() => setActiveChannel(0)}
+				sx={{fontFamily: 'Orbitron'}}
+			>
+				chat 0
+			</Button>
+			<Button
+				variant={ activeChannel === 1 ? "contained" : "outlined"}
+				onClick={() => setActiveChannel(1)}
+				sx={{fontFamily: 'Orbitron'}}
+			>
+				chat 1
+			</Button>
+			<Button
+				variant={ activeChannel === 2 ? "contained" : "outlined"}
+				onClick={() => setActiveChannel(2)}
+				sx={{fontFamily: 'Orbitron'}}
+			>
+				chat 2
+			</Button>
+		</Box>
+	)
+}
+
+const JoinOrLeaveButton = ({ channels, activeChannel } : { channels: boolean[], activeChannel: number }) => {
+
+	const isMemberOfActiveChannel = () => {
+		return channels[activeChannel];
+	}
+
+	return (
+		<Button
+			variant={"contained"}
+			onClick={() => {
+				if(isMemberOfActiveChannel()) {
+					chatSocket.emit('leaveChannel', activeChannel.toString());
+				} else {
+					chatSocket.emit('joinChannel', activeChannel.toString());
+				}
+			}}
+			color={  isMemberOfActiveChannel() ? "error" : "success" }
+			sx={{ fontFamily: 'Orbitron' }}
+		>
+			{  isMemberOfActiveChannel() ? "leave" : "join" }
+		</Button>
+	)
+}
+
+const Messages : FunctionComponent<MessageProps> = ({ activeChannel }) => {
+	const [msg, setMsg] = useState("")
+
+	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
+		event.preventDefault()
+		setMsg(event.target.value)
+	}
+
+	const handleSendMessage = () => {
+		const msgToSend = {
+			text: msg,
+			channel: activeChannel.toString()
+		}
+		chatSocket.emit('chatMessage', msgToSend)
+		setMsg("")
+	}
+
+	const keyDownHandler = (event :  React.KeyboardEvent<HTMLInputElement>) => {
+		if (event.key === "Enter") {
+			event.preventDefault()
+			handleSendMessage()
+		}
+	}
+
+	return (
+		<Box display="flex">
+		<TextField
+				autoFocus
+				margin="dense"
+				id="name"
+				label="message"
+				type="email"
+				variant="standard"
+				value={msg}
+				onKeyDown={keyDownHandler}
+				onChange={handleChange}
+		/>
+		<Button
+			variant="contained"
+			onClick={handleSendMessage}
+			sx={{fontFamily: 'Orbitron'}}
+		>
+			Send 
+		</Button>
+	</Box>
+	)
+}
+
 export const Chat = () => {
 
 	const [msgList, setMsgList] = useState([["zero", "zero"], ["um" , "um"], ["dois", "dois"]])
-	const [msg, setMsg] = useState("")
-	const [activeChannel, setactiveChannel] = useState(0)
+	const [activeChannel, setActiveChannel] = useState(0)
 	const [channels, setChannels] = useState([false, false, false]);
 	
 	const messageList = [] as JSX.Element[];
@@ -32,118 +153,34 @@ export const Chat = () => {
 		}
 	)
 
-	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
-		setMsg(event.target.value)
-	}
-
-	const handleSendMessage = () => {
-		const msgToSend = {
-			text: msg,
-			channel: activeChannel.toString()
-		}
-		msgList[activeChannel].concat( `eu: ${msg}`);
-		setMsgList(msgList);
-		chatSocket.emit('chatMessage', msgToSend)
-		setMsg("")
-	}
-
-	const keyDownHandler = (event :  React.KeyboardEvent<HTMLInputElement>) => {
-		if (event.key === "Enter") {
-			event.preventDefault()
-			handleSendMessage()
-		}
-	}
-
-	const isMemberOfActiveChannel = () => {
-		return channels[activeChannel];
-	}
-	
-	chatSocket.on('chatMessage', (msg) => {
-		console.log("message from server: ", msg);
+	chatSocket.off('chatMessage').on('chatMessage', (msg) => {
 		const channelNumber = +msg.channel;
-		msgList[channelNumber].push(msg.text);
-		console.log("oiiii")
-		console.log(msgList[channelNumber]);
-		setMsgList(msgList);
+		const newMsgList = msgList.map((element) => element);
+		newMsgList[channelNumber].push(msg.text);
+		setMsgList(newMsgList);
 	} )
 
 	chatSocket.on('joinChannel', (room) => {
 		const roomNumber = +room;
-		channels[roomNumber] = true;
-		setChannels(channels);
+		const newChannels = channels.map ((channel) => channel);
+		newChannels[roomNumber] = true;
+		setChannels(newChannels);
 		
 	} )
 
 	chatSocket.on('leaveChannel', (room) => {
 		const roomNumber = +room;
-		channels[roomNumber] = false
-		setChannels(channels);
+		const newChannels = channels.map ((channel) => channel);
+		newChannels[roomNumber] = false;
+		setChannels(newChannels);
 	} )
-	
+
 	return (
-	<Box display="flex" flexDirection="column" justifyContent="center" sx={{ paddingTop: '1vh', paddingRight: '1vh', paddingBottom: '1vh' }}>
-		<Typography sx={transcendenceText}>
-			CHAT {activeChannel}
-		</Typography>
-		<Box display="flex">
-			<TextField
-					autoFocus
-					margin="dense"
-					id="name"
-					label="message"
-					type="email"
-					variant="standard"
-					value={msg}
-					onKeyDown={keyDownHandler}
-					onChange={handleChange}
-			/>
-			<Button
-				variant="contained"
-				onClick={handleSendMessage}
-				sx={{fontFamily: 'Orbitron'}}
-			>
-				Send 
-			</Button>
-		</Box>
-		<Box display="flex">
-			<Button
-				variant={ activeChannel === 0 ? "contained" : "outlined"}
-				onClick={() => setactiveChannel(0)}
-				sx={{fontFamily: 'Orbitron'}}
-			>
-				chat 0
-			</Button>
-			<Button
-				variant={ activeChannel === 1 ? "contained" : "outlined"}
-				onClick={() => setactiveChannel(1)}
-				sx={{fontFamily: 'Orbitron'}}
-			>
-				chat 1
-			</Button>
-			<Button
-				variant={ activeChannel === 2 ? "contained" : "outlined"}
-				onClick={() => setactiveChannel(2)}
-				sx={{fontFamily: 'Orbitron'}}
-			>
-				chat 2
-			</Button>
-		</Box>
-		<Button
-			variant={"contained"}
-			onClick={() => {
-				if(isMemberOfActiveChannel()) {
-					console.log("estou saindo")
-					chatSocket.emit('leaveChannel', activeChannel.toString());
-				} else {
-					console.log("estou entrando")
-					chatSocket.emit('joinChannel', activeChannel.toString());
-				}
-			}}
-			color={  isMemberOfActiveChannel() ? "error" : "success" }
-			sx={{ fontFamily: 'Orbitron' }}
-		>
-			{  isMemberOfActiveChannel() ? "leave" : "join" }
-		</Button>
+		<Box display="flex" flexDirection="column" justifyContent="center" sx={{ paddingTop: '1vh', paddingRight: '1vh', paddingBottom: '1vh' }}>
+		<Title activeChannel={activeChannel}/>
+		<Messages msgList={msgList} activeChannel={activeChannel} setMsgList={setMsgList}/>
+		<RoomsButtons activeChannel={activeChannel} setActiveChannel={setActiveChannel}/>
+		<JoinOrLeaveButton channels={channels} activeChannel={activeChannel}/>
 		<List>
 			{messageList}
 		</List>
