@@ -1,7 +1,8 @@
 import React, { FunctionComponent, useState } from "react";
-import { Drawer, List } from '@mui/material';
+import { Drawer } from '@mui/material';
 import ChatButton from "./ChatButton";
 import FriendsList from "./FriendsList";
+import GroupsList from "./GroupsList";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -15,14 +16,12 @@ export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDraw
 
 	return (
 		<>
-		  <Drawer open={true} transitionDuration={500} onClose={() => setOpenDrawer(false)} anchor="right">
+		  <Drawer open={true} transitionDuration={500} onClose={() => setOpenDrawer(false)} anchor="right" >
 			<ChatButton direct={direct} setDirect={setDirect}/>
 			{
 				direct
 				? <FriendsList friendsData={friendsData} />
-				: <List disablePadding>
-					blablabla
-				</List>
+				: <GroupsList />
 			}
 		  </Drawer>
 		</>
