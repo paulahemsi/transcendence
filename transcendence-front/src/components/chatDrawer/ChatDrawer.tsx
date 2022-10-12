@@ -1,7 +1,8 @@
-import React, { FunctionComponent } from "react";
-import { Box, Button, Drawer, List, ListItem } from '@mui/material';
-import FriendsInfo from "./FriendsInfo";
+import React, { FunctionComponent, useState } from "react";
+import { Drawer } from '@mui/material';
 import ChatButton from "./ChatButton";
+import FriendsList from "./FriendsList";
+import GroupsList from "./GroupsList";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -10,32 +11,18 @@ interface Props {
     setOpenDrawer: booleanSetState;
 }
 
-const onHoverFriend = {
-	'&:hover': {
-		backgroundColor: '#B998FF',
-	},
-	width: '100%',
-	textTransform: 'lowercase',
-	borderRadius: '0'
-}
-
 export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDrawer }) => {
-	const friends = [] as JSX.Element[];
-	friendsData.forEach((element : {[key: string]: any}) => {
-		friends.push(
-		<ListItem disablePadding key={element.username} sx={{marginBottom: '1vh'}}> 
-			<Button sx={onHoverFriend} onClick={() => console.log("click")}>
-				<FriendsInfo userData={element}/>
-			</Button>
-		</ListItem>);
-	})
+	const [direct, setDirect] = useState(true);
+
 	return (
 		<>
-		  <Drawer open={true} transitionDuration={500} onClose={() => setOpenDrawer(false)} anchor="right">
-			<ChatButton/>
-			<List disablePadding>
-				{friends}
-			</List>
+		  <Drawer open={true} transitionDuration={500} onClose={() => setOpenDrawer(false)} anchor="right" >
+			<ChatButton direct={direct} setDirect={setDirect}/>
+			{
+				direct
+				? <FriendsList friendsData={friendsData} />
+				: <GroupsList />
+			}
 		  </Drawer>
 		</>
 	  )
