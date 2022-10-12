@@ -1,26 +1,53 @@
 import { Box, Button } from "@mui/material"
-import React from "react"
+import React, { FunctionComponent } from "react"
 
-const chatButton = {
+type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+
+interface Props {
+	direct: boolean;
+    setDirect: booleanSetState;
+}
+
+const selected = {
 	borderRadius: 0,
 	textTransform: 'lowercase',
-	background: '#B998FF',
+	background: '#212980',
 	color: '#FFFFFF',
-	':hover': { background: '#212980'},
 	fontFamily: 'Orbitron',
 	fontSize: '4vh',
 	paddingLeft: '5vh',
 	paddingRight: '5vh',
 	width: "50%",
+	':hover': { background: '#212980'},
 }
 
-export const ChatButton = () => {
+const notSelected = {
+	borderRadius: 0,
+	textTransform: 'lowercase',
+	background: '#B998FF',
+	color: '#FFFFFF',
+	fontFamily: 'Orbitron',
+	fontSize: '4vh',
+	paddingLeft: '5vh',
+	paddingRight: '5vh',
+	width: "50%",
+	':hover': { background: '#B998FF'},
+}
+
+export const ChatButton: FunctionComponent<Props> = ({ direct, setDirect }) => {
+	
 	return (
 		<Box display="flex" sx={{width: "100%"}}>
-			<Button sx={chatButton}>
+			<Button
+				sx={ direct ? selected : notSelected }
+				onClick={() => setDirect(true)}
+			>
 				Direct
 			</Button>
-			<Button sx={chatButton}>
+			<Button
+				sx={ direct ? notSelected : selected }
+				onClick={() => setDirect(false)}
+			>
 				Groups
 			</Button>
 		</Box>
