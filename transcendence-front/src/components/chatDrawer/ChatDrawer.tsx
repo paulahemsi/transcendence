@@ -1,25 +1,13 @@
 import React, { FunctionComponent } from "react";
 import { Box, Button, Drawer, List, ListItem } from '@mui/material';
 import FriendsInfo from "./FriendsInfo";
+import ChatButton from "./ChatButton";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
 interface Props {
     friendsData: {[key: string]: any};
     setOpenDrawer: booleanSetState;
-}
-
-const chatButton = {
-	borderRadius: 0,
-	textTransform: 'lowercase',
-	background: '#B998FF',
-	color: '#FFFFFF',
-	':hover': { background: '#212980'},
-	fontFamily: 'Orbitron',
-	fontSize: '4vh',
-	paddingLeft: '5vh',
-	paddingRight: '5vh',
-	width: "50%",
 }
 
 const onHoverFriend = {
@@ -44,14 +32,7 @@ export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDraw
 	return (
 		<>
 		  <Drawer open={true} transitionDuration={500} onClose={() => setOpenDrawer(false)} anchor="right">
-			<Box display="flex" sx={{width: "100%"}}>
-				<Button sx={chatButton}>
-					Direct
-				</Button>
-				<Button sx={chatButton}>
-					Groups
-				</Button>
-			</Box>
+			<ChatButton/>
 			<List disablePadding>
 				{friends}
 			</List>
