@@ -18,9 +18,7 @@ import { PhaserGame } from './components/game/game';
           {loggedIn
           ? <Home setLoggedIn={setLoggedIn}/>
           : <LoginCard/> }
-          <div className="transcendence-pong-game"> 
-            <PhaserGame />
-          </div>
+          <PhaserGame />
       </main>
     </>
   );
