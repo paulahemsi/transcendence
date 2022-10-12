@@ -14,8 +14,7 @@ interface ActiveChannelProps {
 
 interface MessageProps {
 	activeChannel: number;
-	msgList: string[][];
-	setMsgList: matrixSetState;
+	isMember : boolean;
 }
 
 const transcendenceText = {
@@ -87,7 +86,7 @@ const JoinOrLeaveButton = ({ channels, activeChannel } : { channels: boolean[], 
 	)
 }
 
-const Messages : FunctionComponent<MessageProps> = ({ activeChannel }) => {
+const Messages : FunctionComponent<MessageProps> = ({ activeChannel, isMember }) => {
 	const [msg, setMsg] = useState("")
 
 	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
@@ -96,11 +95,13 @@ const Messages : FunctionComponent<MessageProps> = ({ activeChannel }) => {
 	}
 
 	const handleSendMessage = () => {
-		const msgToSend = {
-			text: msg,
-			channel: activeChannel.toString()
+		if (isMember) {
+			const msgToSend = {
+				text: msg,
+				channel: activeChannel.toString()
+			}
+			chatSocket.emit('chatMessage', msgToSend)
 		}
-		chatSocket.emit('chatMessage', msgToSend)
 		setMsg("")
 	}
 
@@ -140,7 +141,8 @@ export const Chat = () => {
 	const [msgList, setMsgList] = useState([["zero", "zero"], ["um" , "um"], ["dois", "dois"]])
 	const [activeChannel, setActiveChannel] = useState(0)
 	const [channels, setChannels] = useState([false, false, false]);
-	
+	const notMember = "ooops, you're a not a channel member, join in to see the messages!";
+
 	const messageList = [] as JSX.Element[];
 	msgList[activeChannel].forEach((msg: string) => {
 		messageList.push(
@@ -175,15 +177,19 @@ export const Chat = () => {
 		setChannels(newChannels);
 	} )
 
+	const isMemberOfActiveChannel = () => {
+		return channels[activeChannel];
+	}
+
 	return (
 		<Box display="flex" flexDirection="column" justifyContent="center" sx={{ paddingTop: '1vh', paddingRight: '1vh', paddingBottom: '1vh' }}>
-		<Title activeChannel={activeChannel}/>
-		<Messages msgList={msgList} activeChannel={activeChannel} setMsgList={setMsgList}/>
-		<RoomsButtons activeChannel={activeChannel} setActiveChannel={setActiveChannel}/>
-		<JoinOrLeaveButton channels={channels} activeChannel={activeChannel}/>
-		<List>
-			{messageList}
-		</List>
-	</Box>
+			<Title activeChannel={activeChannel}/>
+			<Messages isMember={isMemberOfActiveChannel()} activeChannel={activeChannel} />
+			<RoomsButtons activeChannel={activeChannel} setActiveChannel={setActiveChannel}/>
+			<JoinOrLeaveButton channels={channels} activeChannel={activeChannel}/>
+			<List>
+				{ isMemberOfActiveChannel() ? messageList : notMember}
+			</List>
+		</Box>
 	)
 }
