@@ -18,7 +18,7 @@ const onHoverFriend = {
 	borderRadius: '0'
 }
 
-export const FriendsDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDrawer }) => {
+export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDrawer }) => {
 	const friends = [] as JSX.Element[];
 	friendsData.forEach((element : {[key: string]: any}) => {
 		friends.push(
@@ -39,4 +39,4 @@ export const FriendsDrawer : FunctionComponent<Props> = ({ friendsData, setOpenD
 	  )
 }
 
-export default FriendsDrawer
+export default ChatDrawer

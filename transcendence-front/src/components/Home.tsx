@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Typography, Box, Button } from '@mui/material';
 import Header from "./header/Header";
 import { Footer } from "./footer/Footer";
-import FriendsDrawer from "./friendsDrawer/FriendsDrawer";
+import ChatDrawer from "./chatDrawer/ChatDrawer";
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import ProfileCard from "./profileDrawer/ProfileDrawer";
@@ -73,7 +73,7 @@ export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 		<>
 			<Header setOpenDrawer={setOpenDrawer} setOpenCard={setOpenCard} numberOfFriends={friendsData.length}/>
 			{ openCard && <ProfileCard setOpenCard={setOpenCard}/> }
-			{ openDrawer && <FriendsDrawer friendsData={friendsData} setOpenDrawer={setOpenDrawer} />}
+			{ openDrawer && <ChatDrawer friendsData={friendsData} setOpenDrawer={setOpenDrawer} />}
 			<Background />
 			<Footer setLoggedIn={setLoggedIn}/>
 		</>
