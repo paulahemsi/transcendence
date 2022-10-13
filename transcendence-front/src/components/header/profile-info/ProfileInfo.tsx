@@ -17,7 +17,7 @@ const EditButton = ({ setOpenDialog } : { setOpenDialog : booleanSetState }) => 
 	
 	return (
 		<Tooltip title='edit profile' placement='right' arrow TransitionComponent={Zoom}>
-			<IconButton sx={{ alignSelf: 'flex-start'}} onClick={handleOpenDialog}>
+			<IconButton sx={{ alignSelf: 'center'}} onClick={handleOpenDialog}>
 				<EditIcon sx={{ color: '#311B92' }}/>
 			</IconButton>
 		</Tooltip>
@@ -50,8 +50,8 @@ export const ProfileInfo = ({ setOpenCard } : { setOpenCard : booleanSetState })
 
 	return(
 		<Box display='flex' flexDirection='row' alignItems="center">
-			<EditButton setOpenDialog={setOpenDialog} />
 			<ProfileButton setOpenCard={setOpenCard} userData={userData} />
+			<EditButton setOpenDialog={setOpenDialog} />
 			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
 				<UpdateProfileDialog setOpen={setOpenDialog} setUserData={setUserData}/>
 			</Dialog>
