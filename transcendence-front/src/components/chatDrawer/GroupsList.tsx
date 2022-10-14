@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { Box, Button, List, ListItem, Typography } from "@mui/material";
-import axios, { AxiosRequestHeaders } from 'axios';
-import jwt from 'jwt-decode';
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
-type tokenData = {
-	id: string;
+interface Props {
+    groupsData: {[key: string]: any};
+    setExtraContent : booleanSetState;
 }
 
 const notPart = "you are not part of any group chats :("
@@ -19,16 +18,6 @@ const onHoverGroup = {
 	width: '100%',
 	textTransform: 'lowercase',
 	borderRadius: '0'
-}
-
-const requestGroupsData = async ({ setGroupsData } : { setGroupsData: React.Dispatch<React.SetStateAction<Array<string>>>}) => {
-
-	const tokenData: tokenData = jwt(document.cookie);
-	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-	
-	await axios.get(`http://localhost:3000/users/${tokenData.id}/channels`, { headers: authToken }).then((response) => {
-		setGroupsData(response.data);
-})
 }
 
 const NoGroups = () => {
@@ -44,19 +33,16 @@ const NoGroups = () => {
 	)
 }
 
-export const GroupsList = ({setExtraContent} : {setExtraContent : booleanSetState}) => {
-	const [groupsData, setGroupsData] = useState<Array<string>>([]);
-	
-	useEffect(() => {requestGroupsData({setGroupsData})}, []);
+export const GroupsList : FunctionComponent<Props> = ({ groupsData, setExtraContent }) => {
 	
 	const groups = [] as JSX.Element[];
-	groupsData.forEach((value: string, index: number, array: string[]) => {
+	groupsData.forEach((element : {[key: string]: any}) => {
 		groups.push(
-		<ListItem disablePadding key={index} sx={{marginBottom: '1vh'}}> 
+		<ListItem disablePadding key={element.id} sx={{marginBottom: '1vh'}}> 
 			<Button sx={onHoverGroup} onClick={() => setExtraContent(true)}>
 			<Box display='flex' width='100%' flexDirection='row' alignItems="center" alignSelf="flex-start">
 				<Typography sx={{ color: '#212980', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '4vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
-					{value}
+					{element.name}
 				</Typography>
 				</Box>
 			</Button>
