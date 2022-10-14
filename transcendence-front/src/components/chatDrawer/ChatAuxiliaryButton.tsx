@@ -22,8 +22,8 @@ export const buttonConfig = (width: string) => {
 	}
 }
 
-const directButton = buttonConfig("100%")
-const groupButton = buttonConfig("33.333%")
+const directButton = buttonConfig("30vw")
+const groupButton = buttonConfig("10vw")
 
 export const DirectButtons = ({ setExtraContent } : { setExtraContent : booleanSetState }) => {
 	
@@ -32,7 +32,7 @@ export const DirectButtons = ({ setExtraContent } : { setExtraContent : booleanS
 	}
 	
 	return (
-		<Box display="flex" sx={{width: "100%"}}>
+		<Box display="flex" sx={{width: "30vw"}}>
 			<Button sx={directButton} onClick={handleClick}>
 				add friend
 			</Button>
@@ -47,7 +47,7 @@ export const GroupsButtons = ({ setExtraContent } : { setExtraContent : booleanS
 	}
 	
 	return (
-		<Box display="flex" sx={{width: "100%"}}>
+		<Box display="flex" sx={{width: "30vw"}}>
 			<Button sx={groupButton}>
 				manage	
 			</Button>

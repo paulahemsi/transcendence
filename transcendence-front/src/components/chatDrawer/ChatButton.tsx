@@ -18,7 +18,7 @@ const selected = {
 	fontSize: '4vh',
 	paddingLeft: '5vh',
 	paddingRight: '5vh',
-	width: "50%",
+	width: "15vw",
 	':hover': { background: '#212980'},
 }
 
@@ -31,7 +31,7 @@ const notSelected = {
 	fontSize: '4vh',
 	paddingLeft: '5vh',
 	paddingRight: '5vh',
-	width: "50%",
+	width: "15vw",
 	':hover': { background: '#B998FF'},
 }
 
