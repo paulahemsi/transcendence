@@ -3,6 +3,8 @@ import { Box, Button, List, ListItem, Typography } from "@mui/material";
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 
+type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+
 type tokenData = {
 	id: string;
 }
@@ -42,7 +44,7 @@ const NoGroups = () => {
 	)
 }
 
-export const GroupsList = () => {
+export const GroupsList = ({setExtraContent} : {setExtraContent : booleanSetState}) => {
 	const [groupsData, setGroupsData] = useState<Array<string>>([]);
 	
 	useEffect(() => {requestGroupsData({setGroupsData})}, []);
@@ -51,7 +53,7 @@ export const GroupsList = () => {
 	groupsData.forEach((value: string, index: number, array: string[]) => {
 		groups.push(
 		<ListItem disablePadding key={index} sx={{marginBottom: '1vh'}}> 
-			<Button sx={onHoverGroup} onClick={() => console.log("click")}>
+			<Button sx={onHoverGroup} onClick={() => setExtraContent(true)}>
 			<Box display='flex' width='100%' flexDirection='row' alignItems="center" alignSelf="flex-start">
 				<Typography sx={{ color: '#212980', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '4vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
 					{value}
