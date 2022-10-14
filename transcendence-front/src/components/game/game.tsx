@@ -5,8 +5,8 @@ export class PhaserGame extends React.Component {
 	componentDidMount(): void {
 		const gameConfig: Phaser.Types.Core.GameConfig = {
 			type: Phaser.AUTO,
-			width: 1280,
-			height: 720,
+			width: window.innerWidth,
+			height: window.innerHeight,
 			physics: {
 				default: 'arcade',
 				arcade: {
@@ -31,19 +31,21 @@ export class PhaserGame extends React.Component {
 
 		function preload(this: Phaser.Scene): void {
 	
-			this.load.image('pad', 'src/assets/pad.png')
+			this.load.image('pad', require('./assets/pad.png'));
 		}
+
 		function create(this: Phaser.Scene): void {
 			player = this.physics.add.sprite(100, 450, 'pad');
 			player.setCollideWorldBounds(true);
 		}
+
 		function update(this: Phaser.Scene): void {
 			cursors = this.input.keyboard.createCursorKeys();
 			if (cursors.up.isDown) {
-				player.setVelocityY(-250);
+				player.setVelocityY(-300);
 			}
 			else if (cursors.down.isDown) {
-				player.setVelocityY(250);
+				player.setVelocityY(300);
 			}
 			else {
 				player.setVelocityY(0);
