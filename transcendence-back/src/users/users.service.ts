@@ -13,6 +13,12 @@ export class matchInfos {
   isWinner: boolean;
 }
 
+type channelInfo = {
+  id: number;
+  name: string;
+};
+
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -101,10 +107,14 @@ export class UsersService {
     await this.checkUser(id);
     const channelsInfos = await this.getUserChannelsInfos(id);
 
-    const channels: string[] = [];
+    const channels: Array<channelInfo> = [];
 
     channelsInfos.map((element) => {
-      channels.push(element.channel.name);
+      const channel = {} as channelInfo;
+
+      channel.id = element.channel.id;
+      channel.name = element.channel.name;
+      channels.push(channel);
     });
     return channels;
   }
