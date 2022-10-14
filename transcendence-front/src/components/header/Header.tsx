@@ -13,7 +13,7 @@ interface Props {
 
 export const Header : FunctionComponent<Props> = ({ setOpenDrawer, setOpenCard, numberOfFriends }) => {
 	return (
-	<AppBar sx={{ height: '7vh', background: '#F5F5F5', position: 'fixed'}}>
+	<AppBar position='relative' sx={{ height: '7vh', width: '100vw', background: '#F5F5F5', zIndex: 1300}}>
 		<Stack display='flex' flexDirection='row' alignItems="center" justifyContent="space-between" sx={{ paddingTop: '0.5vh', paddingLeft: '1.5vh', paddingBottom: '2vh' }}>
 			<ProfileInfo setOpenCard={setOpenCard} />
 			<FriendshipInfo setOpenDrawer={setOpenDrawer} numberOfFriends={numberOfFriends} />

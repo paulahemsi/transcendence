@@ -1,6 +1,13 @@
-import React from "react";
+import React, { FunctionComponent } from "react";
 import { Button, List, ListItem } from "@mui/material";
 import FriendsInfo from "./FriendsInfo";
+
+type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+
+interface Props {
+    friendsData: {[key: string]: any};
+    setExtraContent: booleanSetState;
+}
 
 const onHoverFriend = {
 	'&:hover': {
@@ -11,13 +18,13 @@ const onHoverFriend = {
 	borderRadius: '0'
 }
 
-export const FriendsList = ({ friendsData } : { friendsData: {[key: string]: any }}) => {
+export const FriendsList : FunctionComponent<Props> = ({ friendsData, setExtraContent }) => {
 	
 	const friends = [] as JSX.Element[];
 	friendsData.forEach((element : {[key: string]: any}) => {
 		friends.push(
 		<ListItem disablePadding key={element.username} sx={{marginBottom: '1vh'}}> 
-			<Button sx={onHoverFriend} onClick={() => console.log("click")}>
+			<Button sx={onHoverFriend} onClick={() => setExtraContent(true)}>
 				<FriendsInfo userData={element}/>
 			</Button>
 		</ListItem>);

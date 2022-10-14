@@ -1,8 +1,11 @@
 import { Box, Button } from "@mui/material"
 import React, { FunctionComponent } from "react"
 
+type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+
 interface Props {
 	direct: boolean;
+	setExtraContent : booleanSetState;
 }
 export const buttonConfig = (width: string) => {
 	return {
@@ -19,41 +22,51 @@ export const buttonConfig = (width: string) => {
 	}
 }
 
-const directButton = buttonConfig("100%")
-const groupButton = buttonConfig("33.333%")
+const directButton = buttonConfig("30vw")
+const groupButton = buttonConfig("10vw")
 
-export const DirectButtons = () => {
+export const DirectButtons = ({ setExtraContent } : { setExtraContent : booleanSetState }) => {
+	
+	const handleClick = () => {
+		setExtraContent(false);
+	}
+	
 	return (
-		<Box display="flex" sx={{width: "100%"}}>
-			<Button sx={directButton}>
+		<Box display="flex" sx={{width: "30vw"}}>
+			<Button sx={directButton} onClick={handleClick}>
 				add friend
 			</Button>
 		</Box>
 	)
 }
 
-export const GroupsButtons = () => {
+export const GroupsButtons = ({ setExtraContent } : { setExtraContent : booleanSetState }) => {
+	
+	const handleClick = () => {
+		setExtraContent(false);
+	}
+	
 	return (
-		<Box display="flex" sx={{width: "100%"}}>
+		<Box display="flex" sx={{width: "30vw"}}>
 			<Button sx={groupButton}>
 				manage	
 			</Button>
-			<Button sx={groupButton}>
+			<Button sx={groupButton} onClick={handleClick}>
 				create
 			</Button>
-			<Button sx={groupButton}>
+			<Button sx={groupButton} onClick={handleClick}>
 				search
 			</Button>
 		</Box>
 	)
 }
 
-export const ChatAuxiliaryButton: FunctionComponent<Props> = ({ direct }) => {
+export const ChatAuxiliaryButton: FunctionComponent<Props> = ({ direct, setExtraContent }) => {
 	return (
 		<>
 		{ direct
-		? <DirectButtons />
-		: <GroupsButtons /> } 
+		? <DirectButtons setExtraContent={setExtraContent} />
+		: <GroupsButtons setExtraContent={setExtraContent} /> } 
 		</>
 	)
 } 
