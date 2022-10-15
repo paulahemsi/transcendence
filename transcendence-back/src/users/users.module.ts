@@ -6,6 +6,7 @@ import { ChannelMember, ChannelType, Friendship, User } from 'src/entity';
 import { MatchHistory } from 'src/entity';
 import { FriendshipService } from '../friendship/friendship.service';
 import { MatchHistoryService } from 'src/match-history/match-history.service';
+import { ChannelTypeService } from 'src/channels/channel-type.service';
 
 @Module({
   imports: [
@@ -22,8 +23,8 @@ import { MatchHistoryService } from 'src/match-history/match-history.service';
     UsersService,
     FriendshipService,
     MatchHistoryService,
+    ChannelTypeService,
     ChannelMember,
-    ChannelType,
   ],
   exports: [UsersService],
 })

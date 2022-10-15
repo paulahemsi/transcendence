@@ -5,7 +5,8 @@ import { ChannelMember, User } from 'src/entity';
 import { Repository, Not } from 'typeorm';
 import { MatchHistoryService } from 'src/match-history/match-history.service';
 import { Intra42UserData } from 'src/auth/strategies/intra42.strategy';
-import { ChannelType, channelType } from 'src/entity/channel-type.entity';
+import { channelType } from 'src/entity/channel-type.entity';
+import { ChannelTypeService } from 'src/channels/channel-type.service';
 
 export class matchInfos {
   opponent: string;
@@ -26,8 +27,7 @@ export class UsersService {
     private readonly matchHistoryService: MatchHistoryService,
     @InjectRepository(ChannelMember)
     private readonly channelMemberRepository: Repository<ChannelMember>,
-    @InjectRepository(ChannelType)
-    private readonly channeTypeRepository: Repository<ChannelType>,
+    private readonly channeTypeService: ChannelTypeService,
   ) {}
 
   getUsers() {
@@ -93,9 +93,9 @@ export class UsersService {
   }
 
   async getUserChannelsInfos(userId: string) {
-    const directMessageType = await this.channeTypeRepository.findOneBy({
-      type: channelType.DIRECT_MESSAGES,
-    });
+    const directMessageType = await this.channeTypeService.getChannelType(
+      channelType.DIRECT_MESSAGES,
+    );
     const channelsInfos = await this.channelMemberRepository.find({
       relations: {
         channel: true,
