@@ -27,10 +27,7 @@ export class FriendshipService {
     private dataSource: DataSource,
   ) {}
 
-  private findOneFriendship(
-    userId: string,
-    friendId: string,
-  ): Promise<Friendship> {
+  private findOneFriendship(userId: string, friendId: string) {
     return this.friedshipRepository.findOne({
       relations: {
         user: true,
@@ -90,6 +87,13 @@ export class FriendshipService {
     return friendship;
   }
 
+  private async createTransaction() {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    return queryRunner;
+  }
+
   async createFriendship(userId: string, friendId: string) {
     const { user, friend } = await this.checkUserAndFriend(userId, friendId);
     let channel = await this.channelsService.createDirectMessageChannelEntity(
@@ -98,9 +102,7 @@ export class FriendshipService {
     this.checkFriendship(user, friend);
     this.checkFriendship(friend, user);
 
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    const queryRunner = await this.createTransaction();
     try {
       channel = await queryRunner.manager.save(channel);
       const friendship1 = this.createFriendshipEntity(user, friend, channel);
@@ -124,9 +126,7 @@ export class FriendshipService {
       throw new NotFoundException();
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    const queryRunner = await this.createTransaction();
     try {
       await queryRunner.manager.remove(friendship1);
       await queryRunner.manager.remove(friendship2);
