@@ -40,7 +40,7 @@ const transcendenceText = {
 
 const Background = ({ setGameActive } : { setGameActive: booleanSetState}) => {
 	return (
-		<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" minHeight="100vh" sx={{backgroundImage: 'linear-gradient(to right, #212980 , #6f0162)'}}>
+		<Box display="flex" flexDirection="column" justifyContent="center" position="fixed" alignItems="center" height="86vh" width="100vw" sx={{backgroundImage: 'linear-gradient(to right, #212980 , #6f0162)'}}>
 			<Typography sx={transcendenceText}>
 				ft_transcendence
 			</Typography>
