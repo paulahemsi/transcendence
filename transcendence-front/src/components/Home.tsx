@@ -6,6 +6,7 @@ import ChatDrawer from "./chatDrawer/ChatDrawer";
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import ProfileCard from "./profileDrawer/ProfileDrawer";
+import { PhaserGame } from "./game/game"
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -37,13 +38,13 @@ const transcendenceText = {
 }
 
 
-const Background = () => {
+const Background = ({ setGameActive } : { setGameActive: booleanSetState}) => {
 	return (
 		<Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" minHeight="100vh" sx={{backgroundImage: 'linear-gradient(to right, #212980 , #6f0162)'}}>
 			<Typography sx={transcendenceText}>
 				ft_transcendence
 			</Typography>
-			<Button variant="outlined" size="medium"
+			<Button variant="outlined" size="medium" onClick={() => setGameActive(true)}
 				sx={startGameButton}>
 				Start Game
 			</Button>
@@ -66,15 +67,16 @@ export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 	const [openDrawer, setOpenDrawer] = useState(false)
 	const [openCard, setOpenCard] = useState(false)
 	const [friendsData, setFriendsData] = useState<{[key: string]: any}>({});
+	const [gameActive, setGameActive] = useState(false);
 	
 	useEffect(() => {requestFriendsData({setFriendsData})}, []);
 
 	return (
 		<>
-			<Header setOpenDrawer={setOpenDrawer} setOpenCard={setOpenCard} numberOfFriends={friendsData.length}/>
+			<Header setOpenDrawer={setOpenDrawer} setOpenCard={setOpenCard} numberOfFriends={friendsData.length}/>;
 			{ openCard && <ProfileCard setOpenCard={setOpenCard}/> }
 			{ openDrawer && <ChatDrawer friendsData={friendsData} setOpenDrawer={setOpenDrawer} />}
-			<Background />
+			{ gameActive ? <PhaserGame/> : <Background setGameActive={setGameActive} />}
 			<Footer setLoggedIn={setLoggedIn}/>
 		</>
 	);
