@@ -72,7 +72,12 @@ export class FriendshipService {
     if (!friend) {
       throw new NotFoundException();
     }
-    return this.addFriend(userId, friend.id);
+    return this.addBilateralFriendship(userId, friend.id);
+  }
+
+  async addBilateralFriendship(userId: string, friendId: string) {
+    this.addFriend(userId, friendId);
+    this.addFriend(friendId, userId);
   }
 
   async deleteFriend(userId: string, friendId: string) {
@@ -82,6 +87,11 @@ export class FriendshipService {
       throw new NotFoundException();
     }
     this.friedshipRepository.delete(friendship.id);
+  }
+
+  async deleteBilaretalFriendship(userId: string, friendId: string) {
+    this.deleteFriend(userId, friendId);
+    this.deleteFriend(friendId, userId);
   }
 
   async getFriends(userId: string) {
