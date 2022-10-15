@@ -1,10 +1,12 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Friendship, User } from 'src/entity';
+import { ChannelsService } from 'src/channels/channels.service';
+import { Channel, Friendship, User } from 'src/entity';
 import { DataSource, Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
 
@@ -21,6 +23,7 @@ export class FriendshipService {
     @InjectRepository(Friendship)
     private readonly friedshipRepository: Repository<Friendship>,
     private readonly usersService: UsersService,
+    private readonly channelsService: ChannelsService,
     private dataSource: DataSource,
   ) {}
 
@@ -67,33 +70,47 @@ export class FriendshipService {
     return this.createFriendship(userId, friend.id);
   }
 
-  private async checkAndCreateFriendship(user: User, friend: User) {
-    let friendship = await this.findOneFriendship(user.id, friend.id);
+  private async checkFriendship(user: User, friend: User) {
+    const friendship = await this.findOneFriendship(user.id, friend.id);
     if (friendship) {
       throw new BadRequestException('users alredy friends');
     }
+  }
 
-    friendship = this.friedshipRepository.create({
+  private async createFriendshipEntity(
+    user: User,
+    friend: User,
+    channel: Channel,
+  ) {
+    const friendship = this.friedshipRepository.create({
       user: user,
       friend: friend,
+      channel: channel,
     });
     return friendship;
   }
 
   async createFriendship(userId: string, friendId: string) {
     const { user, friend } = await this.checkUserAndFriend(userId, friendId);
-    const friendship1 = await this.checkAndCreateFriendship(user, friend);
-    const friendship2 = await this.checkAndCreateFriendship(friend, user);
+    let channel = await this.channelsService.createDirectMessageChannelEntity(
+      user,
+    );
+    this.checkFriendship(user, friend);
+    this.checkFriendship(friend, user);
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      await queryRunner.manager.save(friendship1);
-      await queryRunner.manager.save(friendship2);
+      channel = await queryRunner.manager.save(channel);
+      const friendship1 = this.createFriendshipEntity(user, friend, channel);
+      const friendship2 = this.createFriendshipEntity(friend, user, channel);
+      await queryRunner.manager.save(await friendship1);
+      await queryRunner.manager.save(await friendship2);
       await queryRunner.commitTransaction();
     } catch (err) {
       await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException('Fail to create friendship');
     } finally {
       await queryRunner.release();
     }

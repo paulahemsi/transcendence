@@ -6,7 +6,13 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MessagelDto, UpdateChannelDto } from 'src/dto/channel.dtos';
-import { Channel, ChannelAdmin, ChannelMember, Message } from 'src/entity';
+import {
+  Channel,
+  ChannelAdmin,
+  ChannelMember,
+  Message,
+  User,
+} from 'src/entity';
 import { BadRequestException } from '@nestjs/common';
 import { CreateChannelDto } from 'src/dto/channel.dtos';
 import { UsersService } from 'src/users/users.service';
@@ -14,6 +20,7 @@ import { Repository } from 'typeorm';
 import { ChannelTypeService } from './channel-type.service';
 import * as bcrypt from 'bcrypt';
 import { ChatMessagelDto } from 'src/dto/chat.dtos';
+import { channelType } from 'src/entity/channel-type.entity';
 
 type members = {
   id: string;
@@ -278,5 +285,17 @@ export class ChannelsService {
       password: await bcrypt.hash(channelDto.password, salt),
     });
     return this.channelRepository.save(channel);
+  }
+
+  async createDirectMessageChannelEntity(user: User) {
+    const type = await this.channelTypeService.getChannelType(
+      channelType.DIRECT_MESSAGES,
+    );
+    const channel = this.channelRepository.create({
+      name: 'directMessage',
+      type: type,
+      owner: user,
+    });
+    return channel;
   }
 }
