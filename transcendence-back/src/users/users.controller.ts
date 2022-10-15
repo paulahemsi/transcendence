@@ -76,7 +76,7 @@ export class UsersController {
     @Param('id', ParseUUIDPipe) userId: string,
     @Body() friend: FriendDto,
   ) {
-    return this.friedshipService.deleteBilaretalFriendship(userId, friend.id);
+    return this.friedshipService.deleteFriendship(userId, friend.id);
   }
 
   @Get(':id/channels')

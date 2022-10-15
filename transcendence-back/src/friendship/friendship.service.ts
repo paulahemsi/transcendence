@@ -99,18 +99,26 @@ export class FriendshipService {
     }
   }
 
-  async deleteFriend(userId: string, friendId: string) {
+  async deleteFriendship(userId: string, friendId: string) {
     await this.checkUserAndFriend(userId, friendId);
-    const friendship = await this.findOneFriendship(userId, friendId);
-    if (!friendship) {
+    const friendship1 = await this.findOneFriendship(userId, friendId);
+    const friendship2 = await this.findOneFriendship(friendId, userId);
+    if (!friendship1 || !friendship2) {
       throw new NotFoundException();
     }
-    this.friedshipRepository.delete(friendship.id);
-  }
 
-  async deleteBilaretalFriendship(userId: string, friendId: string) {
-    this.deleteFriend(userId, friendId);
-    this.deleteFriend(friendId, userId);
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      await queryRunner.manager.remove(friendship1);
+      await queryRunner.manager.remove(friendship2);
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async getFriends(userId: string) {
