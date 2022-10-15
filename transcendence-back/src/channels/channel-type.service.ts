@@ -12,6 +12,7 @@ export class ChannelTypeService {
     this.addChannelType(channelType.PUBLIC);
     this.addChannelType(channelType.PRIVATE);
     this.addChannelType(channelType.PROTECTED);
+    this.addChannelType(channelType.DIRECT_MESSAGES);
   }
 
   async addChannelType(type: channelType) {

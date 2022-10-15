@@ -4,6 +4,7 @@ export enum channelType {
   PUBLIC = 'PUBLIC',
   PRIVATE = 'PRIVATE',
   PROTECTED = 'PROTECTED',
+  DIRECT_MESSAGES = 'DIRECT_MESSAGES',
 }
 
 @Entity()
