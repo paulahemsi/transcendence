@@ -5,6 +5,7 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
 import { ChannelsModule } from './channels/channels.module';
+import { ChatGateway } from './chat/chat.gateway';
 
 @Module({
   imports: [
@@ -18,5 +19,6 @@ import { ChannelsModule } from './channels/channels.module';
     AuthModule,
     PassportModule.register({ session: true }),
   ],
+  providers: [ChatGateway],
 })
 export class AppModule {}
