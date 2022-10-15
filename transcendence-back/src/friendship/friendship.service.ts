@@ -89,6 +89,11 @@ export class FriendshipService {
     this.friedshipRepository.delete(friendship.id);
   }
 
+  async deleteBilaretalFriendship(userId: string, friendId: string) {
+    this.deleteFriend(userId, friendId);
+    this.deleteFriend(friendId, userId);
+  }
+
   async getFriends(userId: string) {
     const friendshipList: Awaited<Promise<Friendship[]>> =
       await this.findAllFriends(userId);
