@@ -101,8 +101,9 @@ export const ExtraContent = ( { activeChannel } : { activeChannel : number }) =>
 	chatSocket.emit('joinChannel', activeChannel);
 
 	chatSocket.on('joinChannel', (room) => {
-		//? temos que conferir se o room é o activeChannel? Ou parar de retornar o room?
-		setJoined(true);
+		if ( room == activeChannel) {
+			setJoined(true);
+		}
 	} )
 
 	chatSocket.on('leaveChannel', (room) => {
