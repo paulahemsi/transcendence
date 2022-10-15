@@ -40,9 +40,14 @@ export class ChatGateway
     @ConnectedSocket() client: Socket,
     @MessageBody() message: ChatMessagelDto,
   ) {
-    await this.channelService.addChatMessage(message);
+    try {
+      await this.channelService.addChatMessage(message);
+    } catch (err) {
+      client.emit('chatMessage', 'error');
+      return;
+    }
     this.server.to(message.channel.toString()).emit('chatMessage', message);
-    //this.server.emit('chatMessage', message);
+    this.server.emit('chatMessage', message);
   }
 
   @SubscribeMessage('joinChannel')
