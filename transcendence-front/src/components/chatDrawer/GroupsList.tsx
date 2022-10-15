@@ -2,10 +2,12 @@ import React, { FunctionComponent } from "react";
 import { Box, Button, List, ListItem, Typography } from "@mui/material";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+type numberSetState = React.Dispatch<React.SetStateAction<number>>
 
 interface Props {
     groupsData: {[key: string]: any};
     setExtraContent : booleanSetState;
+	setActiveChannel: numberSetState;
 }
 
 const notPart = "you are not part of any group chats :("
@@ -33,13 +35,19 @@ const NoGroups = () => {
 	)
 }
 
-export const GroupsList : FunctionComponent<Props> = ({ groupsData, setExtraContent }) => {
+export const GroupsList : FunctionComponent<Props> = ({ groupsData, setExtraContent, setActiveChannel }) => {
 	
 	const groups = [] as JSX.Element[];
 	groupsData.forEach((element : {[key: string]: any}) => {
+
+		const handleClick = () => {
+			setActiveChannel(element.id);
+			setExtraContent(true);
+		}
+
 		groups.push(
 		<ListItem disablePadding key={element.id} sx={{marginBottom: '1vh'}}> 
-			<Button sx={onHoverGroup} onClick={() => setExtraContent(true)}>
+			<Button sx={onHoverGroup} onClick={handleClick}>
 			<Box display='flex' width='100%' flexDirection='row' alignItems="center" alignSelf="flex-start">
 				<Typography sx={{ color: '#212980', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '4vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
 					{element.name}

@@ -33,7 +33,8 @@ export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDraw
 	const [direct, setDirect] = useState(true);
 	const [groupsData, setGroupsData] = useState<{[key: string]: any}>({});
 	const [extraContent, setExtraContent] = useState(false);
-	
+	const [activeChannel, setActiveChannel] = useState(0)
+
 	useEffect(() => {requestGroupsData({setGroupsData})}, []);
 
 	return (
@@ -45,16 +46,16 @@ export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDraw
 				<Box>
 					{
 						extraContent &&
-						<ExtraContent/>
+						<ExtraContent activeChannel={activeChannel} />
 					}
-				</Box>
+			</Box>
 				<Box boxShadow="20px 20px 50px grey" height="86vh">
-					<ChatButton direct={direct} setDirect={setDirect}setExtraContent={setExtraContent}/>
-					<ChatAuxiliaryButton direct={direct} setExtraContent={setExtraContent}/>
+					<ChatButton direct={direct} setDirect={setDirect}setExtraContent={setExtraContent} setActiveChannel={setActiveChannel} />
+					<ChatAuxiliaryButton direct={direct} setExtraContent={setExtraContent} setActiveChannel={setActiveChannel} />
 					{
 						direct
-						? <FriendsList friendsData={friendsData} setExtraContent={setExtraContent}/>
-						: <GroupsList setExtraContent={setExtraContent} groupsData={groupsData} />
+						? <FriendsList friendsData={friendsData} setExtraContent={setExtraContent} setActiveChannel={setActiveChannel} />
+						: <GroupsList setExtraContent={setExtraContent} setActiveChannel={setActiveChannel}  groupsData={groupsData} />
 					}
 				</Box>
 			</Box>

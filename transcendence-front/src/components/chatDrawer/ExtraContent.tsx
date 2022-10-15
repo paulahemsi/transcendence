@@ -1,8 +1,27 @@
+import React, { useState } from "react";
 import { TextField } from "@mui/material";
 import { Box } from "@mui/system";
-import React from "react";
+import io from 'socket.io-client';
 
-export const ExtraContent = () => {
+const chatSocket = io('/chat');
+
+export const ExtraContent = ( { activeChannel } : { activeChannel : number }) => {
+	console.log("active channel: ", activeChannel);
+
+	chatSocket.emit('joinChannel', activeChannel);
+
+	chatSocket.off('chatMessage').on('chatMessage', (msg) => {
+
+	} )
+
+	chatSocket.on('joinChannel', (room) => {
+
+	} )
+
+	chatSocket.on('leaveChannel', (room) => {
+
+	} )
+	
 	return (
 		<Box display="flex" flexDirection="column" bgcolor="blue" margin='2vh' padding="3vh" sx={{minWidth: '50vw', height: '74vh',
 			background: '#F5F5F5',
@@ -12,7 +31,6 @@ export const ExtraContent = () => {
 			boxShadow: 5
 			}}>
 			<Box sx={{ minWidth: '50vw', height: '70vh' }}>
-				
 			</Box>
 			<Box>
 				<TextField
