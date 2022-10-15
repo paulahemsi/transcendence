@@ -2,11 +2,13 @@ import { Box, Button } from "@mui/material"
 import React, { FunctionComponent } from "react"
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+type numberSetState = React.Dispatch<React.SetStateAction<number>>
 
 interface Props {
 	direct: boolean;
     setDirect: booleanSetState;
     setExtraContent: booleanSetState;
+	setActiveChannel: numberSetState;
 }
 
 const selected = {
@@ -35,7 +37,7 @@ const notSelected = {
 	':hover': { background: '#B998FF'},
 }
 
-export const ChatButton: FunctionComponent<Props> = ({ direct, setDirect, setExtraContent }) => {
+export const ChatButton: FunctionComponent<Props> = ({ direct, setDirect, setExtraContent, setActiveChannel }) => {
 	
 	const handleDirectClick = () => {
 		setExtraContent(false);

@@ -3,10 +3,12 @@ import { Button, List, ListItem } from "@mui/material";
 import FriendsInfo from "./FriendsInfo";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+type numberSetState = React.Dispatch<React.SetStateAction<number>>
 
 interface Props {
     friendsData: {[key: string]: any};
     setExtraContent: booleanSetState;
+	setActiveChannel: numberSetState;
 }
 
 const onHoverFriend = {

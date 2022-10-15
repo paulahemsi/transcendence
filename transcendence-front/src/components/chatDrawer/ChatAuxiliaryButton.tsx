@@ -2,10 +2,12 @@ import { Box, Button } from "@mui/material"
 import React, { FunctionComponent } from "react"
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+type numberSetState = React.Dispatch<React.SetStateAction<number>>
 
 interface Props {
 	direct: boolean;
 	setExtraContent : booleanSetState;
+	setActiveChannel: numberSetState;
 }
 export const buttonConfig = (width: string) => {
 	return {
@@ -61,7 +63,7 @@ export const GroupsButtons = ({ setExtraContent } : { setExtraContent : booleanS
 	)
 }
 
-export const ChatAuxiliaryButton: FunctionComponent<Props> = ({ direct, setExtraContent }) => {
+export const ChatAuxiliaryButton: FunctionComponent<Props> = ({ direct, setExtraContent, setActiveChannel }) => {
 	return (
 		<>
 		{ direct

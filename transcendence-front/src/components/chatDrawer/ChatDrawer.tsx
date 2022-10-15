@@ -7,6 +7,7 @@ import ChatAuxiliaryButton from "./ChatAuxiliaryButton";
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import ExtraContent from "./ExtraContent";
+import ControlPanel from "./ControlPanel";
 
 type tokenData = {
 	id: string;
@@ -30,33 +31,37 @@ const requestGroupsData = async ({ setGroupsData } : { setGroupsData: React.Disp
 }
 
 export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDrawer }) => {
-	const [direct, setDirect] = useState(true);
 	const [groupsData, setGroupsData] = useState<{[key: string]: any}>({});
 	const [extraContent, setExtraContent] = useState(false);
-	
+	const [activeChannel, setActiveChannel] = useState(0)
+
 	useEffect(() => {requestGroupsData({setGroupsData})}, []);
 
 	return (
 		<>
-		  <Drawer open={true} transitionDuration={500} onClose={() => setOpenDrawer(false)} anchor="right" PaperProps={{
+		  <Drawer
+		  	open={true}
+			transitionDuration={500}
+			onClose={() => setOpenDrawer(false)}
+			anchor="right"
+			PaperProps={{
 			sx: { opacity: 0.95, backgroundColor: "#F5F5F5" }
-  			}} >
+  			}} 
+		>
 			<Box paddingTop='7vh' display="flex" sx={{ minWidth: '30vw' }}>
 				<Box>
 					{
 						extraContent &&
-						<ExtraContent/>
+						<ExtraContent activeChannel={activeChannel} />
 					}
 				</Box>
-				<Box boxShadow="20px 20px 50px grey" height="86vh">
-					<ChatButton direct={direct} setDirect={setDirect}setExtraContent={setExtraContent}/>
-					<ChatAuxiliaryButton direct={direct} setExtraContent={setExtraContent}/>
-					{
-						direct
-						? <FriendsList friendsData={friendsData} setExtraContent={setExtraContent}/>
-						: <GroupsList setExtraContent={setExtraContent} groupsData={groupsData} />
-					}
-				</Box>
+				<ControlPanel 
+					setExtraContent={setExtraContent}
+					setActiveChannel={setActiveChannel}
+					friendsData={friendsData}
+					activeChannel={activeChannel}
+					groupsData={groupsData}
+				/>
 			</Box>
 		  </Drawer>
 		</>

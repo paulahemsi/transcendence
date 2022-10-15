@@ -23,6 +23,7 @@ type members = {
 type channelMessage = {
   message: string;
   username: string;
+  userId: string;
   creationDate: object;
 };
 
@@ -237,6 +238,7 @@ export class ChannelsService {
       const message = {} as channelMessage;
       message.message = element.message;
       message.username = element.user.username;
+      message.userId = element.user.id;
       message.creationDate = element.createdDate;
       channelMessages.push(message);
     });
