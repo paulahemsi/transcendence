@@ -6,18 +6,18 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   WebSocketServer,
+  MessageBody,
+  ConnectedSocket,
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
-
-export class message {
-  channel: string;
-  text: string;
-}
+import { ChannelsService } from 'src/channels/channels.service';
+import { ChatMessagelDto } from 'src/dto/chat.dtos';
 
 @WebSocketGateway({ namespace: '/chat' })
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
+  constructor(private readonly channelService: ChannelsService) {}
   private logger: Logger = new Logger('ChatGateway');
 
   @WebSocketServer()
@@ -36,8 +36,18 @@ export class ChatGateway
   }
 
   @SubscribeMessage('chatMessage')
-  handleMessage(client: Socket, message: message) {
-    this.server.to(message.channel).emit('chatMessage', message);
+  async handleMessage(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() message: ChatMessagelDto,
+  ) {
+    try {
+      await this.channelService.addChatMessage(message);
+    } catch (err) {
+      client.emit('chatMessage', 'error');
+      return;
+    }
+    this.server.to(message.channel.toString()).emit('chatMessage', message);
+    this.server.emit('chatMessage', message);
   }
 
   @SubscribeMessage('joinChannel')

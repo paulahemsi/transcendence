@@ -13,6 +13,7 @@ import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { ChannelTypeService } from './channel-type.service';
 import * as bcrypt from 'bcrypt';
+import { ChatMessagelDto } from 'src/dto/chat.dtos';
 
 type members = {
   id: string;
@@ -180,6 +181,7 @@ export class ChannelsService {
     this.channelAdminRepository.save(newAdmin);
   }
 
+  //TODO: remover se a gente não for usar o endpoint
   async addMessage(channelId: number, messageDto: MessagelDto) {
     const { channel, user } = await this.checkChannelAndMember(
       channelId,
@@ -188,6 +190,20 @@ export class ChannelsService {
 
     const newMessage: Message = this.channelMessageRepository.create({
       message: messageDto.message,
+      channel: channel,
+      user: user,
+    });
+    this.channelMessageRepository.save(newMessage);
+  }
+
+  async addChatMessage(chatMessageDto: ChatMessagelDto) {
+    const { channel, user } = await this.checkChannelAndMember(
+      chatMessageDto.channel,
+      chatMessageDto.user,
+    );
+
+    const newMessage: Message = this.channelMessageRepository.create({
+      message: chatMessageDto.message,
       channel: channel,
       user: user,
     });
