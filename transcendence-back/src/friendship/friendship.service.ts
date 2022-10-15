@@ -1,7 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Friendship } from 'src/entity';
-import { Repository } from 'typeorm';
+import { Friendship, User } from 'src/entity';
+import { DataSource, Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
 
 type friendInfo = {
@@ -17,6 +21,7 @@ export class FriendshipService {
     @InjectRepository(Friendship)
     private readonly friedshipRepository: Repository<Friendship>,
     private readonly usersService: UsersService,
+    private dataSource: DataSource,
   ) {}
 
   private findOneFriendship(
@@ -54,30 +59,44 @@ export class FriendshipService {
     return { user: user, friend: friend };
   }
 
-  async addFriend(userId: string, friendId: string) {
-    const { user, friend } = await this.checkUserAndFriend(userId, friendId);
-    let friendship = await this.findOneFriendship(userId, friendId);
-    if (friendship) {
-      return;
-    }
-    friendship = this.friedshipRepository.create({
-      user: user,
-      friend: friend,
-    });
-    return this.friedshipRepository.save(friendship);
-  }
-
-  async addFriendByName(userId: string, friendName: string) {
+  async createFriendshipByName(userId: string, friendName: string) {
     const friend = await this.usersService.findUserByName(friendName);
     if (!friend) {
       throw new NotFoundException();
     }
-    return this.addBilateralFriendship(userId, friend.id);
+    return this.createFriendship(userId, friend.id);
   }
 
-  async addBilateralFriendship(userId: string, friendId: string) {
-    this.addFriend(userId, friendId);
-    this.addFriend(friendId, userId);
+  private async checkAndCreateFriendship(user: User, friend: User) {
+    let friendship = await this.findOneFriendship(user.id, friend.id);
+    if (friendship) {
+      throw new BadRequestException('users alredy friends');
+    }
+
+    friendship = this.friedshipRepository.create({
+      user: user,
+      friend: friend,
+    });
+    return friendship;
+  }
+
+  async createFriendship(userId: string, friendId: string) {
+    const { user, friend } = await this.checkUserAndFriend(userId, friendId);
+    const friendship1 = await this.checkAndCreateFriendship(user, friend);
+    const friendship2 = await this.checkAndCreateFriendship(friend, user);
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      await queryRunner.manager.save(friendship1);
+      await queryRunner.manager.save(friendship2);
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async deleteFriend(userId: string, friendId: string) {

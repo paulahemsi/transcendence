@@ -54,7 +54,7 @@ export class UsersController {
     @Param('id', ParseUUIDPipe) userId: string,
     @Body() friend: FriendDto,
   ) {
-    return this.friedshipService.addBilateralFriendship(userId, friend.id);
+    return this.friedshipService.createFriendship(userId, friend.id);
   }
 
   @Post(':id/friends/by_name')
@@ -63,7 +63,7 @@ export class UsersController {
     @Param('id', ParseUUIDPipe) userId: string,
     @Body() friend: FriendNameDto,
   ) {
-    return this.friedshipService.addFriendByName(userId, friend.name);
+    return this.friedshipService.createFriendshipByName(userId, friend.name);
   }
 
   @Get(':id/friends')
