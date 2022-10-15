@@ -3,6 +3,11 @@ import { TextField, Box } from "@mui/material";
 import io from 'socket.io-client';
 import axios, { AxiosRequestHeaders } from 'axios';
 import MessagesList from "./MessagesList";
+import jwt from 'jwt-decode';
+
+type tokenData = {
+	id: string;
+}
 
 const chatSocket = io('/chat');
 
@@ -25,16 +30,40 @@ const requestMessagesFromChannel = async ( activeChannel : number , setMessagesD
 })
 }
 
+const getUserId = () => {
+	const tokenData: tokenData = jwt(document.cookie);
+	return tokenData.id;
+}
+
 const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 	const [messagesData, setMessagesData] = useState<{[key: string]: any}>({});
+	const [newMessage, setNewMessage] = useState("");
 
 	useEffect(() => {requestMessagesFromChannel(activeChannel, setMessagesData)}, []);
 	
 	chatSocket.off('chatMessage').on('chatMessage', (msg) => {
-		const newmessagesData = messagesData.map((element : {[key: string]: any}) => element);
-		newmessagesData.push(msg.text);
-		setMessagesData(newmessagesData);
+		const newMessagesData = messagesData.map((element : {[key: string]: any}) => element);
+		newMessagesData.push(msg);
+		setMessagesData(newMessagesData);
 	} )
+
+	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
+		setNewMessage(event.target.value);
+	}
+
+	const keyDownHandler = ( event :  React.KeyboardEvent<HTMLInputElement>) => {
+		if (event.key === 'Enter') {
+			event.preventDefault();
+			const msgToSend = {
+				user: getUserId(),
+				channel: activeChannel.toString(),
+				message: newMessage,
+			}
+			chatSocket.emit('chatMessage', msgToSend)
+		}
+		setNewMessage("")
+	}
+	
 
 	return (
 		<Box display="flex" flexDirection="column" justifyContent="space-between" bgcolor="blue" padding="3vh" sx={{minWidth: '50vw', height: '80vh',
@@ -54,12 +83,12 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 				autoFocus
 				margin="dense"
 				id="message"
-				type="message"
+				type="text"
 				sx={{ width: '50vw' }}
 				variant="standard"
-				// value={username}
-				// onKeyDown={keyDownHandler}
-				// onChange={handleChange}
+				// value={newMessage}
+				onKeyDown={keyDownHandler}
+				onChange={handleChange}
 			/>
 		</Box>
 	</Box>
