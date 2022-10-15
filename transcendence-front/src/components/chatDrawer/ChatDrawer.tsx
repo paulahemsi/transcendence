@@ -39,9 +39,15 @@ export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDraw
 
 	return (
 		<>
-		  <Drawer open={true} transitionDuration={500} onClose={() => setOpenDrawer(false)} anchor="right" PaperProps={{
+		  <Drawer
+		  	open={true}
+			transitionDuration={500}
+			onClose={() => setOpenDrawer(false)}
+			anchor="right"
+			PaperProps={{
 			sx: { opacity: 0.95, backgroundColor: "#F5F5F5" }
-  			}} >
+  			}} 
+		>
 			<Box paddingTop='7vh' display="flex" sx={{ minWidth: '30vw' }}>
 				<Box>
 					{
@@ -50,12 +56,32 @@ export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDraw
 					}
 			</Box>
 				<Box boxShadow="20px 20px 50px grey" height="86vh">
-					<ChatButton direct={direct} setDirect={setDirect}setExtraContent={setExtraContent} setActiveChannel={setActiveChannel} />
-					<ChatAuxiliaryButton direct={direct} setExtraContent={setExtraContent} setActiveChannel={setActiveChannel} />
+					<ChatButton
+						direct={direct}
+						setDirect={setDirect}
+						setExtraContent={setExtraContent}
+						setActiveChannel={setActiveChannel}
+					/>
+					<ChatAuxiliaryButton
+						direct={direct}
+						setExtraContent={setExtraContent}
+						setActiveChannel={setActiveChannel}
+					/>
 					{
 						direct
-						? <FriendsList friendsData={friendsData} setExtraContent={setExtraContent} setActiveChannel={setActiveChannel} />
-						: <GroupsList setExtraContent={setExtraContent} setActiveChannel={setActiveChannel}  groupsData={groupsData} />
+						?
+						<FriendsList
+							friendsData={friendsData}
+							setExtraContent={setExtraContent}
+							setActiveChannel={setActiveChannel}
+						/>
+						:
+						<GroupsList
+							setExtraContent={setExtraContent}
+							activeChannel={activeChannel}
+							setActiveChannel={setActiveChannel} 
+							groupsData={groupsData}
+						/>
 					}
 				</Box>
 			</Box>
