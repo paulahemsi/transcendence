@@ -32,6 +32,7 @@ export class FriendshipService {
       relations: {
         user: true,
         friend: true,
+        channel: true,
       },
       where: {
         user: { id: userId },
@@ -45,9 +46,15 @@ export class FriendshipService {
       relations: {
         user: true,
         friend: true,
+        channel: true,
       },
       where: [{ user: { id: userId } }],
     });
+  }
+
+  private async getDirectMessageChannel(userId: string, friendId: string) {
+    const friendship = await this.findOneFriendship(userId, friendId);
+    return friendship.channel;
   }
 
   private async checkUserAndFriend(userId: string, friendId: string) {
@@ -120,22 +127,11 @@ export class FriendshipService {
 
   async deleteFriendship(userId: string, friendId: string) {
     await this.checkUserAndFriend(userId, friendId);
-    const friendship1 = await this.findOneFriendship(userId, friendId);
-    const friendship2 = await this.findOneFriendship(friendId, userId);
-    if (!friendship1 || !friendship2) {
+    const dmChannel = await this.getDirectMessageChannel(userId, friendId);
+    if (!dmChannel) {
       throw new NotFoundException();
     }
-
-    const queryRunner = await this.createTransaction();
-    try {
-      await queryRunner.manager.remove(friendship1);
-      await queryRunner.manager.remove(friendship2);
-      await queryRunner.commitTransaction();
-    } catch (err) {
-      await queryRunner.rollbackTransaction();
-    } finally {
-      await queryRunner.release();
-    }
+    this.channelsService.deleteChannel(dmChannel);
   }
 
   async getFriends(userId: string) {

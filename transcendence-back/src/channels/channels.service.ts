@@ -287,6 +287,10 @@ export class ChannelsService {
     return this.channelRepository.save(channel);
   }
 
+  deleteChannel(channel: Channel) {
+    this.channelRepository.delete(channel.id);
+  }
+
   async createDirectMessageChannelEntity(user: User) {
     const type = await this.channelTypeService.getChannelType(
       channelType.DIRECT_MESSAGES,
