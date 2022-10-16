@@ -11,11 +11,13 @@ export class ChannelAdmin {
 
   @ManyToOne(() => Channel, (channel) => channel.id, {
     nullable: false,
+    onDelete: 'CASCADE',
   })
   channel: Channel;
 
   @ManyToOne(() => User, (user) => user.id, {
     nullable: false,
+    onDelete: 'CASCADE',
   })
   user: User;
 }
