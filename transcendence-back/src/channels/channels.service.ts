@@ -136,11 +136,15 @@ export class ChannelsService {
     ) {
       return;
     }
-    const newMember = this.channelMemberRepository.create({
+    const newMember = this.createMemberEntity(user, channel);
+    this.channelMemberRepository.save(newMember);
+  }
+
+  createMemberEntity(user: User, channel: Channel) {
+    return this.channelMemberRepository.create({
       channel: channel,
       user: user,
     });
-    this.channelMemberRepository.save(newMember);
   }
 
   async getMembers(channelId: number) {
