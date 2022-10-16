@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 export enum channelType {
   PUBLIC = 'PUBLIC',
@@ -8,6 +8,7 @@ export enum channelType {
 }
 
 @Entity()
+@Unique(['type'])
 export class ChannelType {
   @PrimaryGeneratedColumn({
     type: 'bigint',
