@@ -73,7 +73,7 @@ export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 
 	return (
 		<>
-			<Header setOpenDrawer={setOpenDrawer} setOpenCard={setOpenCard} numberOfFriends={friendsData.length}/>;
+			<Header setOpenDrawer={setOpenDrawer} setOpenCard={setOpenCard} numberOfFriends={friendsData.length}/>
 			{ openCard && <ProfileCard setOpenCard={setOpenCard}/> }
 			{ openDrawer && <ChatDrawer friendsData={friendsData} setOpenDrawer={setOpenDrawer} />}
 			{ gameActive ? <PhaserGame/> : <Background setGameActive={setGameActive} />}
