@@ -21,7 +21,6 @@ export class CreateChannelDto {
   owner: string;
 
   @IsOptional()
-  @MinLength(5)
   password: string;
 }
 
