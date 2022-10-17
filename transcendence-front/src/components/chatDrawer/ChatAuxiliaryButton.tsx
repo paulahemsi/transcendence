@@ -73,6 +73,23 @@ export const GroupsButtons :FunctionComponent<ButtonsProps> = ({ setOpenDialog, 
 }
 
 const ChatDialog = ({ setOpenDialog } : { setOpenDialog : booleanSetState }) => {
+	const [channelName, setChannelName] = useState("");
+
+	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
+		setChannelName(event.target.value);
+	}
+
+	const handleSave = () => {
+		console.log("save channelName ", channelName);
+	}
+	
+	const keyDownHandler = ( event :  React.KeyboardEvent<HTMLInputElement>) => {
+		if (event.key === 'Enter') {
+			event.preventDefault();
+			handleSave();
+		}
+	}
+	
 	return (
 		<>
 		<DialogTitle sx={{fontFamily: 'Orbitron'}}>
@@ -87,9 +104,9 @@ const ChatDialog = ({ setOpenDialog } : { setOpenDialog : booleanSetState }) => 
 				type="email"
 				fullWidth
 				variant="standard"
-				// value={username}
-				// onKeyDown={keyDownHandler}
-				// onChange={handleChange}
+				value={channelName}
+				onKeyDown={keyDownHandler}
+				onChange={handleChange}
 			/>
 		</DialogContent>
 		<DialogContent>
@@ -100,9 +117,6 @@ const ChatDialog = ({ setOpenDialog } : { setOpenDialog : booleanSetState }) => 
 				type="email"
 				fullWidth
 				variant="standard"
-				// value={username}
-				// onKeyDown={keyDownHandler}
-				// onChange={handleChange}
 			/>
 		</DialogContent>
 		<DialogContent>
@@ -118,7 +132,7 @@ const ChatDialog = ({ setOpenDialog } : { setOpenDialog : booleanSetState }) => 
 		</Button>
 		<Button
 			variant="contained"
-			//onClick={handleSave}
+			onClick={handleSave}
 			sx={{fontFamily: 'Orbitron'}}
 		>
 			Create
