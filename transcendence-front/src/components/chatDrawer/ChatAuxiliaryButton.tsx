@@ -96,8 +96,6 @@ const ChatDialog = ({ setOpenDialog } : { setOpenDialog : booleanSetState }) => 
 	}
 
 	const handleSave = () => {
-		console.log(`save channelName: ${channelName} password: ${password}`);
-		
 		const tokenData: tokenData = jwt(document.cookie);
 		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 
