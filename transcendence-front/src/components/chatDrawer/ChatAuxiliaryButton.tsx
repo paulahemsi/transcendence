@@ -74,13 +74,18 @@ export const GroupsButtons :FunctionComponent<ButtonsProps> = ({ setOpenDialog, 
 
 const ChatDialog = ({ setOpenDialog } : { setOpenDialog : booleanSetState }) => {
 	const [channelName, setChannelName] = useState("");
+	const [password, setPassword] = useState("");
 
-	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
+	const handleChannelNameChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
 		setChannelName(event.target.value);
+	}
+	
+	const handlePasswordChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
+		setPassword(event.target.value);
 	}
 
 	const handleSave = () => {
-		console.log("save channelName ", channelName);
+		console.log(`save channelName: ${channelName} password: ${password}`);
 	}
 	
 	const keyDownHandler = ( event :  React.KeyboardEvent<HTMLInputElement>) => {
@@ -106,7 +111,7 @@ const ChatDialog = ({ setOpenDialog } : { setOpenDialog : booleanSetState }) => 
 				variant="standard"
 				value={channelName}
 				onKeyDown={keyDownHandler}
-				onChange={handleChange}
+				onChange={handleChannelNameChange}
 			/>
 		</DialogContent>
 		<DialogContent>
@@ -117,6 +122,9 @@ const ChatDialog = ({ setOpenDialog } : { setOpenDialog : booleanSetState }) => 
 				type="email"
 				fullWidth
 				variant="standard"
+				value={password}
+				onKeyDown={keyDownHandler}
+				onChange={handlePasswordChange}
 			/>
 		</DialogContent>
 		<DialogContent>
