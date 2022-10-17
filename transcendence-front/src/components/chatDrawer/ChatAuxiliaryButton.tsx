@@ -152,8 +152,11 @@ const ChatDialog = ({ setOpenDialog } : { setOpenDialog : booleanSetState }) => 
 			/>
 		</DialogContent>
 		<DialogContent>
-
-     		 <FormControlLabel control={<Checkbox defaultChecked />} label="Private" />
+     		 <FormControlLabel
+			 	control={<Checkbox />}
+				label="Private"
+				onChange={() => setType(PRIVATE)}
+			/>
 		</DialogContent>
 		<DialogActions>
 		<Button
