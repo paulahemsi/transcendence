@@ -1,5 +1,15 @@
 import React, { useState, FunctionComponent } from "react"
 import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormGroup, TextField } from "@mui/material"
+import axios, { AxiosRequestHeaders } from 'axios';
+import jwt from 'jwt-decode';
+import { type } from "@testing-library/user-event/dist/type";
+
+type tokenData = {
+	id: string;
+}
+
+const PUBLIC = "PUBLIC";
+const PRIVATE = "PRIVATE";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type numberSetState = React.Dispatch<React.SetStateAction<number>>
@@ -75,6 +85,7 @@ export const GroupsButtons :FunctionComponent<ButtonsProps> = ({ setOpenDialog, 
 const ChatDialog = ({ setOpenDialog } : { setOpenDialog : booleanSetState }) => {
 	const [channelName, setChannelName] = useState("");
 	const [password, setPassword] = useState("");
+	const [type, setType] = useState(PUBLIC);
 
 	const handleChannelNameChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
 		setChannelName(event.target.value);
@@ -86,6 +97,19 @@ const ChatDialog = ({ setOpenDialog } : { setOpenDialog : booleanSetState }) => 
 
 	const handleSave = () => {
 		console.log(`save channelName: ${channelName} password: ${password}`);
+		
+		const tokenData: tokenData = jwt(document.cookie);
+		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+
+		axios.post(`http://localhost:3000/channels`, {
+			"name": channelName,
+			"type": type,
+			"owner": tokenData.id,
+			"password": password,
+		}, { headers: authToken }).then( () => {
+			setOpenDialog(false);
+		}
+		)
 	}
 	
 	const keyDownHandler = ( event :  React.KeyboardEvent<HTMLInputElement>) => {
