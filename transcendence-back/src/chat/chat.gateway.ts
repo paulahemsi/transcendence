@@ -12,6 +12,14 @@ import {
 import { Socket, Server } from 'socket.io';
 import { ChannelsService } from 'src/channels/channels.service';
 import { ChatMessagelDto } from 'src/dto/chat.dtos';
+import { Message } from 'src/entity';
+
+type channelMessage = {
+  message: string;
+  username: string;
+  userId: string;
+  creationDate: object;
+};
 
 @WebSocketGateway({ namespace: '/chat' })
 export class ChatGateway
@@ -38,16 +46,23 @@ export class ChatGateway
   @SubscribeMessage('chatMessage')
   async handleMessage(
     @ConnectedSocket() client: Socket,
-    @MessageBody() message: ChatMessagelDto,
+    @MessageBody() chatMessageDto: ChatMessagelDto,
   ) {
+    var newMessage : Message;
     try {
-      await this.channelService.addChatMessage(message);
+      newMessage = await this.channelService.addChatMessage(chatMessageDto);
     } catch (err) {
       client.emit('chatMessage', 'error');
       return;
     }
-    this.server.to(message.channel.toString()).emit('chatMessage', message);
-    this.server.emit('chatMessage', message);
+    
+    const message = {} as channelMessage;
+    message.message = newMessage.message;
+    message.username = newMessage.user.username;
+    message.userId = newMessage.user.id;
+    message.creationDate = newMessage.createdDate;
+      
+    this.server.to(chatMessageDto.channel.toString()).emit('chatMessage', message);
   }
 
   @SubscribeMessage('joinChannel')

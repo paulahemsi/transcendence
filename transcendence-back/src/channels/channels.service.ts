@@ -208,7 +208,7 @@ export class ChannelsService {
       channel: channel,
       user: user,
     });
-    this.channelMessageRepository.save(newMessage);
+    return this.channelMessageRepository.save(newMessage);
   }
 
   async getChannelMessagesInfos(channelId: number) {

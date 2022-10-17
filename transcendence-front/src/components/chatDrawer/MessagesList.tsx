@@ -65,12 +65,12 @@ export const MessagesList : FunctionComponent<Props> = ({ messagesData }) => {
 	const userId = getUserId();
 	const messages = [] as JSX.Element[];
 
-	messagesData.forEach((element : {[key: string]: any}) => {
+	messagesData.forEach((element : {[key: string]: any}, index : number) => {
 		const isFromUser = () => { return userId === element.userId }
 		messages.push(
 		<ListItem 
 			disablePadding
-			key={element.message}
+			key={index}
 			sx={messageCSS(isFromUser())}
 		> 
 			<Chip
