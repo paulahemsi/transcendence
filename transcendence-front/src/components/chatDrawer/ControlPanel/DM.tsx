@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from "react";
+import Loading from "../Loading";
 import FriendsList from "./FriendsList";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
@@ -12,11 +13,19 @@ interface Props {
 
 export const DM : FunctionComponent<Props> = ({ friendsData, setExtraContent, setActiveChannel }) => {
 	return (
-		<FriendsList
-			friendsData={friendsData}
-			setExtraContent={setExtraContent}
-			setActiveChannel={setActiveChannel}
-		/>
+		<>
+			{
+				friendsData[0]
+				?
+				<FriendsList
+					friendsData={friendsData}
+					setExtraContent={setExtraContent}
+					setActiveChannel={setActiveChannel}
+				/>
+				:
+				<Loading />
+			}
+		</>
 	)
 }
 

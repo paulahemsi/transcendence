@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from "react";
+import Loading from "../Loading";
 import GroupsList from "./GroupsList";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
@@ -13,12 +14,20 @@ interface Props {
 
 export const GroupChannels : FunctionComponent<Props> = ({ groupsData, setExtraContent, activeChannel, setActiveChannel }) => {
 	return (
-		<GroupsList
-			setExtraContent={setExtraContent}
-			activeChannel={activeChannel}
-			setActiveChannel={setActiveChannel} 
-			groupsData={groupsData}
-		/>
+		<>
+		{
+			groupsData[0]
+			?
+				<GroupsList
+					setExtraContent={setExtraContent}
+					activeChannel={activeChannel}
+					setActiveChannel={setActiveChannel} 
+					groupsData={groupsData}
+				/>
+			:
+				<Loading />
+		}
+		</>
 	)
 }
 
