@@ -279,6 +279,6 @@ export class ChannelsService {
     });
     const newChannel = await this.channelRepository.save(channel);
     this.addMember(newChannel.id, user.id);
-    return newChannel;
+    return { "id": newChannel.id , "name" : newChannel.name }
   }
 }

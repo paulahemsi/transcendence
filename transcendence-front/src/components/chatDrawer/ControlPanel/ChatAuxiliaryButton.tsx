@@ -1,8 +1,7 @@
 import React, { useState, FunctionComponent } from "react"
-import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormGroup, TextField } from "@mui/material"
+import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, TextField } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
-import { type } from "@testing-library/user-event/dist/type";
 
 type tokenData = {
 	id: string;
@@ -13,11 +12,13 @@ const PRIVATE = "PRIVATE";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type numberSetState = React.Dispatch<React.SetStateAction<number>>
+type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
 
 interface Props {
 	direct: boolean;
 	setExtraContent : booleanSetState;
 	setActiveChannel: numberSetState;
+	setGroupsData: objectSetState;
 }
 
 interface ButtonsProps {
@@ -82,7 +83,7 @@ export const GroupsButtons :FunctionComponent<ButtonsProps> = ({ setOpenDialog, 
 	)
 }
 
-const ChatDialog = ({ setOpenDialog } : { setOpenDialog : booleanSetState }) => {
+const ChatDialog = ({ setOpenDialog, setGroupsData } : { setOpenDialog : booleanSetState, setGroupsData : objectSetState }) => {
 	const [channelName, setChannelName] = useState("");
 	const [password, setPassword] = useState("");
 	const [type, setType] = useState(PUBLIC);
@@ -104,7 +105,9 @@ const ChatDialog = ({ setOpenDialog } : { setOpenDialog : booleanSetState }) => 
 			"type": type,
 			"owner": tokenData.id,
 			"password": password,
-		}, { headers: authToken }).then( () => {
+		}, { headers: authToken }).then( (response) => {
+			console.log(response.data)
+			setGroupsData(response.data)
 			setOpenDialog(false);
 		}
 		)
@@ -175,7 +178,7 @@ const ChatDialog = ({ setOpenDialog } : { setOpenDialog : booleanSetState }) => 
 	)
 }
 
-export const ChatAuxiliaryButton: FunctionComponent<Props> = ({ direct, setExtraContent, setActiveChannel }) => {
+export const ChatAuxiliaryButton: FunctionComponent<Props> = ({ direct, setExtraContent, setActiveChannel, setGroupsData }) => {
 	const [openDialog, setOpenDialog] = useState(false);
 
 	const handleClose = () => {
@@ -190,7 +193,7 @@ export const ChatAuxiliaryButton: FunctionComponent<Props> = ({ direct, setExtra
 			: <GroupsButtons setExtraContent={setExtraContent} setActiveChannel={setActiveChannel} setOpenDialog={setOpenDialog}/>
 		}
 		<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
-			<ChatDialog setOpenDialog={setOpenDialog} />
+			<ChatDialog setOpenDialog={setOpenDialog} setGroupsData={setGroupsData}/>
 		</Dialog>
 		</>
 	)

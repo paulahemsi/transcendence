@@ -20,7 +20,7 @@ const onHoverFriend = {
 	borderRadius: '0'
 }
 
-export const FriendsList : FunctionComponent<Props> = ({ friendsData, setExtraContent }) => {
+export const FriendsList : FunctionComponent<Props> = ({ friendsData, setExtraContent, setActiveChannel }) => {
 	
 	const friends = [] as JSX.Element[];
 	friendsData.forEach((element : {[key: string]: any}) => {
