@@ -11,7 +11,7 @@ interface Props {
 	setActiveChannel: numberSetState;
 }
 
-const selected = {
+const notSelected = {
 	borderRadius: 0,
 	textTransform: 'lowercase',
 	background: '#212980',
@@ -24,7 +24,7 @@ const selected = {
 	':hover': { background: '#212980'},
 }
 
-const notSelected = {
+const selected = {
 	borderRadius: 0,
 	textTransform: 'lowercase',
 	background: '#B998FF',

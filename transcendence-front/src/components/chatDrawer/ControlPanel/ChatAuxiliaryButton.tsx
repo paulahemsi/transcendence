@@ -31,9 +31,9 @@ export const buttonConfig = (width: string) => {
 	return {
 		borderRadius: 0,
 		textTransform: 'lowercase',
-		background: '#B998FF',
+		background: '#212980',
 		color: '#FFFFFF',
-		':hover': { background: '#212980'},
+		':hover': { background: '#B998FF'},
 		fontFamily: 'Orbitron',
 		fontSize: '3vh',
 		paddingLeft: '4vh',
