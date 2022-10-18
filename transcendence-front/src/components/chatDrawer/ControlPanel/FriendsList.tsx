@@ -1,9 +1,30 @@
 import React, { FunctionComponent } from "react";
-import { Button, List, ListItem } from "@mui/material";
+import { Box, Button, List, ListItem } from "@mui/material";
 import FriendsInfo from "./FriendsInfo";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type numberSetState = React.Dispatch<React.SetStateAction<number>>
+
+const listCss = { 
+	width: '100%',  height: '64vh', position: 'relative', overflow: 'auto',   overflowY: "auto",
+	margin: 0,
+	padding: 0,
+	listStyle: "none",
+	'&::-webkit-scrollbar': {
+	width: '0.4em',
+	borderRadius: 5,
+	},
+	'&::-webkit-scrollbar-track': {
+		boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
+		webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
+		borderRadius: 5,
+	},
+	'&::-webkit-scrollbar-thumb': {
+		backgroundColor: '#212980',
+		outline: 'none',
+		borderRadius: 5,
+	}
+}
 
 interface Props {
     friendsData: {[key: string]: any};
@@ -33,10 +54,9 @@ export const FriendsList : FunctionComponent<Props> = ({ friendsData, setExtraCo
 	})
 
 	return (
-		<List disablePadding>
+		<List disablePadding sx={listCss}>
 			{friends}
 		</List>
-		
 	)
 }
 

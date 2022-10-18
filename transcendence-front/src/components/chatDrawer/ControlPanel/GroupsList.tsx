@@ -14,6 +14,27 @@ interface Props {
 const notPart = "you are not part of any group chats :("
 const joinOne =	"start or join one!"
 
+const listCss = { 
+	width: '100%',  height: '64vh', position: 'relative', overflow: 'auto',   overflowY: "auto",
+	margin: 0,
+	padding: 0,
+	listStyle: "none",
+	'&::-webkit-scrollbar': {
+	width: '0.4em',
+	borderRadius: 5,
+	},
+	'&::-webkit-scrollbar-track': {
+		boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
+		webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
+		borderRadius: 5,
+	},
+	'&::-webkit-scrollbar-thumb': {
+		backgroundColor: '#212980',
+		outline: 'none',
+		borderRadius: 5,
+	}
+}
+
 const groupCSS = ( isActiveGroup : boolean ) => {
 	const bgColor = isActiveGroup ? '#B998FF' : '#F5F5F5';
 
@@ -92,7 +113,7 @@ export const GroupsList : FunctionComponent<Props> = ({ groupsData, setExtraCont
 		<>
 			{
 				groupsData[0]
-				? <List disablePadding>
+				? <List disablePadding sx={listCss}>
 					{groups}
 				</List>
 				: <NoGroups/>

@@ -39,6 +39,7 @@ export const buttonConfig = (width: string) => {
 		paddingLeft: '4vh',
 		paddingRight: '4vh',
 		width: width,
+		height: '7vh',
 	}
 }
 

@@ -34,6 +34,7 @@ const notSelected = {
 	paddingLeft: '5vh',
 	paddingRight: '5vh',
 	width: "15vw",
+	height: '10vh',
 	':hover': { background: '#B998FF'},
 }
 
