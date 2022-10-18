@@ -277,6 +277,8 @@ export class ChannelsService {
       type: type,
       password: channelDto.password ? await bcrypt.hash(channelDto.password, salt) : null,
     });
-    return this.channelRepository.save(channel);
+    const newChannel = await this.channelRepository.save(channel);
+    this.addMember(newChannel.id, user.id);
+    return newChannel;
   }
 }
