@@ -11,8 +11,7 @@ interface Props {
 	activeChannel: number;
 }
 
-const notPart = "you are not part of any group chats :("
-const joinOne =	"start or join one!"
+const noGroup = "you are not part of any group chats :( \r\n\r\n start or join one!"
 
 const listCss = { 
 	width: '100%',  height: '64vh', position: 'relative', overflow: 'auto',   overflowY: "auto",
@@ -53,8 +52,9 @@ const typographyCSS = {
 	color: '#212980',
 	fontFamily: 'Orbitron',
 	fontWeight: 600,
-	fontSize: '4vh',
+	fontSize: '5vh',
 	paddingLeft: '1.7vh',
+	whiteSpace: 'pre-wrap', overflowWrap: 'break-word', width: '24vw'
 }
 
 const NoGroups = () => {
@@ -65,13 +65,10 @@ const NoGroups = () => {
 			flexDirection="column"
 			flexWrap="wrap"
 			justifyContent="center"
-			sx={{width: '100%', height: '100%'}}
+			sx={{width: '100%',  height: '50vh'}}
 		>
 			<Typography sx={typographyCSS}>
-						{notPart}
-			</Typography>
-			<Typography sx={typographyCSS}>
-						{joinOne}
+				{noGroup}
 			</Typography>
 		</Box>
 	)
@@ -113,10 +110,15 @@ export const GroupsList : FunctionComponent<Props> = ({ groupsData, setExtraCont
 		<>
 			{
 				groupsData[0]
-				? <List disablePadding sx={listCss}>
+				?
+				<List
+					disablePadding
+					sx={listCss}
+				>
 					{groups}
 				</List>
-				: <NoGroups/>
+				:
+				<NoGroups/>
 			}
 		</>
 	)
