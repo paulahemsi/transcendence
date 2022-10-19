@@ -2,6 +2,7 @@ import React, { useState, FunctionComponent } from "react"
 import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, TextField } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
+import { ObjectType } from "typescript";
 
 type tokenData = {
 	id: string;
@@ -19,6 +20,7 @@ interface Props {
 	setExtraContent : booleanSetState;
 	setActiveChannel: numberSetState;
 	setGroupsData: objectSetState;
+	groupsData: {[key: string]: any};
 }
 
 interface ButtonsProps {
@@ -84,7 +86,7 @@ export const GroupsButtons :FunctionComponent<ButtonsProps> = ({ setOpenDialog, 
 	)
 }
 
-const ChatDialog = ({ setOpenDialog, setGroupsData } : { setOpenDialog : booleanSetState, setGroupsData : objectSetState }) => {
+const ChatDialog = ({ setOpenDialog, setGroupsData, groupsData } : { setOpenDialog : booleanSetState , setGroupsData : objectSetState, groupsData : {[key: string]: any} }) => {
 	const [channelName, setChannelName] = useState("");
 	const [password, setPassword] = useState("");
 	const [type, setType] = useState(PUBLIC);
@@ -108,7 +110,10 @@ const ChatDialog = ({ setOpenDialog, setGroupsData } : { setOpenDialog : boolean
 			"password": password,
 		}, { headers: authToken }).then( (response) => {
 			console.log(response.data)
-			setGroupsData(response.data)
+			const newGroupsData
+			 = groupsData.map((element : {[key: string]: any}) => element);
+			newGroupsData.push(response.data);
+			setGroupsData(newGroupsData)
 			setOpenDialog(false);
 		}
 		)
@@ -179,7 +184,7 @@ const ChatDialog = ({ setOpenDialog, setGroupsData } : { setOpenDialog : boolean
 	)
 }
 
-export const ChatAuxiliaryButton: FunctionComponent<Props> = ({ direct, setExtraContent, setActiveChannel, setGroupsData }) => {
+export const ChatAuxiliaryButton: FunctionComponent<Props> = ({ direct, setExtraContent, setActiveChannel, setGroupsData, groupsData }) => {
 	const [openDialog, setOpenDialog] = useState(false);
 
 	const handleClose = () => {
@@ -194,7 +199,7 @@ export const ChatAuxiliaryButton: FunctionComponent<Props> = ({ direct, setExtra
 			: <GroupsButtons setExtraContent={setExtraContent} setActiveChannel={setActiveChannel} setOpenDialog={setOpenDialog}/>
 		}
 		<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
-			<ChatDialog setOpenDialog={setOpenDialog} setGroupsData={setGroupsData}/>
+			<ChatDialog setOpenDialog={setOpenDialog} setGroupsData={setGroupsData} groupsData={groupsData}/>
 		</Dialog>
 		</>
 	)

@@ -7,14 +7,15 @@ type numberSetState = React.Dispatch<React.SetStateAction<number>>
 
 interface Props {
 	direct: boolean;
-    groupsData: {[key: string]: any};
     setExtraContent : booleanSetState;
 	setActiveChannel: numberSetState;
 	activeChannel: number;
 	friendsData: {[key: string]: any};
+	groupsData: {[key: string]: any};
+	loading: boolean;
 }
 
-export const ChannelsList : FunctionComponent<Props> = ({ groupsData, setExtraContent, activeChannel, setActiveChannel, friendsData, direct }) => {
+export const ChannelsList : FunctionComponent<Props> = ({ setExtraContent, activeChannel, setActiveChannel, friendsData, direct, groupsData, loading }) => {
 	return (
 		<>
 		{
@@ -29,8 +30,9 @@ export const ChannelsList : FunctionComponent<Props> = ({ groupsData, setExtraCo
 			<GroupChannels
 				setExtraContent={setExtraContent}
 				activeChannel={activeChannel}
-				setActiveChannel={setActiveChannel} 
+				setActiveChannel={setActiveChannel}
 				groupsData={groupsData}
+				loading={loading}
 			/>
 		}
 		</>
