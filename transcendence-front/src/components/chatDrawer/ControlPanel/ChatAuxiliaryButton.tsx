@@ -1,15 +1,6 @@
 import React, { useState, FunctionComponent } from "react"
-import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, TextField } from "@mui/material"
-import axios, { AxiosRequestHeaders } from 'axios';
-import jwt from 'jwt-decode';
-import { ObjectType } from "typescript";
-
-type tokenData = {
-	id: string;
-}
-
-const PUBLIC = "PUBLIC";
-const PRIVATE = "PRIVATE";
+import { Box, Button, Dialog } from "@mui/material"
+import CreateChannelDialog from "./CreateChannelDialog";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type numberSetState = React.Dispatch<React.SetStateAction<number>>
@@ -48,7 +39,7 @@ export const buttonConfig = (width: string) => {
 const directButton = buttonConfig("30vw")
 const groupButton = buttonConfig("10vw")
 
-export const DirectButtons :FunctionComponent<ButtonsProps> = ({ setOpenDialog, setExtraContent, setActiveChannel }) => {
+export const DirectButtons : FunctionComponent<ButtonsProps> = ({ setOpenDialog, setExtraContent, setActiveChannel }) => {
 	
 	const handleClick = () => {
 		setExtraContent(false);
@@ -86,104 +77,6 @@ export const GroupsButtons :FunctionComponent<ButtonsProps> = ({ setOpenDialog, 
 	)
 }
 
-const ChatDialog = ({ setOpenDialog, setGroupsData, groupsData } : { setOpenDialog : booleanSetState , setGroupsData : objectSetState, groupsData : {[key: string]: any} }) => {
-	const [channelName, setChannelName] = useState("");
-	const [password, setPassword] = useState("");
-	const [type, setType] = useState(PUBLIC);
-
-	const handleChannelNameChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
-		setChannelName(event.target.value);
-	}
-	
-	const handlePasswordChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
-		setPassword(event.target.value);
-	}
-
-	const handleSave = () => {
-		const tokenData: tokenData = jwt(document.cookie);
-		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-
-		axios.post(`http://localhost:3000/channels`, {
-			"name": channelName,
-			"type": type,
-			"owner": tokenData.id,
-			"password": password,
-		}, { headers: authToken }).then( (response) => {
-			console.log(response.data)
-			const newGroupsData
-			 = groupsData.map((element : {[key: string]: any}) => element);
-			newGroupsData.push(response.data);
-			setGroupsData(newGroupsData)
-			setOpenDialog(false);
-		}
-		)
-	}
-	
-	const keyDownHandler = ( event :  React.KeyboardEvent<HTMLInputElement>) => {
-		if (event.key === 'Enter') {
-			event.preventDefault();
-			handleSave();
-		}
-	}
-	
-	return (
-		<>
-		<DialogTitle sx={{fontFamily: 'Orbitron'}}>
-			Create Channel
-		</DialogTitle>
-		<DialogContent>
-			<TextField
-				autoFocus
-				margin="dense"
-				id="name"
-				label="Channel Name"
-				type="email"
-				fullWidth
-				variant="standard"
-				value={channelName}
-				onKeyDown={keyDownHandler}
-				onChange={handleChannelNameChange}
-			/>
-		</DialogContent>
-		<DialogContent>
-			<TextField
-				margin="dense"
-				id="name"
-				label="Channel Password"
-				type="email"
-				fullWidth
-				variant="standard"
-				value={password}
-				onKeyDown={keyDownHandler}
-				onChange={handlePasswordChange}
-			/>
-		</DialogContent>
-		<DialogContent>
-     		 <FormControlLabel
-			 	control={<Checkbox />}
-				label="Private"
-				onChange={() => setType(PRIVATE)}
-			/>
-		</DialogContent>
-		<DialogActions>
-		<Button
-			onClick={() => setOpenDialog(false)}
-			sx={{fontFamily: 'Orbitron'}}
-		>
-			Cancel
-		</Button>
-		<Button
-			variant="contained"
-			onClick={handleSave}
-			sx={{fontFamily: 'Orbitron'}}
-		>
-			Create
-		</Button>
-		</DialogActions>
-	</>
-	)
-}
-
 export const ChatAuxiliaryButton: FunctionComponent<Props> = ({ direct, setExtraContent, setActiveChannel, setGroupsData, groupsData }) => {
 	const [openDialog, setOpenDialog] = useState(false);
 
@@ -199,7 +92,7 @@ export const ChatAuxiliaryButton: FunctionComponent<Props> = ({ direct, setExtra
 			: <GroupsButtons setExtraContent={setExtraContent} setActiveChannel={setActiveChannel} setOpenDialog={setOpenDialog}/>
 		}
 		<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
-			<ChatDialog setOpenDialog={setOpenDialog} setGroupsData={setGroupsData} groupsData={groupsData}/>
+			<CreateChannelDialog setOpenDialog={setOpenDialog} setGroupsData={setGroupsData} groupsData={groupsData}/>
 		</Dialog>
 		</>
 	)
