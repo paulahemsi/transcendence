@@ -16,26 +16,25 @@ interface Props {
 }
 
 export const ChannelsList : FunctionComponent<Props> = ({ setExtraContent, activeChannel, setActiveChannel, friendsData, direct, groupsData, loading }) => {
-	return (
-		<>
-		{
-			direct
-			? 
+
+	if (direct) {
+		return (
 			<DM
 				friendsData={friendsData}
 				setExtraContent={setExtraContent}
 				setActiveChannel={setActiveChannel}
 			/>
-			:
-			<GroupChannels
-				setExtraContent={setExtraContent}
-				activeChannel={activeChannel}
-				setActiveChannel={setActiveChannel}
-				groupsData={groupsData}
-				loading={loading}
-			/>
-		}
-		</>
+		)
+	}
+
+	return (
+		<GroupChannels
+			setExtraContent={setExtraContent}
+			activeChannel={activeChannel}
+			setActiveChannel={setActiveChannel}
+			groupsData={groupsData}
+			loading={loading}
+		/>
 	)
 }
 
