@@ -23,6 +23,7 @@ export const ChannelsList : FunctionComponent<Props> = ({ setExtraContent, activ
 				friendsData={friendsData}
 				setExtraContent={setExtraContent}
 				setActiveChannel={setActiveChannel}
+				loading={loading}
 			/>
 		)
 	}
