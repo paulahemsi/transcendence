@@ -29,6 +29,7 @@ export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 	const handleSave = () => {
 		const tokenData: tokenData = jwt(document.cookie);
 		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+		setOpenDialog(false);
 	}
 	
 	const keyDownHandler = ( event :  React.KeyboardEvent<HTMLInputElement>) => {
