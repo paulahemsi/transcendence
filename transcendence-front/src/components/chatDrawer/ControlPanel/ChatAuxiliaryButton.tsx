@@ -1,6 +1,7 @@
 import React, { useState, FunctionComponent } from "react"
 import { Box, Button, Dialog } from "@mui/material"
 import CreateChannelDialog from "./CreateChannelDialog";
+import AddFriendsDialog from "./AddFriendsDialog";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type numberSetState = React.Dispatch<React.SetStateAction<number>>
@@ -42,6 +43,7 @@ const groupButton = buttonConfig("10vw")
 export const DirectButtons : FunctionComponent<ButtonsProps> = ({ setOpenDialog, setExtraContent, setActiveChannel }) => {
 	
 	const handleClick = () => {
+		setOpenDialog(true);
 		setExtraContent(false);
 	}
 	
@@ -79,20 +81,25 @@ export const GroupsButtons :FunctionComponent<ButtonsProps> = ({ setOpenDialog, 
 
 export const ChatAuxiliaryButton: FunctionComponent<Props> = ({ direct, setExtraContent, setActiveChannel, setGroupsData, groupsData }) => {
 	const [openDialog, setOpenDialog] = useState(false);
+	const [openAddFriendsDialog, setOpenAddFriendsDialog] = useState(false);
 
 	const handleClose = () => {
 		setOpenDialog(false);
+		setOpenAddFriendsDialog(false);
 	};
 
 	return (
 		<>
 		{
 			direct
-			? <DirectButtons setExtraContent={setExtraContent} setActiveChannel={setActiveChannel} setOpenDialog={setOpenDialog} />
+			? <DirectButtons setExtraContent={setExtraContent} setActiveChannel={setActiveChannel} setOpenDialog={setOpenAddFriendsDialog} />
 			: <GroupsButtons setExtraContent={setExtraContent} setActiveChannel={setActiveChannel} setOpenDialog={setOpenDialog}/>
 		}
 		<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
 			<CreateChannelDialog setOpenDialog={setOpenDialog} setGroupsData={setGroupsData} groupsData={groupsData}/>
+		</Dialog>
+		<Dialog open={openAddFriendsDialog} fullWidth maxWidth="sm" onClose={handleClose}>
+			<AddFriendsDialog setOpenDialog={setOpenDialog} setGroupsData={setGroupsData} groupsData={groupsData}/>
 		</Dialog>
 		</>
 	)
