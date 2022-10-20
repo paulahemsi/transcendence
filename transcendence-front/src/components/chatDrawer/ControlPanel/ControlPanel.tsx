@@ -19,9 +19,10 @@ interface Props {
 	setActiveChannel: numberSetState;
 	friendsData: {[key: string]: any};
 	activeChannel: number,
+	setFriendsData: objectSetState;
 }
 
-export const ControlPanel : FunctionComponent<Props> = ({  setExtraContent, setActiveChannel, friendsData, activeChannel }) => {
+export const ControlPanel : FunctionComponent<Props> = ({  setExtraContent, setActiveChannel, friendsData, activeChannel, setFriendsData }) => {
 
 	const [direct, setDirect] = useState(true);
 	const [groupsData, setGroupsData] = useState<{[key: string]: any}>({});
@@ -54,6 +55,8 @@ export const ControlPanel : FunctionComponent<Props> = ({  setExtraContent, setA
 				setActiveChannel={setActiveChannel}
 				setGroupsData={setGroupsData}
 				groupsData={groupsData}
+				friendsData={friendsData}
+				setFriendsData={setFriendsData}
 			/>
 			<ChannelsList
 				direct={direct}

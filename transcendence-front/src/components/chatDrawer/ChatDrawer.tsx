@@ -4,13 +4,15 @@ import ExtraContent from "./ContentPanel/ExtraContent";
 import ControlPanel from "./ControlPanel/ControlPanel";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
 
 interface Props {
     friendsData: {[key: string]: any};
     setOpenDrawer: booleanSetState;
+	setFriendsData: objectSetState;
 }
 
-export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDrawer }) => {
+export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDrawer, setFriendsData }) => {
 	const [extraContent, setExtraContent] = useState(false);
 	const [activeChannel, setActiveChannel] = useState(0)
 
@@ -37,6 +39,7 @@ export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDraw
 					setActiveChannel={setActiveChannel}
 					friendsData={friendsData}
 					activeChannel={activeChannel}
+					setFriendsData={setFriendsData}
 				/>
 			</Box>
 		  </Drawer>

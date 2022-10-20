@@ -12,11 +12,13 @@ type tokenData = {
 
 interface Props {
 	setOpenDialog: booleanSetState;
-	setGroupsData: objectSetState;
-	groupsData: {[key: string]: any};
+	setFriendsData: objectSetState;
+	friendsData: {[key: string]: any};
 }
 
-export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, setGroupsData, groupsData }) => {
+
+
+export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, setFriendsData, friendsData }) => {
 
 	const [channelName, setChannelName] = useState("");
 
@@ -66,7 +68,7 @@ export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 			onClick={handleSave}
 			sx={{fontFamily: 'Orbitron'}}
 		>
-			Search
+			Add
 		</Button>
 		</DialogActions>
 	</>

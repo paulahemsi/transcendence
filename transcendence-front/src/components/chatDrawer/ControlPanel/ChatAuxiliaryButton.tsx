@@ -13,6 +13,8 @@ interface Props {
 	setActiveChannel: numberSetState;
 	setGroupsData: objectSetState;
 	groupsData: {[key: string]: any};
+	setFriendsData: objectSetState;
+	friendsData: {[key: string]: any};
 }
 
 interface ButtonsProps {
@@ -79,7 +81,7 @@ export const GroupsButtons :FunctionComponent<ButtonsProps> = ({ setOpenDialog, 
 	)
 }
 
-export const ChatAuxiliaryButton: FunctionComponent<Props> = ({ direct, setExtraContent, setActiveChannel, setGroupsData, groupsData }) => {
+export const ChatAuxiliaryButton: FunctionComponent<Props> = ({ direct, setExtraContent, setActiveChannel, setGroupsData, groupsData, 	setFriendsData, friendsData }) => {
 	const [openDialog, setOpenDialog] = useState(false);
 	const [openAddFriendsDialog, setOpenAddFriendsDialog] = useState(false);
 
@@ -99,7 +101,7 @@ export const ChatAuxiliaryButton: FunctionComponent<Props> = ({ direct, setExtra
 			<CreateChannelDialog setOpenDialog={setOpenDialog} setGroupsData={setGroupsData} groupsData={groupsData}/>
 		</Dialog>
 		<Dialog open={openAddFriendsDialog} fullWidth maxWidth="sm" onClose={handleClose}>
-			<AddFriendsDialog setOpenDialog={setOpenDialog} setGroupsData={setGroupsData} groupsData={groupsData}/>
+			<AddFriendsDialog setOpenDialog={setOpenDialog} setFriendsData={setFriendsData} friendsData={friendsData}/>
 		</Dialog>
 		</>
 	)
