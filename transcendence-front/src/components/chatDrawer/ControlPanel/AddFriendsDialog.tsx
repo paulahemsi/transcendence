@@ -1,7 +1,9 @@
-import React, { useState, FunctionComponent } from "react"
+import React, { useState, FunctionComponent, useEffect } from "react"
 import { Button, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
+import Loading from "../Loading";
+import UsersList from "./UsersList";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
@@ -9,6 +11,7 @@ type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
 type tokenData = {
 	id: string;
 }
+//const tokenData: tokenData = jwt(document.cookie);
 
 interface Props {
 	setOpenDialog: booleanSetState;
@@ -16,22 +19,18 @@ interface Props {
 	friendsData: {[key: string]: any};
 }
 
-
-
 export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, setFriendsData, friendsData }) => {
 
-	const [channelName, setChannelName] = useState("");
-
-	const handleChannelNameChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
-		setChannelName(event.target.value);
-	}
-
-	const handleSave = () => {
-		const tokenData: tokenData = jwt(document.cookie);
-		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-		setOpenDialog(false);
-	}
+	const [usersName, setUsersName] = useState<string[]>([]);
+	const [loading, setLoading] = useState<boolean>(true);
 	
+	
+	const [searchQuery, setSearchQuery] = useState("");
+
+	const handleQuery = (event :  React.ChangeEvent<HTMLInputElement>) => {
+		setSearchQuery(event.target.value);
+	}
+
 	const keyDownHandler = ( event :  React.KeyboardEvent<HTMLInputElement>) => {
 		if (event.key === 'Enter') {
 			event.preventDefault();
@@ -39,6 +38,33 @@ export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 		}
 	}
 	
+	const requestUsersData = async () => {
+		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+		await axios.get("http://localhost:3000/users/", { headers: authToken }).then((response: {[key: string]: any}) => {
+			var usersName: Array<string> = [];
+			response.data.forEach((userData: {[key: string]: any}) => {
+				usersName.push(userData.username)
+			});
+			setUsersName(usersName);
+			setLoading(false);
+		})
+	}
+	
+	const handleSave = () => {
+		const tokenData: tokenData = jwt(document.cookie);
+		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+
+		axios.post(`http://localhost:3000/users/${tokenData.id}/friends/by_name`, {
+			"name": searchQuery
+		}, { headers: authToken }).then( (response) => {
+			console.log(searchQuery);
+			setFriendsData(response.data);
+			setOpenDialog(false);
+		})
+	}
+	
+	useEffect(() => {requestUsersData()}, []);
+
 	return (
 		<>
 		<DialogTitle sx={{fontFamily: 'Orbitron'}}>
@@ -52,11 +78,15 @@ export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 				type="email"
 				fullWidth
 				variant="standard"
-				value={channelName}
+				value={searchQuery}
 				onKeyDown={keyDownHandler}
-				onChange={handleChannelNameChange}
+				onChange={handleQuery}
 			/>
 		</DialogContent>
+		{
+			!loading && 
+			<UsersList usersName={usersName} searchQuery={searchQuery} />
+		}
 		<DialogActions>
 		<Button
 			onClick={() => setOpenDialog(false)}
