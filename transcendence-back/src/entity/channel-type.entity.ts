@@ -1,12 +1,14 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 export enum channelType {
   PUBLIC = 'PUBLIC',
   PRIVATE = 'PRIVATE',
   PROTECTED = 'PROTECTED',
+  DIRECT_MESSAGES = 'DIRECT_MESSAGES',
 }
 
 @Entity()
+@Unique(['type'])
 export class ChannelType {
   @PrimaryGeneratedColumn({
     type: 'bigint',
