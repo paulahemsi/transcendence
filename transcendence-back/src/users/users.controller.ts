@@ -58,7 +58,6 @@ export class UsersController {
   }
 
   @Post(':id/friends/by_name')
-  @HttpCode(204)
   addFriendByName(
     @Param('id', ParseUUIDPipe) userId: string,
     @Body() friend: FriendNameDto,

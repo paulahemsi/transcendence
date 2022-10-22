@@ -72,7 +72,17 @@ export class FriendshipService {
     if (!friend) {
       throw new NotFoundException();
     }
-    return this.addBilateralFriendship(userId, friend.id);
+
+    this.addBilateralFriendship(userId, friend.id);
+
+    const addedFriend : friendInfo = {
+      "username": friend.username,
+      "status": friend.status,
+      "rating": friend.rating,
+      "image_url": friend.image_url
+    }
+
+    return addedFriend;
   }
 
   async addBilateralFriendship(userId: string, friendId: string) {
