@@ -3,6 +3,7 @@ import { Button, DialogActions, DialogContent, DialogTitle, TextField } from "@m
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import UsersList from "./UsersList";
+import SearchGroupsList from "./SearchGroupsList";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
@@ -13,11 +14,11 @@ type tokenData = {
 
 interface Props {
 	setOpenDialog: booleanSetState;
-	setFriendsData: objectSetState;
+	setGroupsData: objectSetState;
 }
 
-export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setFriendsData }) => {
-	const [usersName, setUsersName] = useState<string[]>([]);
+export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setGroupsData }) => {
+	const [groupsName, setGroupsName] = useState<string[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [searchQuery, setSearchQuery] = useState("");
 	const tokenData: tokenData = jwt(document.cookie);
@@ -36,28 +37,28 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setF
 
 	const requestUsersData = async () => {
 		await axios.get("http://localhost:3000/users/", { headers: authToken }).then((response: {[key: string]: any}) => {
-			var usersName: Array<string> = [];
+			var groupsName: Array<string> = [];
 			response.data.forEach((userData: {[key: string]: any}) => {
 				if (userData.id !== tokenData.id) {
-					usersName.push(userData.username)
+					groupsName.push(userData.username)
 				}
 			});
-			setUsersName(usersName);
+			setGroupsName(groupsName);
 			setLoading(false);
 		})
 	}
 
-	const requestFriendsData = async () => {
+	const requestGroupsData = async () => {
 		await axios.get(`http://localhost:3000/users/${tokenData.id}/friends`, { headers: authToken }).then((response) => {
-			setFriendsData(response.data);
+			setGroupsData(response.data);
 	})
 	}
 	
 	const handleSave = () => {
-		axios.post(`http://localhost:3000/users/${tokenData.id}/friends/by_name`, {
-			"name": searchQuery
+		axios.post(`http://localhost:3000/channels/${tokenData.id}/members`, {
+			"userId": tokenData.id
 		}, { headers: authToken }).then( () => {
-			requestFriendsData();
+			requestGroupsData();
 			setOpenDialog(false);
 		})
 	}
@@ -84,7 +85,7 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setF
 		</DialogContent>
 		{
 			!loading && 
-			<UsersList usersName={usersName} searchQuery={searchQuery} />
+			<SearchGroupsList groupsName={groupsName} searchQuery={searchQuery} />
 		}
 		<DialogActions>
 		<Button

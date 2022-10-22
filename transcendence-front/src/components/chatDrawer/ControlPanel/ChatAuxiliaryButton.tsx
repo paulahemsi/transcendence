@@ -120,7 +120,7 @@ export const ChatAuxiliaryButton: FunctionComponent<Props> = ({ direct, setExtra
 			<AddFriendsDialog setOpenDialog={setOpenAddFriendsDialog} setFriendsData={setFriendsData}/>
 		</Dialog>
 		<Dialog open={openAddGroupsDialog} fullWidth maxWidth="sm" onClose={handleClose}>
-			<AddGroupsDialog setOpenDialog={setOpenAddGroupsDialog} setFriendsData={setFriendsData}/>
+			<AddGroupsDialog setOpenDialog={setOpenAddGroupsDialog} setGroupsData={setGroupsData}/>
 		</Dialog>
 		</>
 	)
