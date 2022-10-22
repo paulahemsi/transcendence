@@ -22,13 +22,13 @@ export class Channel {
 
   @ManyToOne(() => User, (user) => user.id, {
     nullable: false,
+    onDelete: 'CASCADE',
   })
   owner: User;
 
   @Column({
     nullable: true,
   })
-  //*Nota: aqui lembrar de passar pelo algoritmo de hash
   password: string;
 
   private updateName(name: string) {
