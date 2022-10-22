@@ -281,4 +281,8 @@ export class ChannelsService {
     this.addMember(newChannel.id, user.id);
     return { "id": newChannel.id , "name" : newChannel.name }
   }
+
+  async getPublicChannels() {
+    console.log("get public channels")
+  }
 }
