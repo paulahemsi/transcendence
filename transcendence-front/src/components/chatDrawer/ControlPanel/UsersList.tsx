@@ -1,3 +1,4 @@
+import { List, ListItem } from "@mui/material";
 import React from "react";
 
 const filterData = (query: string, data: string[]) => {
@@ -9,26 +10,29 @@ const filterData = (query: string, data: string[]) => {
 };
 
 export const UsersList = ({ usersName, searchQuery } : { usersName : string[], searchQuery : string }) => {
+	if (searchQuery.length >= 1) {
+		return (
+			<List style={{ padding: 3 }}>
+			{
+				filterData(searchQuery, usersName).map((user) => (
+				<ListItem
+					sx={{
+					padding: 'inherited',
+					color: "gray",
+					margin: 'inherited',
+					}}
+					key={user}
+				>
+					{user}
+				</ListItem>
+				))
+			}
+		</List>
+		)
+	}
 	return (
-		<div style={{ padding: 3 }}>
-		{
-			filterData(searchQuery, usersName).map((d) => (
-			<div
-				style={{
-				padding: 5,
-				justifyContent: "normal",
-				fontSize: 20,
-				color: "blue",
-				margin: 1,
-				width: "250px",
-				borderWidth: "10px"
-				}}
-			>
-				{d}
-			</div>
-			))
-		}
-	</div>
+		<>
+		</>
 	)
 }
 
