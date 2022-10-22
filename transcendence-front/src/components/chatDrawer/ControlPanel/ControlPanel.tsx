@@ -1,22 +1,23 @@
 import { Box } from "@mui/material";
 import React, { FunctionComponent, useState } from "react";
+import ChannelsList from "./ChannelsList";
 import ChatAuxiliaryButton from "./ChatAuxiliaryButton";
 import ChatButton from "./ChatButton";
-import FriendsList from "./FriendsList";
-import GroupsList from "./GroupsList";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type numberSetState = React.Dispatch<React.SetStateAction<number>>
+type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
 
 interface Props {
     setExtraContent: booleanSetState;
 	setActiveChannel: numberSetState;
+	setGroupsData: objectSetState;
 	friendsData: {[key: string]: any};
 	activeChannel: number,
 	groupsData:  {[key: string]: any},
 }
 
-export const ControlPanel : FunctionComponent<Props> = ({  setExtraContent, setActiveChannel, friendsData, activeChannel, groupsData }) => {
+export const ControlPanel : FunctionComponent<Props> = ({  setExtraContent, setActiveChannel, setGroupsData, friendsData, activeChannel, groupsData }) => {
 
 	const [direct, setDirect] = useState(true);
 
@@ -32,23 +33,16 @@ export const ControlPanel : FunctionComponent<Props> = ({  setExtraContent, setA
 				direct={direct}
 				setExtraContent={setExtraContent}
 				setActiveChannel={setActiveChannel}
+				setGroupsData={setGroupsData}
 			/>
-			{
-				direct
-				?
-				<FriendsList
-					friendsData={friendsData}
-					setExtraContent={setExtraContent}
-					setActiveChannel={setActiveChannel}
-				/>
-				:
-				<GroupsList
-					setExtraContent={setExtraContent}
-					activeChannel={activeChannel}
-					setActiveChannel={setActiveChannel} 
-					groupsData={groupsData}
-				/>
-			}
+			<ChannelsList
+				direct={direct}
+				setExtraContent={setExtraContent}
+				activeChannel={activeChannel}
+				setActiveChannel={setActiveChannel} 
+				groupsData={groupsData}
+				friendsData={friendsData}
+			/>
 		</Box>
 	)
 }

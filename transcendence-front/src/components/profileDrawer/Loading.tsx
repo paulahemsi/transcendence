@@ -10,3 +10,5 @@ export const Loading = () => {
 		</Stack>
 	)
 }
+
+export default Loading

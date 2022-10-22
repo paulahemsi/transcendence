@@ -1,13 +1,9 @@
 import React, { FunctionComponent, useState, useEffect } from "react";
 import { Drawer, Box } from '@mui/material';
-import ChatButton from "./ChatButton";
-import FriendsList from "./FriendsList";
-import GroupsList from "./GroupsList";
-import ChatAuxiliaryButton from "./ChatAuxiliaryButton";
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
-import ExtraContent from "./ExtraContent";
-import ControlPanel from "./ControlPanel";
+import ExtraContent from "./ContentPanel/ExtraContent";
+import ControlPanel from "./ControlPanel/ControlPanel";
 
 type tokenData = {
 	id: string;
@@ -26,6 +22,7 @@ const requestGroupsData = async ({ setGroupsData } : { setGroupsData: React.Disp
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 	
 	await axios.get(`http://localhost:3000/users/${tokenData.id}/channels`, { headers: authToken }).then((response) => {
+		console.log(response.data)
 		setGroupsData(response.data);
 })
 }
@@ -35,7 +32,7 @@ export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDraw
 	const [extraContent, setExtraContent] = useState(false);
 	const [activeChannel, setActiveChannel] = useState(0)
 
-	useEffect(() => {requestGroupsData({setGroupsData})}, []);
+	useEffect(() => {requestGroupsData({setGroupsData})}, []); //!algo errado com carregar essas infos
 
 	return (
 		<>
@@ -61,6 +58,7 @@ export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDraw
 					friendsData={friendsData}
 					activeChannel={activeChannel}
 					groupsData={groupsData}
+					setGroupsData={setGroupsData}
 				/>
 			</Box>
 		  </Drawer>

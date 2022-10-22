@@ -80,7 +80,7 @@ export class ChannelsController {
   }
 
   @Post()
-  @HttpCode(204)
+  @HttpCode(200)
   addChannel(@Body() channel: CreateChannelDto) {
     return this.channelService.addChannel(channel);
   }
