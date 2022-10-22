@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { TextField, Box } from "@mui/material";
+import { TextField, Box, Typography } from "@mui/material";
 import io from 'socket.io-client';
 import axios, { AxiosRequestHeaders } from 'axios';
 import MessagesList from "./MessagesList";
@@ -21,6 +21,36 @@ const messagesBorderCSS = {
 	borderColor: '#212980',
 	borderRadius: 3,
 	boxShadow: 5
+}
+
+const typographyCSS = {
+	color: '#212980',
+	fontFamily: 'Orbitron',
+	fontWeight: 600,
+	fontSize: '5vh',
+	paddingLeft: '1.7vh',
+	whiteSpace: 'pre-wrap', overflowWrap: 'break-word', width: '24vw'
+}
+
+const noMessages = "it's so quiet in here ......"
+
+const NoMessages = () => {
+	return (
+		<Box 
+			display="flex"
+			alignItems="center"
+			flexDirection="column"
+			flexWrap="wrap"
+			justifyContent="center"
+			sx={{width: '100%',  height: '50vh'}}
+		>
+			<Typography
+				sx={typographyCSS}
+			>
+				{noMessages}
+			</Typography>
+		</Box>
+	)
 }
 
 const requestMessagesFromChannel = async ( activeChannel : number , setMessagesData : arraySetState ) =>  {
@@ -72,10 +102,10 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 		<Box sx={messagesBorderCSS}>
 			{
 				messagesData[0] 
-				? (
+				?
 					<MessagesList messagesData={messagesData}/>
-				) :
-				":("
+				:
+					<NoMessages />
 			}
 		</Box>
 		<Box>

@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from "react";
-import { Box, Button, List, ListItem } from "@mui/material";
+import { Box, Button, List, ListItem, Typography } from "@mui/material";
 import FriendsInfo from "./FriendsInfo";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
@@ -32,6 +32,36 @@ interface Props {
 	setActiveChannel: numberSetState;
 }
 
+const typographyCSS = {
+	color: '#212980',
+	fontFamily: 'Orbitron',
+	fontWeight: 600,
+	fontSize: '5vh',
+	paddingLeft: '1.7vh',
+	whiteSpace: 'pre-wrap', overflowWrap: 'break-word', width: '24vw'
+}
+
+const noFriends = "you dont have any friends yet \r\n\r\n :("
+
+const NoFriends = () => {
+	return (
+		<Box 
+			display="flex"
+			alignItems="center"
+			flexDirection="column"
+			flexWrap="wrap"
+			justifyContent="center"
+			sx={{width: '100%',  height: '50vh'}}
+		>
+			<Typography
+				sx={typographyCSS}
+			>
+				{noFriends}
+			</Typography>
+		</Box>
+	)
+}
+
 const onHoverFriend = {
 	'&:hover': {
 		backgroundColor: '#B998FF',
@@ -54,9 +84,20 @@ export const FriendsList : FunctionComponent<Props> = ({ friendsData, setExtraCo
 	})
 
 	return (
-		<List disablePadding sx={listCss}>
-			{friends}
-		</List>
+		<>
+		{
+			friendsData[0]
+			?
+			<List 
+				disablePadding 
+				sx=	{listCss}
+			>
+				{friends}
+			</List>
+			:
+			<NoFriends/>
+		}
+		</>
 	)
 }
 
