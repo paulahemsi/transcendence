@@ -7,33 +7,34 @@ type numberSetState = React.Dispatch<React.SetStateAction<number>>
 
 interface Props {
 	direct: boolean;
-    groupsData: {[key: string]: any};
     setExtraContent : booleanSetState;
 	setActiveChannel: numberSetState;
 	activeChannel: number;
 	friendsData: {[key: string]: any};
+	groupsData: {[key: string]: any};
+	loading: boolean;
 }
 
-export const ChannelsList : FunctionComponent<Props> = ({ groupsData, setExtraContent, activeChannel, setActiveChannel, friendsData, direct }) => {
-	return (
-		<>
-		{
-			direct
-			? 
+export const ChannelsList : FunctionComponent<Props> = ({ setExtraContent, activeChannel, setActiveChannel, friendsData, direct, groupsData, loading }) => {
+
+	if (direct) {
+		return (
 			<DM
 				friendsData={friendsData}
 				setExtraContent={setExtraContent}
 				setActiveChannel={setActiveChannel}
 			/>
-			:
-			<GroupChannels
-				setExtraContent={setExtraContent}
-				activeChannel={activeChannel}
-				setActiveChannel={setActiveChannel} 
-				groupsData={groupsData}
-			/>
-		}
-		</>
+		)
+	}
+
+	return (
+		<GroupChannels
+			setExtraContent={setExtraContent}
+			activeChannel={activeChannel}
+			setActiveChannel={setActiveChannel}
+			groupsData={groupsData}
+			loading={loading}
+		/>
 	)
 }
 
