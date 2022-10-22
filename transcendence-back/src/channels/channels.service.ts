@@ -286,11 +286,13 @@ export class ChannelsService {
       name: channelDto.name,
       owner: user,
       type: type,
-      password: channelDto.password ? await bcrypt.hash(channelDto.password, salt) : null,
+      password: channelDto.password
+        ? await bcrypt.hash(channelDto.password, salt)
+        : null,
     });
     const newChannel = await this.channelRepository.save(channel);
     this.addMember(newChannel.id, user.id);
-    return { "id": newChannel.id , "name" : newChannel.name }
+    return { id: newChannel.id, name: newChannel.name };
   }
 
   deleteChannel(channel: Channel) {
