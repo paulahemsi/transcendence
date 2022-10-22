@@ -8,6 +8,11 @@ import SearchGroupsList from "./SearchGroupsList";
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
 
+type groupsData = {
+	name: string;
+	id: string;
+}
+
 type tokenData = {
 	id: string;
 }
@@ -18,7 +23,7 @@ interface Props {
 }
 
 export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setGroupsData }) => {
-	const [groupsName, setGroupsName] = useState<string[]>([]);
+	const [groupsList, setGroupsList] = useState<{[key: string]: any}>({});
 	const [loading, setLoading] = useState<boolean>(true);
 	const [searchQuery, setSearchQuery] = useState("");
 	const tokenData: tokenData = jwt(document.cookie);
@@ -35,21 +40,24 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 		}
 	}
 
-	const requestUsersData = async () => {
-		await axios.get("http://localhost:3000/users/", { headers: authToken }).then((response: {[key: string]: any}) => {
-			var groupsName: Array<string> = [];
-			response.data.forEach((userData: {[key: string]: any}) => {
-				if (userData.id !== tokenData.id) {
-					groupsName.push(userData.username)
-				}
+	const requestGroupsData = async () => {
+		await axios.get(`http://localhost:3000/channels`, { headers: authToken }).then((response: {[key: string]: any}) => {
+			var groupsList: Array<groupsData> = [];
+			response.data.forEach((groupData: {[key: string]: any}) => {
+					const newGroup : groupsData = {
+						name: groupData.name,
+						id: groupData.id,
+					}
+					groupsList.push(newGroup);
 			});
-			setGroupsName(groupsName);
+			console.log(groupsList);
+			setGroupsList(groupsList);
 			setLoading(false);
 		})
 	}
 
-	const requestGroupsData = async () => {
-		await axios.get(`http://localhost:3000/users/${tokenData.id}/friends`, { headers: authToken }).then((response) => {
+	const setUserGroupsData = async () => {
+		await axios.get(`http://localhost:3000/users/${tokenData.id}/channels`, { headers: authToken }).then((response) => {
 			setGroupsData(response.data);
 	})
 	}
@@ -58,12 +66,12 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 		axios.post(`http://localhost:3000/channels/${tokenData.id}/members`, {
 			"userId": tokenData.id
 		}, { headers: authToken }).then( () => {
-			requestGroupsData();
+			setUserGroupsData();
 			setOpenDialog(false);
 		})
 	}
 	
-	useEffect(() => {requestUsersData()}, []);
+	useEffect(() => {requestGroupsData()}, []);
 
 	return (
 		<>
@@ -85,7 +93,7 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 		</DialogContent>
 		{
 			!loading && 
-			<SearchGroupsList groupsName={groupsName} searchQuery={searchQuery} />
+			<SearchGroupsList groupsList={groupsList} searchQuery={searchQuery} />
 		}
 		<DialogActions>
 		<Button
