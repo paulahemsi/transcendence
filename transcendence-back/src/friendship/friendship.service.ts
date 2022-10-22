@@ -1,7 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Friendship } from 'src/entity';
-import { Repository } from 'typeorm';
+import { ChannelsService } from 'src/channels/channels.service';
+import { Channel, Friendship, User } from 'src/entity';
+import { DataSource, Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
 
 type friendInfo = {
@@ -17,16 +23,16 @@ export class FriendshipService {
     @InjectRepository(Friendship)
     private readonly friedshipRepository: Repository<Friendship>,
     private readonly usersService: UsersService,
+    private readonly channelsService: ChannelsService,
+    private dataSource: DataSource,
   ) {}
 
-  private findOneFriendship(
-    userId: string,
-    friendId: string,
-  ): Promise<Friendship> {
+  private findOneFriendship(userId: string, friendId: string) {
     return this.friedshipRepository.findOne({
       relations: {
         user: true,
         friend: true,
+        channel: true,
       },
       where: {
         user: { id: userId },
@@ -40,9 +46,15 @@ export class FriendshipService {
       relations: {
         user: true,
         friend: true,
+        channel: true,
       },
       where: [{ user: { id: userId } }],
     });
+  }
+
+  private async getDirectMessageChannel(userId: string, friendId: string) {
+    const friendship = await this.findOneFriendship(userId, friendId);
+    return friendship.channel;
   }
 
   private async checkUserAndFriend(userId: string, friendId: string) {
@@ -54,54 +66,72 @@ export class FriendshipService {
     return { user: user, friend: friend };
   }
 
-  async addFriend(userId: string, friendId: string) {
-    const { user, friend } = await this.checkUserAndFriend(userId, friendId);
-    let friendship = await this.findOneFriendship(userId, friendId);
-    if (friendship) {
-      return;
-    }
-    friendship = this.friedshipRepository.create({
-      user: user,
-      friend: friend,
-    });
-    return this.friedshipRepository.save(friendship);
-  }
-
-  async addFriendByName(userId: string, friendName: string) {
+  async createFriendshipByName(userId: string, friendName: string) {
     const friend = await this.usersService.findUserByName(friendName);
     if (!friend) {
       throw new NotFoundException();
     }
+    return this.createFriendship(userId, friend.id);
+  }
 
-    this.addBilateralFriendship(userId, friend.id);
-
-    const addedFriend : friendInfo = {
-      "username": friend.username,
-      "status": friend.status,
-      "rating": friend.rating,
-      "image_url": friend.image_url
+  private async checkFriendship(user: User, friend: User) {
+    const friendship = await this.findOneFriendship(user.id, friend.id);
+    if (friendship) {
+      throw new BadRequestException('users alredy friends');
     }
-
-    return addedFriend;
   }
 
-  async addBilateralFriendship(userId: string, friendId: string) {
-    this.addFriend(userId, friendId);
-    this.addFriend(friendId, userId);
+  private async createFriendshipEntity(
+    user: User,
+    friend: User,
+    channel: Channel,
+  ) {
+    const friendship = this.friedshipRepository.create({
+      user: user,
+      friend: friend,
+      channel: channel,
+    });
+    return friendship;
   }
 
-  async deleteFriend(userId: string, friendId: string) {
+  private async createTransaction() {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    return queryRunner;
+  }
+
+  async createFriendship(userId: string, friendId: string) {
+    const { user, friend } = await this.checkUserAndFriend(userId, friendId);
+    let channel = await this.channelsService.createDirectMessageChannelEntity(
+      user,
+    );
+    this.checkFriendship(user, friend);
+    this.checkFriendship(friend, user);
+
+    const queryRunner = await this.createTransaction();
+    try {
+      channel = await queryRunner.manager.save(channel);
+      const friendship1 = this.createFriendshipEntity(user, friend, channel);
+      const friendship2 = this.createFriendshipEntity(friend, user, channel);
+      await queryRunner.manager.save(await friendship1);
+      await queryRunner.manager.save(await friendship2);
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException('Fail to create friendship');
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async deleteFriendship(userId: string, friendId: string) {
     await this.checkUserAndFriend(userId, friendId);
-    const friendship = await this.findOneFriendship(userId, friendId);
-    if (!friendship) {
+    const dmChannel = await this.getDirectMessageChannel(userId, friendId);
+    if (!dmChannel) {
       throw new NotFoundException();
     }
-    this.friedshipRepository.delete(friendship.id);
-  }
-
-  async deleteBilaretalFriendship(userId: string, friendId: string) {
-    this.deleteFriend(userId, friendId);
-    this.deleteFriend(friendId, userId);
+    this.channelsService.deleteChannel(dmChannel);
   }
 
   async getFriends(userId: string) {

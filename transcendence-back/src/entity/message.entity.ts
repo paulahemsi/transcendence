@@ -1,7 +1,12 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { User } from './user.entity';
 import { Channel } from './channel.entity';
-
 
 @Entity()
 export class Message {
@@ -9,10 +14,10 @@ export class Message {
     type: 'bigint',
   })
   id: number;
-  
+
   @CreateDateColumn()
   createdDate: Date;
-  
+
   @Column({
     nullable: false,
   })
@@ -20,11 +25,13 @@ export class Message {
 
   @ManyToOne(() => Channel, (channel) => channel.id, {
     nullable: false,
+    onDelete: 'CASCADE',
   })
   channel: Channel;
-  
+
   @ManyToOne(() => User, (user) => user.id, {
     nullable: false,
+    onDelete: 'CASCADE',
   })
   user: User;
 }

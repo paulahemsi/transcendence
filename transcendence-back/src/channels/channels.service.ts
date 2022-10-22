@@ -6,7 +6,13 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MessagelDto, UpdateChannelDto } from 'src/dto/channel.dtos';
-import { Channel, ChannelAdmin, ChannelMember, Message } from 'src/entity';
+import {
+  Channel,
+  ChannelAdmin,
+  ChannelMember,
+  Message,
+  User,
+} from 'src/entity';
 import { BadRequestException } from '@nestjs/common';
 import { CreateChannelDto } from 'src/dto/channel.dtos';
 import { UsersService } from 'src/users/users.service';
@@ -14,6 +20,7 @@ import { Repository } from 'typeorm';
 import { ChannelTypeService } from './channel-type.service';
 import * as bcrypt from 'bcrypt';
 import { ChatMessagelDto } from 'src/dto/chat.dtos';
+import { channelType } from 'src/entity/channel-type.entity';
 
 type members = {
   id: string;
@@ -129,11 +136,15 @@ export class ChannelsService {
     ) {
       return;
     }
-    const newMember = this.channelMemberRepository.create({
+    const newMember = this.createMemberEntity(user, channel);
+    this.channelMemberRepository.save(newMember);
+  }
+
+  createMemberEntity(user: User, channel: Channel) {
+    return this.channelMemberRepository.create({
       channel: channel,
       user: user,
     });
-    this.channelMemberRepository.save(newMember);
   }
 
   async getMembers(channelId: number) {
@@ -275,11 +286,29 @@ export class ChannelsService {
       name: channelDto.name,
       owner: user,
       type: type,
-      password: channelDto.password ? await bcrypt.hash(channelDto.password, salt) : null,
+      password: channelDto.password
+        ? await bcrypt.hash(channelDto.password, salt)
+        : null,
     });
     const newChannel = await this.channelRepository.save(channel);
     this.addMember(newChannel.id, user.id);
-    return { "id": newChannel.id , "name" : newChannel.name }
+    return { id: newChannel.id, name: newChannel.name };
+  }
+
+  deleteChannel(channel: Channel) {
+    this.channelRepository.delete(channel.id);
+  }
+
+  async createDirectMessageChannelEntity(user: User) {
+    const type = await this.channelTypeService.getChannelType(
+      channelType.DIRECT_MESSAGES,
+    );
+    const channel = this.channelRepository.create({
+      name: 'directMessage',
+      type: type,
+      owner: user,
+    });
+    return channel;
   }
 
   async getPublicChannels() {

@@ -2,9 +2,11 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateUserDto } from 'src/dto/users.dtos';
 import { ChannelMember, User } from 'src/entity';
-import { Repository } from 'typeorm';
+import { Repository, Not } from 'typeorm';
 import { MatchHistoryService } from 'src/match-history/match-history.service';
 import { Intra42UserData } from 'src/auth/strategies/intra42.strategy';
+import { channelType } from 'src/entity/channel-type.entity';
+import { ChannelTypeService } from 'src/channels/channel-type.service';
 
 export class matchInfos {
   opponent: string;
@@ -18,7 +20,6 @@ type channelInfo = {
   name: string;
 };
 
-
 @Injectable()
 export class UsersService {
   constructor(
@@ -26,6 +27,7 @@ export class UsersService {
     private readonly matchHistoryService: MatchHistoryService,
     @InjectRepository(ChannelMember)
     private readonly channelMemberRepository: Repository<ChannelMember>,
+    private readonly channeTypeService: ChannelTypeService,
   ) {}
 
   getUsers() {
@@ -91,6 +93,9 @@ export class UsersService {
   }
 
   async getUserChannelsInfos(userId: string) {
+    const directMessageType = await this.channeTypeService.getChannelType(
+      channelType.DIRECT_MESSAGES,
+    );
     const channelsInfos = await this.channelMemberRepository.find({
       relations: {
         channel: true,
@@ -98,6 +103,7 @@ export class UsersService {
       },
       where: {
         user: { id: userId },
+        channel: { type: { id: Not(directMessageType.id) } },
       },
     });
     return channelsInfos;
