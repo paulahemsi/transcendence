@@ -312,6 +312,17 @@ export class ChannelsService {
   }
 
   async getPublicChannels() {
-    console.log("get public channels")
+    const publicMessageType = await this.channelTypeService.getChannelType(
+      channelType.PUBLIC,
+    );
+    const channels = await this.channelRepository.find({
+      relations: {
+        type: true,
+      },
+      where: {
+        type: { id: publicMessageType.id },
+      },
+    });
+    return channels;
   }
 }
