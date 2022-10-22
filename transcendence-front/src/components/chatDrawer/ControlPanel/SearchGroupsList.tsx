@@ -2,19 +2,14 @@ import { List, ListItem } from "@mui/material";
 import React from "react";
 
 const filterData = (query: string, data: {[key: string]: any}) => {
-	console.log("data na filterData", data);
 	if (!query) {
 	  return data;
 	} else {
-	  return data.filter((d: {[key: string]: any}) => {
-		console.log(d.name);
-		return d.name.includes(query)
-	  });
+	  return data.filter((d: {[key: string]: any}) => d.name.includes(query));
 	}
 };
 
 export const SearchGroupsList = ({ groupsList, searchQuery } : { groupsList : {[key: string]: any}, searchQuery : string }) => {
-	console.log("groups list dentro da search", groupsList)
 	if (searchQuery.length >= 1) {
 		return (
 			<List style={{ padding: 3 }}>

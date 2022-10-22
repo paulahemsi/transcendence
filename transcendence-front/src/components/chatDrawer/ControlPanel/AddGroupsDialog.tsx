@@ -50,7 +50,6 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 					}
 					groupsList.push(newGroup);
 			});
-			console.log(groupsList);
 			setGroupsList(groupsList);
 			setLoading(false);
 		})
@@ -63,7 +62,8 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 	}
 	
 	const handleSave = () => {
-		axios.post(`http://localhost:3000/channels/${tokenData.id}/members`, {
+		const group = groupsList.filter((group: {[key: string]: any}) => group.name === searchQuery);
+		axios.post(`http://localhost:3000/channels/${group[0].id}/members`, {
 			"userId": tokenData.id
 		}, { headers: authToken }).then( () => {
 			setUserGroupsData();
