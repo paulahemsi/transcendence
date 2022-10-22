@@ -11,7 +11,6 @@ type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
 type tokenData = {
 	id: string;
 }
-//const tokenData: tokenData = jwt(document.cookie);
 
 interface Props {
 	setOpenDialog: booleanSetState;
@@ -39,11 +38,14 @@ export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 	}
 	
 	const requestUsersData = async () => {
+		const tokenData: tokenData = jwt(document.cookie);
 		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 		await axios.get("http://localhost:3000/users/", { headers: authToken }).then((response: {[key: string]: any}) => {
 			var usersName: Array<string> = [];
 			response.data.forEach((userData: {[key: string]: any}) => {
-				usersName.push(userData.username)
+				if (userData.id !== tokenData.id) {
+					usersName.push(userData.username)
+				}
 			});
 			setUsersName(usersName);
 			setLoading(false);
@@ -51,7 +53,6 @@ export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 	}
 	
 	const requestFriendsData = async () => {
-
 		const tokenData: tokenData = jwt(document.cookie);
 		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 		

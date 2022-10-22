@@ -4,7 +4,7 @@ const filterData = (query: string, data: string[]) => {
 	if (!query) {
 	  return data;
 	} else {
-	  return data.filter((d: string) => d.toLowerCase().includes(query));
+	  return data.filter((d: string) => d.includes(query));
 	}
 };
 
