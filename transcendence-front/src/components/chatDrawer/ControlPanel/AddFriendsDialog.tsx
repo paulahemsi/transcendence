@@ -50,6 +50,16 @@ export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 		})
 	}
 	
+	const requestFriendsData = async () => {
+
+		const tokenData: tokenData = jwt(document.cookie);
+		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+		
+		await axios.get(`http://localhost:3000/users/${tokenData.id}/friends`, { headers: authToken }).then((response) => {
+			setFriendsData(response.data);
+	})
+	}
+	
 	const handleSave = () => {
 		const tokenData: tokenData = jwt(document.cookie);
 		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
@@ -57,10 +67,7 @@ export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 		axios.post(`http://localhost:3000/users/${tokenData.id}/friends/by_name`, {
 			"name": searchQuery
 		}, { headers: authToken }).then( (response) => {
-			const newFriendsData
-			= friendsData.map((element : {[key: string]: any}) => element);
-			newFriendsData.push(response.data);
-			setFriendsData(newFriendsData);
+			requestFriendsData();
 			setOpenDialog(false);
 		})
 	}
