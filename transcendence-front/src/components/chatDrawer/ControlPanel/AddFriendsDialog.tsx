@@ -57,8 +57,10 @@ export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 		axios.post(`http://localhost:3000/users/${tokenData.id}/friends/by_name`, {
 			"name": searchQuery
 		}, { headers: authToken }).then( (response) => {
-			console.log(searchQuery);
-			setFriendsData(response.data);
+			const newFriendsData
+			= friendsData.map((element : {[key: string]: any}) => element);
+			newFriendsData.push(response.data);
+			setFriendsData(newFriendsData);
 			setOpenDialog(false);
 		})
 	}
