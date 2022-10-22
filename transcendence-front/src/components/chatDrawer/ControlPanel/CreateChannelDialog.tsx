@@ -43,7 +43,6 @@ export const CreateChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 			"owner": tokenData.id,
 			"password": password,
 		}, { headers: authToken }).then( (response) => {
-			console.log(response.data)
 			const newGroupsData
 			 = groupsData.map((element : {[key: string]: any}) => element);
 			newGroupsData.push(response.data);
