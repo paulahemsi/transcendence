@@ -21,6 +21,7 @@ import { ChannelTypeService } from './channel-type.service';
 import * as bcrypt from 'bcrypt';
 import { ChatMessagelDto } from 'src/dto/chat.dtos';
 import { channelType } from 'src/entity/channel-type.entity';
+import { type } from 'os';
 
 type members = {
   id: string;
@@ -33,6 +34,12 @@ type channelMessage = {
   userId: string;
   creationDate: object;
 };
+
+type channelData = {
+  name: string;
+  id: string;
+  type: string;
+}
 
 @Injectable()
 export class ChannelsService {
@@ -311,14 +318,15 @@ export class ChannelsService {
     return channel;
   }
 
-  async getPublicChannels() {
+  async getAllPublicChannels() {
     const publicMessageType = await this.channelTypeService.getChannelType(
       channelType.PUBLIC,
     );
     const protectedMessageType = await this.channelTypeService.getChannelType(
       channelType.PROTECTED,
     );
-    const channels = await this.channelRepository.find({
+    
+    return await this.channelRepository.find({
       relations: {
         type: true,
       },
@@ -331,6 +339,12 @@ export class ChannelsService {
       }
     ],
     });
+  }
+
+  async getPublicChannels() {
+
+    const channels = await this.getAllPublicChannels();
+    
     return channels;
   }
 }
