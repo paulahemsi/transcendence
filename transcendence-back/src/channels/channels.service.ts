@@ -36,8 +36,8 @@ type channelMessage = {
 };
 
 type channelData = {
+  id: number;
   name: string;
-  id: string;
   type: string;
 }
 
@@ -344,7 +344,17 @@ export class ChannelsService {
   async getPublicChannels() {
 
     const channels = await this.getAllPublicChannels();
+    const channelsResponse: Array<channelData> = [];
+
+    channels.map((channel) => {
+      const channelData = {} as channelData;
+
+      channelData.id = channel.id;
+      channelData.name = channel.name;
+      channelData.type = channel.type.type;
+      channelsResponse.push(channelData);
+    })
     
-    return channels;
+    return channelsResponse;
   }
 }
