@@ -315,13 +315,21 @@ export class ChannelsService {
     const publicMessageType = await this.channelTypeService.getChannelType(
       channelType.PUBLIC,
     );
+    const protectedMessageType = await this.channelTypeService.getChannelType(
+      channelType.PROTECTED,
+    );
     const channels = await this.channelRepository.find({
       relations: {
         type: true,
       },
-      where: {
+      where: [
+      {
         type: { id: publicMessageType.id },
       },
+      {
+        type: { id: protectedMessageType.id },
+      }
+    ],
     });
     return channels;
   }
