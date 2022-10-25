@@ -1,8 +1,10 @@
 import {
+  ForbiddenException,
   forwardRef,
   Inject,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MessagelDto, UpdateChannelDto } from 'src/dto/channel.dtos';
@@ -133,7 +135,7 @@ export class ChannelsService {
     this.channelMemberRepository.delete(member.id);
   }
 
-  async addMember(channelId: number, userId: string) {
+  async addMember(channelId: number, userId: string, password: string) {
     const { channel, user } = await this.checkChannelAndMember(
       channelId,
       userId,
@@ -143,8 +145,15 @@ export class ChannelsService {
     ) {
       return;
     }
-    const newMember = this.createMemberEntity(user, channel);
-    this.channelMemberRepository.save(newMember);
+    if ( password === "" || bcrypt.compareSync(password, channel.password)) {
+      console.log(`password: ${password}`)
+      console.log("password bateu")
+      const newMember = this.createMemberEntity(user, channel);
+      this.channelMemberRepository.save(newMember);
+    }
+    else {
+      throw new ForbiddenException();
+    }
   }
 
   createMemberEntity(user: User, channel: Channel) {
@@ -287,18 +296,18 @@ export class ChannelsService {
     }
 
     // TODO: regras de publico e privado
-    const salt = await bcrypt.genSalt();
+    //const salt = await bcrypt.genSalt();
 
     const channel = this.channelRepository.create({
       name: channelDto.name,
       owner: user,
       type: type,
       password: channelDto.password
-        ? await bcrypt.hash(channelDto.password, salt)
+        ? await bcrypt.hash(channelDto.password, bcrypt.genSaltSync())
         : null,
     });
     const newChannel = await this.channelRepository.save(channel);
-    this.addMember(newChannel.id, user.id);
+    this.addMember(newChannel.id, user.id, "");
     return { id: newChannel.id, name: newChannel.name };
   }
 
