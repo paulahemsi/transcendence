@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from 'src/auth/auth.module';
 import { ChannelTypeService } from 'src/channels/channel-type.service';
 import { ChannelsService } from 'src/channels/channels.service';
 import {
@@ -15,6 +16,7 @@ import { ChatGateway } from './chat.gateway';
 @Module({
   imports: [
     UsersModule,
+    AuthModule,
     TypeOrmModule.forFeature([
       Channel,
       ChannelMember,
