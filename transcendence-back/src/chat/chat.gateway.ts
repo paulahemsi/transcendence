@@ -43,7 +43,8 @@ export class ChatGateway
     try {
       const token = client.handshake.headers.cookie.split('=')[1];
       const decodedToken = this.authService.validateJwt(token);
-      await this.authService.validateUser(decodedToken.id);
+      const user = await this.authService.validateUser(decodedToken.id);
+      client.data.user = user;
     } catch {
       this.disconnect(client);
     }
