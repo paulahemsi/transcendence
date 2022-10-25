@@ -42,16 +42,15 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 	const tokenData: tokenData = jwt(document.cookie);
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 
-	let groupName = "";
-	let password = "";
-	
+	const [groupName, setGroupName] = useState("");
+	const [password, setPassword] = useState("");
 	
 	const handleQuery = (event :  React.ChangeEvent<HTMLInputElement>) => {
 		setSearchQuery(event.target.value);
 	}
 
-	const selectedGroup = () => {
-		return groupsList.filter((group: {[key: string]: any}) => group.name === groupName)
+	const selectedGroup = (name: string) => {
+		return groupsList.filter((group: {[key: string]: any}) => group.name === name)
 	}
 
 	const requestGroupsData = async () => {
@@ -77,9 +76,10 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 	}
 	
 	const handleSave = () => {
-		const group = selectedGroup();
+		const group = selectedGroup(groupName);
 		axios.post(`http://localhost:3000/channels/${group[0].id}/members`, {
-			"userId": tokenData.id
+			"userId": tokenData.id,
+			"password": searchQuery
 		}, { headers: authToken }).then( () => {
 			setUserGroupsData();
 			setOpenDialog(false);
@@ -87,13 +87,13 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 	}
 	
 	const handleJoin = () => {
-		password = searchQuery;
+		setPassword(searchQuery);
 		handleSave();
 	}
 	
 	const handleAdd = () => {
-		groupName = searchQuery;
-		const group = selectedGroup();
+		setGroupName(searchQuery);
+		const group = selectedGroup(searchQuery);
 		if ( group[0].type === PUBLIC ) {
 			handleSave();
 		} else if ( group[0].type === PROTECTED ) {
