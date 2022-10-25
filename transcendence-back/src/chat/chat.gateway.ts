@@ -48,21 +48,23 @@ export class ChatGateway
     @ConnectedSocket() client: Socket,
     @MessageBody() chatMessageDto: ChatMessagelDto,
   ) {
-    var newMessage : Message;
+    let newMessage: Message;
     try {
       newMessage = await this.channelService.addChatMessage(chatMessageDto);
     } catch (err) {
       client.emit('chatMessage', 'error');
       return;
     }
-    
+
     const message = {} as channelMessage;
     message.message = newMessage.message;
     message.username = newMessage.user.username;
     message.userId = newMessage.user.id;
     message.creationDate = newMessage.createdDate;
-      
-    this.server.to(chatMessageDto.channel.toString()).emit('chatMessage', message);
+
+    this.server
+      .to(chatMessageDto.channel.toString())
+      .emit('chatMessage', message);
   }
 
   @SubscribeMessage('joinChannel')
