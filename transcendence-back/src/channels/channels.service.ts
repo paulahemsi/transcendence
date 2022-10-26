@@ -384,7 +384,17 @@ export class ChannelsService {
   }
 
   async getChannelData(channelId: number) {
-    console.log(channelId)
+    const channel = await this.channelRepository.findOne(
+      {
+        where: {
+          id: channelId,
+        }
+      }
+    )
+    if (!channel) {
+      throw new NotFoundException();
+    }
+    return channel
   }
 
 }
