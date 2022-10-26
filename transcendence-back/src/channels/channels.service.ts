@@ -311,7 +311,6 @@ export class ChannelsService {
     }
 
     // TODO: regras de publico e privado
-    //const salt = await bcrypt.genSalt();
 
     const channel = this.channelRepository.create({
       name: channelDto.name,
@@ -322,7 +321,8 @@ export class ChannelsService {
         : null,
     });
     const newChannel = await this.channelRepository.save(channel);
-    this.addMember(newChannel.id, user.id, "");
+    const newMember = this.createMemberEntity(user, channel);
+    this.channelMemberRepository.save(newMember);
     return { id: newChannel.id, name: newChannel.name };
   }
 
