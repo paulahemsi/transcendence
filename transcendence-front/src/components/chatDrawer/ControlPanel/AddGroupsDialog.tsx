@@ -83,6 +83,9 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 		}, { headers: authToken }).then( () => {
 			setUserGroupsData();
 			setOpenDialog(false);
+		}).catch( (error) => {
+			console.log(error);
+			setOpenDialog(false);
 		})
 	}
 	
