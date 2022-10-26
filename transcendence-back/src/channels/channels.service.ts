@@ -24,6 +24,7 @@ import * as bcrypt from 'bcrypt';
 import { ChatMessagelDto } from 'src/dto/chat.dtos';
 import { channelType } from 'src/entity/channel-type.entity';
 import { type } from 'os';
+import { channel } from 'diagnostics_channel';
 
 type members = {
   id: string;
@@ -381,4 +382,9 @@ export class ChannelsService {
     
     return channelsResponse;
   }
+
+  async getChannelData(channelId: number) {
+    console.log(channelId)
+  }
+
 }
