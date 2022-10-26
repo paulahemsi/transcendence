@@ -60,7 +60,14 @@ export class ChannelsService {
   ) {}
 
   findChannel(id: number) {
-    return this.channelRepository.findOneBy({ id });
+    return this.channelRepository.findOne({
+      relations: {
+        type: true,
+      },
+      where: {
+        id: id,
+      }
+      });
   }
 
   private async checkChannel(channelId: number) {
@@ -135,6 +142,16 @@ export class ChannelsService {
     this.channelMemberRepository.delete(member.id);
   }
 
+  authorizedMember(channel: Channel, password: string) {
+    if (channel.type.type != channelType.PROTECTED) {
+      return true;
+    }
+    if (bcrypt.compareSync(password, channel.password)) {
+      return true;
+    }
+    return false;
+  }
+  
   async addMember(channelId: number, userId: string, password: string) {
     const { channel, user } = await this.checkChannelAndMember(
       channelId,
@@ -145,9 +162,7 @@ export class ChannelsService {
     ) {
       return;
     }
-    if ( password === "" || bcrypt.compareSync(password, channel.password)) {
-      console.log(`password: ${password}`)
-      console.log("password bateu")
+    if (this.authorizedMember(channel, password)) {
       const newMember = this.createMemberEntity(user, channel);
       this.channelMemberRepository.save(newMember);
     }
