@@ -4,7 +4,6 @@ import {
   Inject,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MessagelDto, UpdateChannelDto } from 'src/dto/channel.dtos';
@@ -23,12 +22,17 @@ import { ChannelTypeService } from './channel-type.service';
 import * as bcrypt from 'bcrypt';
 import { ChatMessagelDto } from 'src/dto/chat.dtos';
 import { channelType } from 'src/entity/channel-type.entity';
-import { type } from 'os';
 import { channel } from 'diagnostics_channel';
 
 type members = {
   id: string;
   name: string;
+};
+
+type channelData = {
+  id: string;
+  name: string;
+  members: members[];
 };
 
 type channelMessage = {
@@ -38,7 +42,7 @@ type channelMessage = {
   creationDate: object;
 };
 
-type channelData = {
+type channel = {
   id: number;
   name: string;
   type: string;
@@ -369,32 +373,35 @@ export class ChannelsService {
   async getPublicChannels() {
 
     const channels = await this.getAllPublicChannels();
-    const channelsResponse: Array<channelData> = [];
+    const channelsResponse: Array<channel> = [];
 
-    channels.map((channel) => {
-      const channelData = {} as channelData;
+    channels.map((element) => {
+      const channel = {} as channel;
 
-      channelData.id = channel.id;
-      channelData.name = channel.name;
-      channelData.type = channel.type.type;
-      channelsResponse.push(channelData);
+      channel.id = element.id;
+      channel.name = element.name;
+      channel.type = element.type.type;
+      channelsResponse.push(channel);
     })
     
     return channelsResponse;
   }
 
   async getChannelData(channelId: number) {
-    const channel = await this.channelRepository.findOne(
-      {
-        where: {
-          id: channelId,
-        }
-      }
-    )
+    const channel = await this.channelRepository.findOneBy({ id: channelId });
     if (!channel) {
       throw new NotFoundException();
     }
-    return channel
+
+    const members = await this.getMembers(channelId);
+
+    const channelData = {
+      id: channel.id,
+      name: channel.name,
+      members: members,
+    }
+
+    return channelData
   }
 
 }
