@@ -45,11 +45,11 @@ export class ChatGateway
   @WebSocketServer()
   server: Server;
 
-  afterInit(server: Server) {
+  afterInit() {
     this.logger.log('Initialize');
   }
 
-  async handleConnection(client: Socket, ...args: any[]) {
+  async handleConnection(client: Socket) {
     try {
       const token = client.handshake.headers.cookie.split('=')[1];
       const decodedToken = this.authService.validateJwt(token);
