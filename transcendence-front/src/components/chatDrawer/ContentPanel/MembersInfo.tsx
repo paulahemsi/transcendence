@@ -53,7 +53,7 @@ export const MembersInfo = ({ userData } : {[key: string]: any}) => {
 	return(
 		<Box display='flex' width='30vh' flexDirection='row' alignItems="center" alignSelf="flex-start">
 			<UserStatus statusColor={defineColor(userData.status)}/>
-			<UserImage imageUrl={userData.image_url}/>
+			<UserImage imageUrl={userData.image}/>
 			<UserName userName={userData.name}/>
 		</Box>
 	)

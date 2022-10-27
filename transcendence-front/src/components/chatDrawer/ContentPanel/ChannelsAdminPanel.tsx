@@ -3,6 +3,8 @@ import { Box, Button, Divider, List, ListItem, Typography } from "@mui/material"
 import axios, { AxiosRequestHeaders } from "axios";
 import MembersInfo from "./MembersInfo";
 
+const MEMBERS = 'members';
+
 const messagesBorderCSS = {
 	minWidth: '50vw',
 	height: '80vh',
@@ -26,7 +28,7 @@ const typographyCSS = (fontSize: number) => {
 
 const onHoverFriend = {
 	'&:hover': {
-		backgroundColor: '#B998FF',
+		color: '#B998FF',
 	},
 	textTransform: 'lowercase',
 	borderRadius: '0'
@@ -45,7 +47,7 @@ const ChannelMembers = ({ channelMembers } : { channelMembers: {[key: string]: a
 	const members = [] as JSX.Element[];
 	channelMembers.forEach((element : {[key: string]: any}) => {
 		members.push(
-	<ListItem disablePadding key={element.id} sx={{ width: '20vw' }} > 
+	<ListItem disablePadding key={element.id} sx={{ padding: '1vh', marginRight: '10vh' }} > 
 			<Button sx={onHoverFriend} onClick={() => console.log('click')} >
 				<MembersInfo userData={element}/>
 			</Button>
@@ -62,15 +64,19 @@ const ChannelMembers = ({ channelMembers } : { channelMembers: {[key: string]: a
 	)
 }
 
-const buttonCss = { 
+const buttonCss = {
 	margin: '1vh',
-	width: '15vw',
+	marginLeft: '10vh',
+	width: '18vw',
 	height: '8vh',
-	border: '2px',
-	borderColor: '#B998FF',
 	background: '#F5F5F5',
-	borderRadius: 3,
-	':hover': { background: '#B998FF'}
+	borderRadius: 7,
+	border: '3px solid',
+	borderColor: '#B998FF',
+	':hover': { 
+		background: '#B998FF',
+		borderColor: '#B998FF'
+	}
 }
 
 const buttonTypographyCss = {
@@ -86,7 +92,7 @@ const ChannelControlPannel = () => {
 	return (
 		<Box display='flex' flexDirection='column' justifyContent='center' width='30vh' sx={{alignSelf: 'flex-start'}} >
 			<Button 
-			variant="contained"
+			variant="outlined"
 			size="large"
 			sx={buttonCss}>
 				<Typography sx={buttonTypographyCss}>
@@ -95,7 +101,7 @@ const ChannelControlPannel = () => {
 			</Button>
 			
 			<Button 
-			variant="contained"
+			variant="outlined"
 			size="large"
 			sx={buttonCss}>
 				<Typography sx={buttonTypographyCss}>
@@ -104,7 +110,7 @@ const ChannelControlPannel = () => {
 			</Button>
 			
 			<Button 
-			variant="contained"
+			variant="outlined"
 			size="large"
 			sx={buttonCss}>
 				<Typography sx={buttonTypographyCss}>
@@ -113,7 +119,7 @@ const ChannelControlPannel = () => {
 			</Button>
 			
 			<Button 
-			variant="contained"
+			variant="outlined"
 			size="large"
 			sx={buttonCss}>
 				<Typography sx={buttonTypographyCss}>
@@ -122,7 +128,7 @@ const ChannelControlPannel = () => {
 			</Button>
 			
 			<Button 
-			variant="contained"
+			variant="outlined"
 			size="large"
 			sx={buttonCss}>
 				<Typography sx={buttonTypographyCss}>
@@ -156,8 +162,11 @@ export const ChannelsAdminPanel = ( { activeChannel } : { activeChannel : number
 			<Typography sx={typographyCSS(6)} >
 				{channelData.name}
 			</Typography>
-			<Divider variant='middle' sx={{ borderBottomWidth: 3, margin: 2, border: "2px solid #B998FF" }} />
-			<Box display='flex' justifyContent='space-evenly' alignItems='center' height='55vh' margin='10vh' >
+			<Divider variant='middle' sx={{ borderBottomWidth: 3, margin: 2, border: "2px solid #B998FF", marginBottom: '2vh' }} />
+			<Typography sx={typographyCSS(4)} >
+				{MEMBERS}
+			</Typography>
+			<Box display='flex' alignItems='center' height='55vh' marginTop='3vh' >
 				{
 					!loading &&
 					<ChannelMembers channelMembers={channelData.members}/>
