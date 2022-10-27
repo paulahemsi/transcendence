@@ -70,9 +70,10 @@ const buttonCss = {
 	width: '18vw',
 	height: '8vh',
 	background: '#F5F5F5',
-	borderRadius: 7,
+	borderRadius: 5,
 	border: '3px solid',
 	borderColor: '#B998FF',
+	boxShadow: 7,
 	':hover': { 
 		background: '#B998FF',
 		borderColor: '#B998FF'
@@ -155,7 +156,7 @@ export const ChannelsAdminPanel = ( { activeChannel } : { activeChannel : number
 	useEffect(() => {requestChannelInfos()}, [activeChannel]);
 	
 	return (
-		<Box display="flex" flexDirection="column" justifyContent="space-around" bgcolor="blue" padding="3vh" sx={{minWidth: '50vw', height: '80vh',
+		<Box display="flex" flexDirection="column" justifyContent="space-around" bgcolor="blue" padding="3vh" sx={{minWidth: '30vw', height: '80vh',
 		background: '#F5F5F5',
 		}}>
 		<Box sx={messagesBorderCSS}>
