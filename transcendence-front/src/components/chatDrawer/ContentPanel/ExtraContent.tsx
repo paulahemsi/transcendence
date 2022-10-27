@@ -69,7 +69,7 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 	const [messagesData, setMessagesData] = useState<{[key: string]: any}>({});
 	const [newMessage, setNewMessage] = useState("");
 
-	useEffect(() => {requestMessagesFromChannel(activeChannel, setMessagesData)}, []);
+	useEffect(() => {requestMessagesFromChannel(activeChannel, setMessagesData)}, [activeChannel]);
 	
 	chatSocket.off('chatMessage').on('chatMessage', (msg) => {
 		const newMessagesData = messagesData.map((element : {[key: string]: any}) => element);
