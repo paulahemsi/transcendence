@@ -9,13 +9,14 @@ interface Props {
 	direct: boolean;
     setExtraContent : booleanSetState;
 	setActiveChannel: numberSetState;
+	setChannelsAdminPanel: booleanSetState;
 	activeChannel: number;
 	friendsData: {[key: string]: any};
 	groupsData: {[key: string]: any};
 	loading: boolean;
 }
 
-export const ChannelsList : FunctionComponent<Props> = ({ setExtraContent, activeChannel, setActiveChannel, friendsData, direct, groupsData, loading }) => {
+export const ChannelsList : FunctionComponent<Props> = ({ setExtraContent, setChannelsAdminPanel, activeChannel, setActiveChannel, friendsData, direct, groupsData, loading }) => {
 
 	if (direct) {
 		return (
@@ -23,6 +24,7 @@ export const ChannelsList : FunctionComponent<Props> = ({ setExtraContent, activ
 				friendsData={friendsData}
 				setExtraContent={setExtraContent}
 				setActiveChannel={setActiveChannel}
+				setChannelsAdminPanel={setChannelsAdminPanel}
 				loading={loading}
 			/>
 		)
@@ -31,6 +33,7 @@ export const ChannelsList : FunctionComponent<Props> = ({ setExtraContent, activ
 	return (
 		<GroupChannels
 			setExtraContent={setExtraContent}
+			setChannelsAdminPanel={setChannelsAdminPanel}
 			activeChannel={activeChannel}
 			setActiveChannel={setActiveChannel}
 			groupsData={groupsData}

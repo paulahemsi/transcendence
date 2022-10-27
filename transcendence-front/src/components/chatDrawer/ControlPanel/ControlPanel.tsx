@@ -64,6 +64,7 @@ export const ControlPanel : FunctionComponent<Props> = ({ setChannelsAdminPanel,
 			<ChannelsList
 				direct={direct}
 				setExtraContent={setExtraContent}
+				setChannelsAdminPanel={setChannelsAdminPanel}
 				activeChannel={activeChannel}
 				setActiveChannel={setActiveChannel} 
 				friendsData={friendsData}

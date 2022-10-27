@@ -88,6 +88,7 @@ export const GroupsButtons :FunctionComponent<GroupsButtonsProps> = ({ setChanne
 	
 	const handleManageClick = () => {
 		setChannelsAdminPanel(true);
+		setExtraContent(false);
 	}
 	
 	return (

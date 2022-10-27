@@ -8,12 +8,13 @@ type numberSetState = React.Dispatch<React.SetStateAction<number>>
 interface Props {
     setExtraContent : booleanSetState;
 	setActiveChannel: numberSetState;
+	setChannelsAdminPanel: booleanSetState;
 	groupsData: {[key: string]: any};
 	loading: boolean;
 	activeChannel: number;
 }
 
-export const GroupChannels : FunctionComponent<Props> = ({ setExtraContent, activeChannel, setActiveChannel, groupsData, loading }) => {
+export const GroupChannels : FunctionComponent<Props> = ({ setExtraContent, setChannelsAdminPanel, activeChannel, setActiveChannel, groupsData, loading }) => {
 
 	if (loading) {
 		return (
@@ -23,6 +24,7 @@ export const GroupChannels : FunctionComponent<Props> = ({ setExtraContent, acti
 	return (
 		<GroupsList
 			setExtraContent={setExtraContent}
+			setChannelsAdminPanel={setChannelsAdminPanel}
 			activeChannel={activeChannel}
 			setActiveChannel={setActiveChannel} 
 			groupsData={groupsData}
