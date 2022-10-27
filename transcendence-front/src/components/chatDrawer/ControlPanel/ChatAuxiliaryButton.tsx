@@ -2,6 +2,7 @@ import React, { useState, FunctionComponent } from "react"
 import { Box, Button, Dialog } from "@mui/material"
 import CreateChannelDialog from "./CreateChannelDialog";
 import AddFriendsDialog from "./AddFriendsDialog";
+import AddGroupsDialog from "./AddGroupsDialog";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type numberSetState = React.Dispatch<React.SetStateAction<number>>
@@ -17,10 +18,17 @@ interface Props {
 	friendsData: {[key: string]: any};
 }
 
-interface ButtonsProps {
+interface DirectButtonsProps {
 	setExtraContent : booleanSetState;
 	setActiveChannel: numberSetState;
 	setOpenDialog: booleanSetState;
+}
+
+interface GroupsButtonsProps {
+	setExtraContent : booleanSetState;
+	setActiveChannel: numberSetState;
+	setOpenDialog: booleanSetState;
+	setOpenAddGroupsDialog: booleanSetState;
 }
 
 export const buttonConfig = (width: string) => {
@@ -42,7 +50,7 @@ export const buttonConfig = (width: string) => {
 const directButton = buttonConfig("30vw")
 const groupButton = buttonConfig("10vw")
 
-export const DirectButtons : FunctionComponent<ButtonsProps> = ({ setOpenDialog, setExtraContent, setActiveChannel }) => {
+export const DirectButtons : FunctionComponent<DirectButtonsProps> = ({ setOpenDialog, setExtraContent, setActiveChannel }) => {
 	
 	const handleClick = () => {
 		setOpenDialog(true);
@@ -58,10 +66,16 @@ export const DirectButtons : FunctionComponent<ButtonsProps> = ({ setOpenDialog,
 	)
 }
 
-export const GroupsButtons :FunctionComponent<ButtonsProps> = ({ setOpenDialog, setExtraContent, setActiveChannel }) => {
+export const GroupsButtons :FunctionComponent<GroupsButtonsProps> = ({ setOpenDialog, setExtraContent, setActiveChannel, setOpenAddGroupsDialog }) => {
 	
-	const handleClick = () => {
+	const handleCreateClick = () => {
 		setOpenDialog(true);
+		setActiveChannel(0);
+		setExtraContent(false);
+	}
+
+	const handleSearchClick = () => {
+		setOpenAddGroupsDialog(true);
 		setActiveChannel(0);
 		setExtraContent(false);
 	}
@@ -71,10 +85,10 @@ export const GroupsButtons :FunctionComponent<ButtonsProps> = ({ setOpenDialog, 
 			<Button sx={groupButton}>
 				manage	
 			</Button>
-			<Button sx={groupButton} onClick={handleClick}>
+			<Button sx={groupButton} onClick={handleCreateClick}>
 				create
 			</Button>
-			<Button sx={groupButton} onClick={handleClick}>
+			<Button sx={groupButton} onClick={handleSearchClick}>
 				search
 			</Button>
 		</Box>
@@ -84,9 +98,11 @@ export const GroupsButtons :FunctionComponent<ButtonsProps> = ({ setOpenDialog, 
 export const ChatAuxiliaryButton: FunctionComponent<Props> = ({ direct, setExtraContent, setActiveChannel, setGroupsData, groupsData, 	setFriendsData, friendsData }) => {
 	const [openDialog, setOpenDialog] = useState(false);
 	const [openAddFriendsDialog, setOpenAddFriendsDialog] = useState(false);
+	const [openAddGroupsDialog, setOpenAddGroupsDialog] = useState(false);
 
 	const handleClose = () => {
 		setOpenDialog(false);
+		setOpenAddGroupsDialog(false);
 		setOpenAddFriendsDialog(false);
 	};
 
@@ -95,13 +111,16 @@ export const ChatAuxiliaryButton: FunctionComponent<Props> = ({ direct, setExtra
 		{
 			direct
 			? <DirectButtons setExtraContent={setExtraContent} setActiveChannel={setActiveChannel} setOpenDialog={setOpenAddFriendsDialog} />
-			: <GroupsButtons setExtraContent={setExtraContent} setActiveChannel={setActiveChannel} setOpenDialog={setOpenDialog}/>
+			: <GroupsButtons setExtraContent={setExtraContent} setActiveChannel={setActiveChannel} setOpenDialog={setOpenDialog} setOpenAddGroupsDialog={setOpenAddGroupsDialog}/>
 		}
 		<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
 			<CreateChannelDialog setOpenDialog={setOpenDialog} setGroupsData={setGroupsData} groupsData={groupsData}/>
 		</Dialog>
 		<Dialog open={openAddFriendsDialog} fullWidth maxWidth="sm" onClose={handleClose}>
 			<AddFriendsDialog setOpenDialog={setOpenAddFriendsDialog} setFriendsData={setFriendsData}/>
+		</Dialog>
+		<Dialog open={openAddGroupsDialog} fullWidth maxWidth="sm" onClose={handleClose}>
+			<AddGroupsDialog setOpenDialog={setOpenAddGroupsDialog} setGroupsData={setGroupsData}/>
 		</Dialog>
 		</>
 	)

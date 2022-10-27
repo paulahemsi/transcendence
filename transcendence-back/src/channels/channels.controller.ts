@@ -51,6 +51,11 @@ export class ChannelsController {
     return this.channelService.getMembers(channelId);
   }
 
+  @Get('')
+  getPublicChannels() {
+    return this.channelService.getPublicChannels();
+  }
+
   @Post(':id/admin')
   @HttpCode(204)
   addAdmin(
