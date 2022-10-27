@@ -7,7 +7,7 @@ export class ConnectedUser {
   id: number;
 
   @Column({ nullable: false })
-  client_id: string;
+  client: string;
 
   @ManyToOne(() => User, (user) => user.id, {
     nullable: false,

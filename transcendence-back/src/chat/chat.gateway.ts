@@ -1,4 +1,4 @@
-import { Logger, UnauthorizedException } from '@nestjs/common';
+import { Logger, OnModuleInit, UnauthorizedException } from '@nestjs/common';
 import {
   SubscribeMessage,
   WebSocketGateway,
@@ -12,6 +12,7 @@ import {
 import { Socket, Server } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
 import { ChannelsService } from 'src/channels/channels.service';
+import { ConnnectedUsersService } from 'src/connected-users/connected-users.service';
 import { ChatMessagelDto } from 'src/dto/chat.dtos';
 import { Message } from 'src/entity';
 
@@ -24,13 +25,22 @@ type channelMessage = {
 
 @WebSocketGateway({ namespace: '/chat' })
 export class ChatGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+  implements
+    OnGatewayInit,
+    OnGatewayConnection,
+    OnGatewayDisconnect,
+    OnModuleInit
 {
   constructor(
     private readonly channelService: ChannelsService,
     private readonly authService: AuthService,
+    private readonly connectedUsersService: ConnnectedUsersService,
   ) {}
   private logger: Logger = new Logger('ChatGateway');
+
+  onModuleInit() {
+    this.connectedUsersService.deleteAll();
+  }
 
   @WebSocketServer()
   server: Server;
@@ -45,6 +55,7 @@ export class ChatGateway
       const decodedToken = this.authService.validateJwt(token);
       const user = await this.authService.validateUser(decodedToken.id);
       client.data.user = user;
+      await this.connectedUsersService.create(client.id, user);
     } catch {
       this.disconnect(client);
     }
@@ -52,7 +63,9 @@ export class ChatGateway
   }
 
   handleDisconnect(client: Socket) {
+    this.connectedUsersService.delete(client.id);
     this.logger.log(`Client disconnected: ${client.id}`);
+    client.disconnect();
   }
 
   @SubscribeMessage('chatMessage')
