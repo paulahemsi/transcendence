@@ -18,6 +18,7 @@ interface Props {
 
 const PUBLIC = "PUBLIC";
 const PRIVATE = "PRIVATE";
+const PROTECTED = "PROTECTED"
 
 export const CreateChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, setGroupsData, groupsData }) => {
 
@@ -39,7 +40,7 @@ export const CreateChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 
 		axios.post(`http://localhost:3000/channels`, {
 			"name": channelName,
-			"type": type,
+			"type": password ? PROTECTED : type,
 			"owner": tokenData.id,
 			"password": password,
 		}, { headers: authToken }).then( (response) => {

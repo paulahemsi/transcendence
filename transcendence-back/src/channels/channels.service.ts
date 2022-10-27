@@ -1,8 +1,10 @@
 import {
+  ForbiddenException,
   forwardRef,
   Inject,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MessagelDto, UpdateChannelDto } from 'src/dto/channel.dtos';
@@ -21,6 +23,7 @@ import { ChannelTypeService } from './channel-type.service';
 import * as bcrypt from 'bcrypt';
 import { ChatMessagelDto } from 'src/dto/chat.dtos';
 import { channelType } from 'src/entity/channel-type.entity';
+import { type } from 'os';
 
 type members = {
   id: string;
@@ -33,6 +36,12 @@ type channelMessage = {
   userId: string;
   creationDate: object;
 };
+
+type channelData = {
+  id: number;
+  name: string;
+  type: string;
+}
 
 @Injectable()
 export class ChannelsService {
@@ -51,7 +60,14 @@ export class ChannelsService {
   ) {}
 
   findChannel(id: number) {
-    return this.channelRepository.findOneBy({ id });
+    return this.channelRepository.findOne({
+      relations: {
+        type: true,
+      },
+      where: {
+        id: id,
+      }
+      });
   }
 
   private async checkChannel(channelId: number) {
@@ -126,7 +142,17 @@ export class ChannelsService {
     this.channelMemberRepository.delete(member.id);
   }
 
-  async addMember(channelId: number, userId: string) {
+  authorizedMember(channel: Channel, password: string) {
+    if (channel.type.type != channelType.PROTECTED) {
+      return true;
+    }
+    if (bcrypt.compareSync(password, channel.password)) {
+      return true;
+    }
+    return false;
+  }
+  
+  async addMember(channelId: number, userId: string, password: string) {
     const { channel, user } = await this.checkChannelAndMember(
       channelId,
       userId,
@@ -136,8 +162,13 @@ export class ChannelsService {
     ) {
       return;
     }
-    const newMember = this.createMemberEntity(user, channel);
-    this.channelMemberRepository.save(newMember);
+    if (this.authorizedMember(channel, password)) {
+      const newMember = this.createMemberEntity(user, channel);
+      this.channelMemberRepository.save(newMember);
+    }
+    else {
+      throw new ForbiddenException();
+    }
   }
 
   createMemberEntity(user: User, channel: Channel) {
@@ -280,18 +311,18 @@ export class ChannelsService {
     }
 
     // TODO: regras de publico e privado
-    const salt = await bcrypt.genSalt();
 
     const channel = this.channelRepository.create({
       name: channelDto.name,
       owner: user,
       type: type,
       password: channelDto.password
-        ? await bcrypt.hash(channelDto.password, salt)
+        ? await bcrypt.hash(channelDto.password, bcrypt.genSaltSync())
         : null,
     });
     const newChannel = await this.channelRepository.save(channel);
-    this.addMember(newChannel.id, user.id);
+    const newMember = this.createMemberEntity(user, channel);
+    this.channelMemberRepository.save(newMember);
     return { id: newChannel.id, name: newChannel.name };
   }
 
@@ -311,18 +342,43 @@ export class ChannelsService {
     return channel;
   }
 
-  async getPublicChannels() {
+  async getAllPublicChannels() {
     const publicMessageType = await this.channelTypeService.getChannelType(
       channelType.PUBLIC,
     );
-    const channels = await this.channelRepository.find({
+    const protectedMessageType = await this.channelTypeService.getChannelType(
+      channelType.PROTECTED,
+    );
+    
+    return await this.channelRepository.find({
       relations: {
         type: true,
       },
-      where: {
+      where: [
+      {
         type: { id: publicMessageType.id },
       },
+      {
+        type: { id: protectedMessageType.id },
+      }
+    ],
     });
-    return channels;
+  }
+
+  async getPublicChannels() {
+
+    const channels = await this.getAllPublicChannels();
+    const channelsResponse: Array<channelData> = [];
+
+    channels.map((channel) => {
+      const channelData = {} as channelData;
+
+      channelData.id = channel.id;
+      channelData.name = channel.name;
+      channelData.type = channel.type.type;
+      channelsResponse.push(channelData);
+    })
+    
+    return channelsResponse;
   }
 }

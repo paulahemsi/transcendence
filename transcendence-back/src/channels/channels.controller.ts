@@ -34,14 +34,16 @@ export class ChannelsController {
   addMember(
     @Param('id') channelId: number,
     @Body('userId', ParseUUIDPipe) userId: string,
+    @Body('password') password: string,
   ) {
-    return this.channelService.addMember(channelId, userId);
+    return this.channelService.addMember(channelId, userId, password);
   }
 
   @Delete(':id/members')
   deleteMember(
     @Param('id') channelId: number,
     @Body('userId', ParseUUIDPipe) userId: string,
+    @Body('password') password: string,
   ) {
     return this.channelService.deleteMember(channelId, userId);
   }
