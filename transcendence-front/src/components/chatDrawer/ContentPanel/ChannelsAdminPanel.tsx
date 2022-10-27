@@ -35,11 +35,24 @@ const onHoverFriend = {
 }
 
 const listCss = { 
-	height: 'inherited',
+	height: '55vh',
 	position: 'relative',
 	margin: 0,
 	padding: 0,
 	alignSelf: 'flex-start',
+	overflow: 'auto',
+	overflowY: 'auto',
+	'&::-webkit-scrollbar': {
+	width: '0.4em',
+	borderRadius: 5,
+	},
+	listStyle: "none",
+	'&::-webkit-scrollbar-track': {
+		boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
+		webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
+		borderRadius: 5,
+	},
+
 }
 
 const ChannelMembers = ({ channelMembers } : { channelMembers: {[key: string]: any} }) => {
@@ -157,26 +170,26 @@ export const ChannelsAdminPanel = ( { activeChannel } : { activeChannel : number
 	
 	return (
 		<Box display="flex" flexDirection="column" justifyContent="space-around" bgcolor="blue" padding="3vh" sx={{minWidth: '30vw', height: '80vh',
-		background: '#F5F5F5',
+			background: '#F5F5F5',
 		}}>
-		<Box sx={messagesBorderCSS}>
-			<Typography sx={typographyCSS(6)} >
-				{channelData.name}
-			</Typography>
-			<Divider variant='middle' sx={{ borderBottomWidth: 3, margin: 2, border: "2px solid #B998FF", marginBottom: '2vh' }} />
-			<Typography sx={typographyCSS(4)} >
-				{MEMBERS}
-			</Typography>
-			<Box display='flex' alignItems='center' height='55vh' marginTop='3vh' >
-				{
-					!loading &&
-					<ChannelMembers channelMembers={channelData.members}/>
-				}
-				<Divider flexItem orientation='vertical' variant='middle' sx={{ borderBottomWidth: 3, border: "2px solid #B998FF" }} />
-				<ChannelControlPannel/>
+			<Box sx={messagesBorderCSS}>
+				<Typography sx={typographyCSS(6)} >
+					{channelData.name}
+				</Typography>
+				<Divider variant='middle' sx={{ borderBottomWidth: 3, margin: 2, border: "2px solid #B998FF", marginBottom: '2vh' }} />
+				<Typography sx={typographyCSS(4)} >
+					{MEMBERS}
+				</Typography>
+				<Box display='flex' alignItems='center' height='55vh' marginTop='3vh' >
+					{
+						!loading &&
+						<ChannelMembers channelMembers={channelData.members}/>
+					}
+					<Divider flexItem orientation='vertical' variant='middle' sx={{ borderBottomWidth: 3, border: "2px solid #B998FF" }} />
+					<ChannelControlPannel/>
+				</Box>
 			</Box>
 		</Box>
-	</Box>
 	)
 }
 
