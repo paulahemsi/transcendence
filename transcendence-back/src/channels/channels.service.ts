@@ -27,6 +27,8 @@ import { channel } from 'diagnostics_channel';
 type members = {
   id: string;
   name: string;
+  image: string;
+  status: string;
 };
 
 type channelData = {
@@ -186,12 +188,13 @@ export class ChannelsService {
   async getMembers(channelId: number) {
     await this.checkChannel(channelId);
     const channelInfos = await this.getChannelInfos(channelId);
-
     const channelMembers: Array<members> = [];
     channelInfos.map((element) => {
       const member = {} as members;
       member.id = element.user.id;
       member.name = element.user.username;
+      member.image = element.user.image_url;
+      member.status = element.user.status;
       channelMembers.push(member);
     });
     return channelMembers;
