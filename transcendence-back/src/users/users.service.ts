@@ -128,4 +128,23 @@ export class UsersService {
     });
     return channels;
   }
+
+  private async setStatus(id: string, status: string) {
+    const user = await this.checkUser(id);
+    user.status = status;
+    this.userRepository.save(user);
+  }
+
+  setStatusOnline(id: string) {
+    this.setStatus(id, 'online');
+  }
+
+  setStatusOffline(id: string) {
+    this.setStatus(id, 'offline');
+  }
+
+  async getStatus(id: string) {
+    const user = await this.findUser(id);
+    return user.status;
+  }
 }

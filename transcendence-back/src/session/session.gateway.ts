@@ -10,6 +10,8 @@ import {
 import { Socket, Server } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
 import { ConnnectedUsersService } from 'src/connected-users/connected-users.service';
+import { User } from 'src/entity';
+import { UsersService } from 'src/users/users.service';
 
 @WebSocketGateway({ namespace: '/session' })
 export class SessionGateway
@@ -22,6 +24,7 @@ export class SessionGateway
   constructor(
     private readonly authService: AuthService,
     private readonly connectedUsersService: ConnnectedUsersService,
+    private readonly usersService: UsersService,
   ) {}
   private logger: Logger = new Logger('SessionGateway');
 
@@ -43,7 +46,7 @@ export class SessionGateway
       const user = await this.authService.validateUser(decodedToken.id);
       client.data.user = user;
       await this.connectedUsersService.create(client.id, user);
-      this.setStatusOnline();
+      this.setStatusOnline(user);
     } catch {
       this.disconnect(client);
     }
@@ -52,7 +55,7 @@ export class SessionGateway
 
   handleDisconnect(client: Socket) {
     this.connectedUsersService.delete(client.id);
-    this.setStatusOffline();
+    this.setStatusOffline(client.data.user);
     this.logger.log(`Client disconnected: ${client.id}`);
     client.disconnect();
   }
@@ -68,11 +71,17 @@ export class SessionGateway
     client.disconnect();
   }
 
-  private setStatusOnline() {
-    return console.log('online');
+  private async setStatusOnline(user: User) {
+    await this.usersService.getStatus(user.id);
+    if (user.status == 'offline') {
+      this.usersService.setStatusOnline(user.id);
+    }
   }
 
-  private setStatusOffline() {
-    return console.log('offline');
+  private async setStatusOffline(user: User) {
+    if (await this.connectedUsersService.hasConnections(user)) {
+      return;
+    }
+    this.usersService.setStatusOffline(user.id);
   }
 }
