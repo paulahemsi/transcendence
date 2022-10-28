@@ -7,6 +7,7 @@ import { MatchHistoryService } from 'src/match-history/match-history.service';
 import { Intra42UserData } from 'src/auth/strategies/intra42.strategy';
 import { channelType } from 'src/entity/channel-type.entity';
 import { ChannelTypeService } from 'src/channels/channel-type.service';
+import { status } from 'src/entity/user.entity';
 
 export class matchInfos {
   opponent: string;
@@ -129,18 +130,18 @@ export class UsersService {
     return channels;
   }
 
-  private async setStatus(id: string, status: string) {
+  private async setStatus(id: string, status: status) {
     const user = await this.checkUser(id);
     user.status = status;
     this.userRepository.save(user);
   }
 
   setStatusOnline(id: string) {
-    this.setStatus(id, 'online');
+    this.setStatus(id, status.ONLINE);
   }
 
   setStatusOffline(id: string) {
-    this.setStatus(id, 'offline');
+    this.setStatus(id, status.OFFLINE);
   }
 
   async getStatus(id: string) {

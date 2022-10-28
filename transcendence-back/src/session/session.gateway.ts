@@ -11,6 +11,7 @@ import { Socket, Server } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
 import { ConnnectedUsersService } from 'src/connected-users/connected-users.service';
 import { User } from 'src/entity';
+import { status } from 'src/entity/user.entity';
 import { UsersService } from 'src/users/users.service';
 
 @WebSocketGateway({ namespace: '/session' })
@@ -73,7 +74,7 @@ export class SessionGateway
 
   private async setStatusOnline(user: User) {
     await this.usersService.getStatus(user.id);
-    if (user.status == 'offline') {
+    if (user.status == status.OFFLINE) {
       this.usersService.setStatusOnline(user.id);
     }
   }
