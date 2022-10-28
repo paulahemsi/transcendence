@@ -74,13 +74,15 @@ const onHoverFriend = {
 
 export const FriendsList : FunctionComponent<Props> = ({ friendsData, setExtraContent, setActiveChannel, setChannelsAdminPanel }) => {
 	
-	const handleClick = () => {
-		setExtraContent(true);
-		setChannelsAdminPanel(false);
-	}
-	
 	const friends = [] as JSX.Element[];
 	friendsData.forEach((element : {[key: string]: any}) => {
+		
+		const handleClick = () => {
+			setActiveChannel(element.channel);
+			setExtraContent(true);
+			setChannelsAdminPanel(false);
+		}
+
 		friends.push(
 		<ListItem disablePadding key={element.username} sx={{marginBottom: '1vh'}}> 
 			<Button sx={onHoverFriend} onClick={handleClick}>
