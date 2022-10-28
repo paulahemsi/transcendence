@@ -43,6 +43,7 @@ export class SessionGateway
       const user = await this.authService.validateUser(decodedToken.id);
       client.data.user = user;
       await this.connectedUsersService.create(client.id, user);
+      this.setStatusOnline();
     } catch {
       this.disconnect(client);
     }
@@ -51,6 +52,7 @@ export class SessionGateway
 
   handleDisconnect(client: Socket) {
     this.connectedUsersService.delete(client.id);
+    this.setStatusOffline();
     this.logger.log(`Client disconnected: ${client.id}`);
     client.disconnect();
   }
@@ -64,5 +66,13 @@ export class SessionGateway
     this.logger.log(`Client disconnected: ${client.id}`);
     client.emit('error', new UnauthorizedException());
     client.disconnect();
+  }
+
+  private setStatusOnline() {
+    return console.log('online');
+  }
+
+  private setStatusOffline() {
+    return console.log('offline');
   }
 }
