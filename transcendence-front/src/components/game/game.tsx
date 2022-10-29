@@ -26,10 +26,18 @@ export class PhaserGame extends React.Component {
 		}
 		new Phaser.Game(gameConfig);
 
-		let player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+		let player1: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+		let player2: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 		let ball: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 		let cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+		let keyW : Phaser.Input.Keyboard.Key;
+		let keyS : Phaser.Input.Keyboard.Key;
 		let ballVelocity : number[] = [1000, -1000];
+
+		let player1PosY: number = 0;
+		let player2PosY: number = 0;
+		let ballPosX: number = 0;
+		let ballPosY: number = 0;
 
 		function preload(this: Phaser.Scene): void {
 	
@@ -38,26 +46,59 @@ export class PhaserGame extends React.Component {
 		}
 
 		function create(this: Phaser.Scene): void {
-			player = this.physics.add.sprite(100, 450, 'pad');
+			player1 = this.physics.add.sprite(100, 450, 'pad');
+			player2 = this.physics.add.sprite(1750, 450, 'pad');
 			ball = this.physics.add.sprite(this.sys.canvas.height / 2, this.sys.canvas.height / 2, 'ball');
 
-			player.setCollideWorldBounds(true);
-			player.body.setImmovable(true);
+			player1.setCollideWorldBounds(true);
+			player1.body.setImmovable(true);
+			player2.setCollideWorldBounds(true);
+			player2.body.setImmovable(true);
 			ball.setCollideWorldBounds(true);
 			ball.setAcceleration(0);
 			this.time.delayedCall(1000, start, [], this);
 		}
 
 		function update(this: Phaser.Scene): void {
+
+			keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+			keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
 			cursors = this.input.keyboard.createCursorKeys();
-			if (cursors.up.isDown) {
-				player.setVelocityY(-500);
+
+			if (player1.y != player1PosY) {
+				console.log("PLAYER 1 Y POSITION: " + player1.y);
+				player1PosY = player1.y;
 			}
-			else if (cursors.down.isDown) {
-				player.setVelocityY(500);
+
+			if (player2.y != player2PosY) {
+				console.log("PLAYER 2 Y POSITION: " + player2.y);
+				player2PosY = player2.y;
+			}
+
+			if (keyW.isDown) {
+				player1.setVelocityY(-500);
+			}
+			else if (keyS.isDown) {
+				player1.setVelocityY(500);
 			}
 			else {
-				player.setVelocityY(0);
+				player1.setVelocityY(0);
+			}
+
+			if (cursors.up.isDown) {
+				player2.setVelocityY(-500);
+			}
+			else if (cursors.down.isDown) {
+				player2.setVelocityY(500);
+			}
+			else {
+				player2.setVelocityY(0);
+			}
+
+			if (ball.x != ballPosX || ball.y != ballPosY) {
+				console.log("BALL POSITION X: " + ball.x + " Y: " + ball.y);
+				ballPosX = ball.x;
+				ballPosY = ball.y;
 			}
 		}
 
@@ -76,7 +117,8 @@ export class PhaserGame extends React.Component {
 		(ball.body as Phaser.Physics.Arcade.Body).onWorldBounds = true;
 		ball.body.velocity.setTo(ballVelocity[Math.floor(Math.random() * 2)], ballVelocity[Math.floor(Math.random() * 2)]);
 		ball.setBounce(1);
-		this.physics.add.collider(ball, player, HandleCollision, undefined, player);
+		this.physics.add.collider(ball, player1, HandleCollision, () => (console.log("COLLIDED WITH PLAYER 1")), player1);
+		this.physics.add.collider(ball, player2, HandleCollision, () => (console.log("COLLIDED WITH PLAYER 2")), player2);
 	}
 }
 
