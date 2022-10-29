@@ -10,6 +10,7 @@ type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
 
 interface Props {
 	direct: boolean;
+	setChannelsAdminPanel: booleanSetState;
 	setExtraContent : booleanSetState;
 	setActiveChannel: numberSetState;
 	setGroupsData: objectSetState;
@@ -19,12 +20,14 @@ interface Props {
 }
 
 interface DirectButtonsProps {
+	setChannelsAdminPanel: booleanSetState;
 	setExtraContent : booleanSetState;
 	setActiveChannel: numberSetState;
 	setOpenDialog: booleanSetState;
 }
 
 interface GroupsButtonsProps {
+	setChannelsAdminPanel: booleanSetState;
 	setExtraContent : booleanSetState;
 	setActiveChannel: numberSetState;
 	setOpenDialog: booleanSetState;
@@ -50,11 +53,12 @@ export const buttonConfig = (width: string) => {
 const directButton = buttonConfig("30vw")
 const groupButton = buttonConfig("10vw")
 
-export const DirectButtons : FunctionComponent<DirectButtonsProps> = ({ setOpenDialog, setExtraContent, setActiveChannel }) => {
+export const DirectButtons : FunctionComponent<DirectButtonsProps> = ({ setOpenDialog, setExtraContent, setActiveChannel, setChannelsAdminPanel }) => {
 	
 	const handleClick = () => {
 		setOpenDialog(true);
 		setExtraContent(false);
+		setChannelsAdminPanel(false);
 	}
 	
 	return (
@@ -66,23 +70,30 @@ export const DirectButtons : FunctionComponent<DirectButtonsProps> = ({ setOpenD
 	)
 }
 
-export const GroupsButtons :FunctionComponent<GroupsButtonsProps> = ({ setOpenDialog, setExtraContent, setActiveChannel, setOpenAddGroupsDialog }) => {
+export const GroupsButtons :FunctionComponent<GroupsButtonsProps> = ({ setChannelsAdminPanel, setOpenDialog, setExtraContent, setActiveChannel, setOpenAddGroupsDialog }) => {
 	
 	const handleCreateClick = () => {
 		setOpenDialog(true);
 		setActiveChannel(0);
 		setExtraContent(false);
+		setChannelsAdminPanel(false);
 	}
 
 	const handleSearchClick = () => {
 		setOpenAddGroupsDialog(true);
 		setActiveChannel(0);
 		setExtraContent(false);
+		setChannelsAdminPanel(false);
+	}
+	
+	const handleManageClick = () => {
+		setChannelsAdminPanel(true);
+		setExtraContent(false);
 	}
 	
 	return (
 		<Box display="flex" sx={{width: "30vw"}}>
-			<Button sx={groupButton}>
+			<Button sx={groupButton} onClick={handleManageClick}>
 				manage	
 			</Button>
 			<Button sx={groupButton} onClick={handleCreateClick}>
@@ -95,7 +106,7 @@ export const GroupsButtons :FunctionComponent<GroupsButtonsProps> = ({ setOpenDi
 	)
 }
 
-export const ChatAuxiliaryButton: FunctionComponent<Props> = ({ direct, setExtraContent, setActiveChannel, setGroupsData, groupsData, 	setFriendsData, friendsData }) => {
+export const ChatAuxiliaryButton: FunctionComponent<Props> = ({ direct, setChannelsAdminPanel, setExtraContent, setActiveChannel, setGroupsData, groupsData, 	setFriendsData, friendsData }) => {
 	const [openDialog, setOpenDialog] = useState(false);
 	const [openAddFriendsDialog, setOpenAddFriendsDialog] = useState(false);
 	const [openAddGroupsDialog, setOpenAddGroupsDialog] = useState(false);
@@ -110,8 +121,8 @@ export const ChatAuxiliaryButton: FunctionComponent<Props> = ({ direct, setExtra
 		<>
 		{
 			direct
-			? <DirectButtons setExtraContent={setExtraContent} setActiveChannel={setActiveChannel} setOpenDialog={setOpenAddFriendsDialog} />
-			: <GroupsButtons setExtraContent={setExtraContent} setActiveChannel={setActiveChannel} setOpenDialog={setOpenDialog} setOpenAddGroupsDialog={setOpenAddGroupsDialog}/>
+			? <DirectButtons setExtraContent={setExtraContent} setActiveChannel={setActiveChannel} setOpenDialog={setOpenAddFriendsDialog} setChannelsAdminPanel={setChannelsAdminPanel}/>
+			: <GroupsButtons setExtraContent={setExtraContent} setActiveChannel={setActiveChannel} setOpenDialog={setOpenDialog} setOpenAddGroupsDialog={setOpenAddGroupsDialog} setChannelsAdminPanel={setChannelsAdminPanel} />
 		}
 		<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
 			<CreateChannelDialog setOpenDialog={setOpenDialog} setGroupsData={setGroupsData} groupsData={groupsData}/>

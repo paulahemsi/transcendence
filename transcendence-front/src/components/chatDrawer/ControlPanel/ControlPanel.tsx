@@ -15,6 +15,7 @@ type numberSetState = React.Dispatch<React.SetStateAction<number>>
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
 
 interface Props {
+	setChannelsAdminPanel: booleanSetState;
     setExtraContent: booleanSetState;
 	setActiveChannel: numberSetState;
 	friendsData: {[key: string]: any};
@@ -22,7 +23,7 @@ interface Props {
 	setFriendsData: objectSetState;
 }
 
-export const ControlPanel : FunctionComponent<Props> = ({  setExtraContent, setActiveChannel, friendsData, activeChannel, setFriendsData }) => {
+export const ControlPanel : FunctionComponent<Props> = ({ setChannelsAdminPanel, setExtraContent, setActiveChannel, friendsData, activeChannel, setFriendsData }) => {
 
 	const [direct, setDirect] = useState(true);
 	const [groupsData, setGroupsData] = useState<{[key: string]: any}>({});
@@ -48,10 +49,12 @@ export const ControlPanel : FunctionComponent<Props> = ({  setExtraContent, setA
 				setDirect={setDirect}
 				setExtraContent={setExtraContent}
 				setActiveChannel={setActiveChannel}
+				setChannelsAdminPanel={setChannelsAdminPanel}
 			/>
 			<ChatAuxiliaryButton
 				direct={direct}
 				setExtraContent={setExtraContent}
+				setChannelsAdminPanel={setChannelsAdminPanel}
 				setActiveChannel={setActiveChannel}
 				setGroupsData={setGroupsData}
 				groupsData={groupsData}
@@ -61,6 +64,7 @@ export const ControlPanel : FunctionComponent<Props> = ({  setExtraContent, setA
 			<ChannelsList
 				direct={direct}
 				setExtraContent={setExtraContent}
+				setChannelsAdminPanel={setChannelsAdminPanel}
 				activeChannel={activeChannel}
 				setActiveChannel={setActiveChannel} 
 				friendsData={friendsData}

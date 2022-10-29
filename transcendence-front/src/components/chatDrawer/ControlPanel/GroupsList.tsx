@@ -8,6 +8,7 @@ interface Props {
     groupsData: {[key: string]: any};
     setExtraContent : booleanSetState;
 	setActiveChannel: numberSetState;
+	setChannelsAdminPanel: booleanSetState;
 	activeChannel: number;
 }
 
@@ -74,7 +75,7 @@ const NoGroups = () => {
 	)
 }
 
-export const GroupsList : FunctionComponent<Props> = ({ groupsData, setExtraContent, activeChannel, setActiveChannel }) => {
+export const GroupsList : FunctionComponent<Props> = ({ groupsData, setChannelsAdminPanel, setExtraContent, activeChannel, setActiveChannel }) => {
 	
 	const groups = [] as JSX.Element[];
 	groupsData.forEach((element : {[key: string]: any}) => {
@@ -83,6 +84,7 @@ export const GroupsList : FunctionComponent<Props> = ({ groupsData, setExtraCont
 		const handleClick = () => {
 			setActiveChannel(element.id);
 			setExtraContent(true);
+			setChannelsAdminPanel(false);
 		}
 		
 		groups.push(

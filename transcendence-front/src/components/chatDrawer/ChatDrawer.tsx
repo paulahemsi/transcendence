@@ -2,6 +2,7 @@ import React, { FunctionComponent, useState, useEffect } from "react";
 import { Drawer, Box } from '@mui/material';
 import ExtraContent from "./ContentPanel/ExtraContent";
 import ControlPanel from "./ControlPanel/ControlPanel";
+import ChannelsAdminPanel from "./ContentPanel/ChannelsAdminPanel";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
@@ -14,6 +15,7 @@ interface Props {
 
 export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDrawer, setFriendsData }) => {
 	const [extraContent, setExtraContent] = useState(false);
+	const [channelsAdminPanel, setChannelsAdminPanel] = useState(false);
 	const [activeChannel, setActiveChannel] = useState(0)
 
 	return (
@@ -33,9 +35,14 @@ export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDraw
 						extraContent &&
 						<ExtraContent activeChannel={activeChannel} />
 					}
+					{
+						channelsAdminPanel &&
+						<ChannelsAdminPanel activeChannel={activeChannel} />
+					}
 				</Box>
 				<ControlPanel 
 					setExtraContent={setExtraContent}
+					setChannelsAdminPanel={setChannelsAdminPanel}
 					setActiveChannel={setActiveChannel}
 					friendsData={friendsData}
 					activeChannel={activeChannel}

@@ -6,6 +6,7 @@ type numberSetState = React.Dispatch<React.SetStateAction<number>>
 
 interface Props {
 	direct: boolean;
+	setChannelsAdminPanel: booleanSetState;
     setDirect: booleanSetState;
     setExtraContent: booleanSetState;
 	setActiveChannel: numberSetState;
@@ -38,15 +39,17 @@ const selected = {
 	':hover': { background: '#B998FF'},
 }
 
-export const ChatButton: FunctionComponent<Props> = ({ direct, setDirect, setExtraContent, setActiveChannel }) => {
+export const ChatButton: FunctionComponent<Props> = ({ direct, setDirect, setExtraContent, setChannelsAdminPanel, setActiveChannel }) => {
 	
 	const handleDirectClick = () => {
 		setExtraContent(false);
+		setChannelsAdminPanel(false);
 		setDirect(true);
 	}
 	
 	const handleGroupClick = () => {
 		setExtraContent(false);
+		setChannelsAdminPanel(false);
 		setDirect(false);
 	}
 	

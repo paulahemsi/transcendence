@@ -9,10 +9,11 @@ interface Props {
     friendsData: {[key: string]: any};
     setExtraContent: booleanSetState;
 	setActiveChannel: numberSetState;
+	setChannelsAdminPanel: booleanSetState;
 	loading: boolean;
 }
 
-export const DM : FunctionComponent<Props> = ({ friendsData, setExtraContent, setActiveChannel, loading }) => {
+export const DM : FunctionComponent<Props> = ({ friendsData, setExtraContent, setChannelsAdminPanel, setActiveChannel, loading }) => {
 
 	if (loading) {
 		return (
@@ -22,6 +23,7 @@ export const DM : FunctionComponent<Props> = ({ friendsData, setExtraContent, se
 	return (
 		<FriendsList
 			friendsData={friendsData}
+			setChannelsAdminPanel={setChannelsAdminPanel}
 			setExtraContent={setExtraContent}
 			setActiveChannel={setActiveChannel}
 		/>

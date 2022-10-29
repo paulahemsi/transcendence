@@ -29,6 +29,11 @@ export class ChannelsController {
     return this.channelService.update(id, updateChannelDto);
   }
 
+  @Get(':id')
+  getChannelData(@Param('id') channelId: number) {
+    return this.channelService.getChannelData(channelId);
+  }
+
   @Post(':id/members')
   @HttpCode(204)
   addMember(

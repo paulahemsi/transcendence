@@ -28,6 +28,7 @@ const listCss = {
 
 interface Props {
     friendsData: {[key: string]: any};
+	setChannelsAdminPanel: booleanSetState;
     setExtraContent: booleanSetState;
 	setActiveChannel: numberSetState;
 }
@@ -71,13 +72,18 @@ const onHoverFriend = {
 	borderRadius: '0'
 }
 
-export const FriendsList : FunctionComponent<Props> = ({ friendsData, setExtraContent, setActiveChannel }) => {
+export const FriendsList : FunctionComponent<Props> = ({ friendsData, setExtraContent, setActiveChannel, setChannelsAdminPanel }) => {
+	
+	const handleClick = () => {
+		setExtraContent(true);
+		setChannelsAdminPanel(false);
+	}
 	
 	const friends = [] as JSX.Element[];
 	friendsData.forEach((element : {[key: string]: any}) => {
 		friends.push(
 		<ListItem disablePadding key={element.username} sx={{marginBottom: '1vh'}}> 
-			<Button sx={onHoverFriend} onClick={() => setExtraContent(true)}>
+			<Button sx={onHoverFriend} onClick={handleClick}>
 				<FriendsInfo userData={element}/>
 			</Button>
 		</ListItem>);
