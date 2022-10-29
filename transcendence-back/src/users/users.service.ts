@@ -38,6 +38,10 @@ export class UsersService {
     return this.userRepository.findOneBy({ id });
   }
 
+  findUserOrFail(id: string) {
+    return this.userRepository.findOneByOrFail({ id });
+  }
+
   findUserByName(name: string) {
     return this.userRepository.findOneBy({ username: name });
   }

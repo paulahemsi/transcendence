@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, UnauthorizedException } from '@nestjs/common';
 import {
   SubscribeMessage,
   WebSocketGateway,
@@ -10,6 +10,7 @@ import {
   ConnectedSocket,
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
+import { AuthService } from 'src/auth/auth.service';
 import { ChannelsService } from 'src/channels/channels.service';
 import { ChatMessagelDto } from 'src/dto/chat.dtos';
 import { Message } from 'src/entity';
@@ -25,7 +26,10 @@ type channelMessage = {
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
-  constructor(private readonly channelService: ChannelsService) {}
+  constructor(
+    private readonly channelService: ChannelsService,
+    private readonly authService: AuthService,
+  ) {}
   private logger: Logger = new Logger('ChatGateway');
 
   @WebSocketServer()
@@ -35,7 +39,15 @@ export class ChatGateway
     this.logger.log('Initialize');
   }
 
-  handleConnection(client: Socket, ...args: any[]) {
+  async handleConnection(client: Socket, ...args: any[]) {
+    try {
+      const token = client.handshake.headers.cookie.split('=')[1];
+      const decodedToken = this.authService.validateJwt(token);
+      const user = await this.authService.validateUser(decodedToken.id);
+      client.data.user = user;
+    } catch {
+      this.disconnect(client);
+    }
     this.logger.log(`Client connected: ${client.id}`);
   }
 
@@ -48,21 +60,23 @@ export class ChatGateway
     @ConnectedSocket() client: Socket,
     @MessageBody() chatMessageDto: ChatMessagelDto,
   ) {
-    var newMessage : Message;
+    let newMessage: Message;
     try {
       newMessage = await this.channelService.addChatMessage(chatMessageDto);
     } catch (err) {
       client.emit('chatMessage', 'error');
       return;
     }
-    
+
     const message = {} as channelMessage;
     message.message = newMessage.message;
     message.username = newMessage.user.username;
     message.userId = newMessage.user.id;
     message.creationDate = newMessage.createdDate;
-      
-    this.server.to(chatMessageDto.channel.toString()).emit('chatMessage', message);
+
+    this.server
+      .to(chatMessageDto.channel.toString())
+      .emit('chatMessage', message);
   }
 
   @SubscribeMessage('joinChannel')
@@ -75,5 +89,11 @@ export class ChatGateway
   handleLeaveChannel(client: Socket, channel: string) {
     client.leave(channel);
     client.emit('leaveChannel', channel);
+  }
+
+  private disconnect(client: Socket) {
+    this.logger.log(`Client disconnected: ${client.id}`);
+    client.emit('error', new UnauthorizedException());
+    client.disconnect();
   }
 }
