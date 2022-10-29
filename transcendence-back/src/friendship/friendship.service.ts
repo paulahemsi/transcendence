@@ -15,6 +15,7 @@ type friendInfo = {
   status: string;
   rating: number;
   image_url: string;
+  channel: number;
 };
 
 @Injectable()
@@ -146,6 +147,7 @@ export class FriendshipService {
       friend.status = friendship.friend.status;
       friend.rating = friendship.friend.rating;
       friend.image_url = friendship.friend.image_url;
+      friend.channel = friendship.channel.id;
       friends.push(friend);
     });
 
