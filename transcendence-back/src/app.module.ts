@@ -13,6 +13,7 @@ import { ChannelsModule } from './channels/channels.module';
 import { ChatModule } from './chat/chat.module';
 import { AuthMiddleware } from './auth/auth.midlleware';
 import { SessionModule } from './session/session.module';
+import { ImagesModule } from './images/images.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { SessionModule } from './session/session.module';
     AuthModule,
     ChatModule,
     SessionModule,
+    ImagesModule,
     PassportModule.register({ session: true }),
   ],
 })
