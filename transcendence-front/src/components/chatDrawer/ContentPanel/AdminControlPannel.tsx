@@ -132,7 +132,6 @@ export const AdminControlPannel: FunctionComponent<Props> = ({ setMembersMockDat
 	const [openAddDialog, setOpenAddDialog] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
-	
 
 	const handleClose = () => {
 		setOpenAddDialog(false);
