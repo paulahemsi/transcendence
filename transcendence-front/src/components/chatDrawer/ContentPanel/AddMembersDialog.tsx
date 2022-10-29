@@ -67,6 +67,7 @@ export const AddMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 		axios.patch(`http://localhost:3000/channels/${channelData.id}/members`, {
 			"userId": selectedUser[0].id,
 		}, { headers: authToken }).then( () => {
+			setMembersMockData(selectedUser);
 			setOpenDialog(false);
 		})
 	}
