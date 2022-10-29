@@ -6,6 +6,7 @@ import { Message } from './message.entity';
 import { ChannelType } from './channel-type.entity';
 import { ChannelMember } from './channel-member.entity';
 import { ChannelAdmin } from './channel-admin.entity';
+import { ConnectedUser } from './connected-user.entity';
 
 const entities = [
   User,
@@ -16,6 +17,7 @@ const entities = [
   ChannelType,
   ChannelMember,
   ChannelAdmin,
+  ConnectedUser,
 ];
 
 export {
@@ -27,5 +29,6 @@ export {
   ChannelType,
   ChannelMember,
   ChannelAdmin,
+  ConnectedUser,
 };
 export default entities;
