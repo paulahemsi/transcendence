@@ -2,6 +2,7 @@ import { Button, Dialog, Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import React, { useState } from "react"
 import AdminDialog, { AddMembersDialog } from "./AddMembersDialog"
+import DeleteMembersDialog from "./DeleteMembersDialog"
 
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
@@ -64,12 +65,19 @@ const LeaveChannel = () => {
 	)
 }
 
-const KickMember = () => {
+const KickMember = ({ setOpenDialog } : { setOpenDialog: booleanSetState }) => {
+	
+	const handleClick = () => {
+		setOpenDialog(true);
+	}
+	
 	return (
 		<Button 
-		variant="outlined"
-		size="large"
-		sx={buttonCss}>
+			variant="outlined"
+			size="large"
+			sx={buttonCss}
+			onClick={handleClick}
+		>
 			<Typography sx={buttonTypographyCss}>
 				kick member
 			</Typography>
@@ -104,21 +112,25 @@ const ChangePassword = () => {
 }
 
 export const AdminControlPannel = ({ setMembersMockData, channelData } : { setMembersMockData: objectSetState, channelData: {[key: string]: any}}) => {
-	const [openDialog, setOpenDialog] = useState(false);
+	const [openAddDialog, setOpenAddDialog] = useState(false);
+	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
 	const handleClose = () => {
-		setOpenDialog(false);
+		setOpenAddDialog(false);
 	};
 	
 	return (
 		<Box display='flex' flexDirection='column' justifyContent='center' width='30vh' sx={{alignSelf: 'flex-start'}} >
-			<AddMember setOpenDialog={setOpenDialog} />
+			<AddMember setOpenDialog={setOpenAddDialog} />
 			<LeaveChannel/>
-			<KickMember/>
+			<KickMember setOpenDialog={setOpenDeleteDialog}/>
 			<MuteMember/>
 			<ChangePassword/>
-			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
-				<AddMembersDialog setOpenDialog={setOpenDialog} setMembersMockData={setMembersMockData} channelData={channelData} />
+			<Dialog open={openAddDialog} fullWidth maxWidth="sm" onClose={handleClose}>
+				<AddMembersDialog setOpenDialog={setOpenAddDialog} setMembersMockData={setMembersMockData} channelData={channelData} />
+			</Dialog>
+			<Dialog open={openDeleteDialog} fullWidth maxWidth="sm" onClose={handleClose}>
+				<DeleteMembersDialog setOpenDialog={setOpenDeleteDialog} setMembersMockData={setMembersMockData} channelData={channelData} />
 			</Dialog>
 		</Box>
 	)
