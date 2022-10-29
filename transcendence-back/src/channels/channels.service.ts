@@ -159,7 +159,7 @@ export class ChannelsService {
     return false;
   }
   
-  async addMember(channelId: number, userId: string, password: string) {
+  async joinChannel(channelId: number, userId: string, password: string) {
     const { channel, user } = await this.checkChannelAndMember(
       channelId,
       userId,
@@ -176,6 +176,20 @@ export class ChannelsService {
     else {
       throw new ForbiddenException();
     }
+  }
+
+  async addMember(channelId: number, userId: string) {
+    const { channel, user } = await this.checkChannelAndMember(
+      channelId,
+      userId,
+    );
+    if (
+      await this.alreadyExists(channelId, userId, this.channelMemberRepository)
+    ) {
+      return;
+    }
+    const newMember = this.createMemberEntity(user, channel);
+    this.channelMemberRepository.save(newMember);
   }
 
   createMemberEntity(user: User, channel: Channel) {

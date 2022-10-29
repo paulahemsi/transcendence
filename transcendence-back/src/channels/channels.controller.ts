@@ -36,12 +36,21 @@ export class ChannelsController {
 
   @Post(':id/members')
   @HttpCode(204)
-  addMember(
+  joinChannel(
     @Param('id') channelId: number,
     @Body('userId', ParseUUIDPipe) userId: string,
     @Body('password') password: string,
   ) {
-    return this.channelService.addMember(channelId, userId, password);
+    return this.channelService.joinChannel(channelId, userId, password);
+  }
+
+  @Patch(':id/members')
+  @HttpCode(204)
+  addMember(
+    @Param('id') channelId: number,
+    @Body('userId', ParseUUIDPipe) userId: string,
+  ) {
+    return this.channelService.addMember(channelId, userId);
   }
 
   @Delete(':id/members')
