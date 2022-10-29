@@ -5,6 +5,7 @@ import jwt from 'jwt-decode';
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
+type numberSetState = React.Dispatch<React.SetStateAction<number>>
 
 type tokenData = {
 	id: string;
@@ -14,14 +15,16 @@ interface Props {
 	channelData: {[key: string]: any};
 	setOpenDialog: booleanSetState;
 	setMembersMockData: objectSetState;
+	setActiveChannel : numberSetState;
 }
 
-export const LeaveChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, setMembersMockData, channelData }) => {
+export const LeaveChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, channelData, setActiveChannel }) => {
 	const tokenData: tokenData = jwt(document.cookie);
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 
 	const handleSave = () => {
 		axios.delete(`http://localhost:3000/channels/${channelData.id}/members`, { data: { "userId": tokenData.id }, headers: { "Authorization": authToken.toString() } }).then( () => {
+			setActiveChannel(0);
 			setOpenDialog(false);
 		}) 
 	}
