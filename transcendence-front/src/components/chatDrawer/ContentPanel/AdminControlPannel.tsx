@@ -1,6 +1,10 @@
-import { Button, Typography } from "@mui/material"
+import { Button, Dialog, Typography } from "@mui/material"
 import { Box } from "@mui/system"
-import React from "react"
+import React, { useState } from "react"
+import AdminDialog, { AddMembersDialog } from "./AddMembersDialog"
+
+type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
+type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
 const buttonCss = {
 	margin: '1vh',
@@ -25,14 +29,23 @@ const buttonTypographyCss = {
 	color: '#311B92',
 }
 
-const InviteMember = () => {
+const ADD_MEMBER = 'add member';
+
+const AddMember = ({ setOpenDialog } : { setOpenDialog: booleanSetState }) => {
+	
+	const handleClick = () => {
+		setOpenDialog(true);
+	}
+	
 	return (
 		<Button
-		variant="outlined"
-		size="large"
-		sx={buttonCss}>
+			variant="outlined"
+			size="large"
+			sx={buttonCss}
+			onClick={handleClick}
+		>
 			<Typography sx={buttonTypographyCss}>
-				invite member
+				{ADD_MEMBER}
 			</Typography>
 		</Button>
 	)
@@ -90,15 +103,23 @@ const ChangePassword = () => {
 	)
 }
 
-export const AdminControlPannel = () => {
+export const AdminControlPannel = ({ setMembersMockData, channelData } : { setMembersMockData: objectSetState, channelData: {[key: string]: any}}) => {
+	const [openDialog, setOpenDialog] = useState(false);
 
+	const handleClose = () => {
+		setOpenDialog(false);
+	};
+	
 	return (
 		<Box display='flex' flexDirection='column' justifyContent='center' width='30vh' sx={{alignSelf: 'flex-start'}} >
-			<InviteMember/>
+			<AddMember setOpenDialog={setOpenDialog} />
 			<LeaveChannel/>
 			<KickMember/>
 			<MuteMember/>
 			<ChangePassword/>
+			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
+				<AddMembersDialog setOpenDialog={setOpenDialog} setMembersMockData={setMembersMockData} channelData={channelData} />
+			</Dialog>
 		</Box>
 	)
 }
