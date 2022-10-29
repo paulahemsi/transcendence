@@ -1,6 +1,12 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { UpdateUserDto } from 'src/dto/users.dtos';
 
+export enum status {
+  ONLINE = 'online',
+  OFFLINE = 'offline',
+  IN_GAME = 'in_game',
+}
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -37,9 +43,9 @@ export class User {
 
   @Column({
     nullable: false,
-    default: 'offline',
+    default: status.OFFLINE,
   })
-  status: string;
+  status: status;
 
   private updateUsername(username: string) {
     this.username = username;

@@ -12,6 +12,7 @@ import { DatabaseModule } from './database/database.module';
 import { ChannelsModule } from './channels/channels.module';
 import { ChatModule } from './chat/chat.module';
 import { AuthMiddleware } from './auth/auth.midlleware';
+import { SessionModule } from './session/session.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AuthMiddleware } from './auth/auth.midlleware';
     ChannelsModule,
     AuthModule,
     ChatModule,
+    SessionModule,
     PassportModule.register({ session: true }),
   ],
 })

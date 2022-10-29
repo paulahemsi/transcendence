@@ -22,4 +22,14 @@ export class ConnnectedUsersService {
   deleteAll() {
     this.connectedUserRepository.clear();
   }
+
+  async hasConnections(user: User) {
+    const userSession = await this.connectedUserRepository.findOneBy({
+      user: { id: user.id },
+    });
+    if (userSession) {
+      return true;
+    }
+    return false;
+  }
 }

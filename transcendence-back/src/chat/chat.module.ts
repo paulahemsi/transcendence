@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/auth/auth.module';
 import { ChannelTypeService } from 'src/channels/channel-type.service';
 import { ChannelsService } from 'src/channels/channels.service';
-import { ConnectedUsersModule } from 'src/connected-users/connected-users.module';
 import {
   Channel,
   ChannelAdmin,
@@ -18,7 +17,6 @@ import { ChatGateway } from './chat.gateway';
   imports: [
     UsersModule,
     AuthModule,
-    ConnectedUsersModule,
     TypeOrmModule.forFeature([
       Channel,
       ChannelMember,
