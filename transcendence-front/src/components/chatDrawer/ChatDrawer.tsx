@@ -40,7 +40,7 @@ export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDraw
 						<ExtraContent activeChannel={activeChannel} />
 					}
 					{
-						channelsAdminPanel &&
+						channelsAdminPanel && (activeChannel > 0) &&
 						<ChannelsAdminPanel
 							activeChannel={activeChannel}
 							setActiveChannel={setActiveChannel}
