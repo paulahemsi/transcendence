@@ -32,6 +32,7 @@ const buttonTypographyCss = {
 
 const ADD_MEMBER = 'add member';
 const LEAVE = 'leave channel';
+const KICK = 'kick member';
 
 const AddMember = ({ setOpenDialog } : { setOpenDialog: booleanSetState }) => {
 	
@@ -80,7 +81,7 @@ const KickMember = ({ setOpenDialog } : { setOpenDialog: booleanSetState }) => {
 			onClick={handleClick}
 		>
 			<Typography sx={buttonTypographyCss}>
-				kick member
+				{KICK}
 			</Typography>
 		</Button>
 	)
