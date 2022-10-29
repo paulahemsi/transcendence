@@ -104,6 +104,18 @@ export class PhaserGame extends React.Component {
 				ballPosX = ball.x;
 				ballPosY = ball.y;
 			}
+
+			gameSocket.off('player1').on('player1', (msg) => {
+				console.log(msg);
+			} );
+
+			gameSocket.off('player2').on('player2', (msg) => {
+				console.log(msg);
+			} );
+
+			gameSocket.off('ball').on('ball', (msg) => {
+				console.log(msg);
+			} );
 		}
 
 	function HandleCollision(this: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody) : void {
