@@ -31,6 +31,7 @@ const buttonTypographyCss = {
 }
 
 const ADD_MEMBER = 'add member';
+const LEAVE = 'leave channel';
 
 const AddMember = ({ setOpenDialog } : { setOpenDialog: booleanSetState }) => {
 	
@@ -59,7 +60,7 @@ const LeaveChannel = () => {
 		size="large"
 		sx={buttonCss}>
 			<Typography sx={buttonTypographyCss}>
-				leave channel
+				{LEAVE}
 			</Typography>
 		</Button>
 	)
