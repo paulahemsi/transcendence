@@ -15,15 +15,25 @@ interface Props {
 }
 
 export const ImageUpload = () => {
-	const changeHandler = () => {
+	const [selectedFile, setSelectedFile] = useState<File | null>(null);
+	const [isFilePicked, setIsFilePicked] = useState(false);
+
+	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
+		const filesList = event.target.files;
+		if (filesList === null) return;
+		setSelectedFile(filesList[0]);
+		setIsFilePicked(true);
 		console.log('imagem selecionada');
+		console.log(filesList[0]);
 	}
+
 	const handleSubmition = () => {
 		console.log('enviar imagem');
 	}
+
 	return(
 		<div>
-			<input type='file' name='file' onChange={changeHandler} />
+			<input type='file' name='file' onChange={handleChange} />
 				<button onClick={handleSubmition}>
 					Submit
 				</button>
