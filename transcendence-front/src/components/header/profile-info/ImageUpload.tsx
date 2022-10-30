@@ -1,18 +1,7 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
-import { Button, DialogActions, DialogContent, DialogTitle, TextField, } from "@mui/material"
+import React, { useState } from "react";
 import axios, { AxiosRequestHeaders } from 'axios';
-import jwt from 'jwt-decode';
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
-
-type tokenData = {
-	id: string;
-}
-
-interface Props {
-    setOpen: booleanSetState;
-	setUserData: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>;
-}
 
 export const ImageUpload = () => {
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -28,7 +17,16 @@ export const ImageUpload = () => {
 	}
 
 	const handleSubmition = () => {
-		console.log('enviar imagem');
+		const formData = new FormData();
+		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+
+		if (selectedFile === null) return;
+		formData.append('image', selectedFile);
+		axios.post('http://localhost:3000/images', formData, {headers: authToken}).then(
+			() => {
+				console.log('upload feito')
+			}
+		);
 	}
 
 	return(
