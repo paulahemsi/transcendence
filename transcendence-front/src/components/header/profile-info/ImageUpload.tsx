@@ -17,9 +17,9 @@ export const ImageUpload = () => {
 
 		if (selectedFile === null) return;
 		formData.append('image', selectedFile);
-		axios.post('http://localhost:3000/images', formData, {headers: authToken}).then(
-			(response) => { console.log(response.data.url); }
-		);
+		axios.post('http://localhost:3000/images', formData, {headers: authToken})
+		.then((response) => { console.log(response.data.url); })
+		.catch((response) => { console.log(response.response.data.message); });
 	}
 
 	return(
