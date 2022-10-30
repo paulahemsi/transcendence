@@ -1,7 +1,10 @@
 import {
   Controller,
+  FileTypeValidator,
   Get,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
   Post,
   Res,
   UploadedFile,
@@ -24,7 +27,17 @@ export class ImagesController {
       }),
     }),
   )
-  uploadImage(@UploadedFile() file: any) {
+  uploadImage(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 1000000 }),
+          new FileTypeValidator({ fileType: '(jpeg|jpg|png)$' }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
     return { url: `http://localhost:3000/images/${file.filename}` };
   }
 
