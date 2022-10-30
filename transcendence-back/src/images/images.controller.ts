@@ -1,11 +1,15 @@
 import {
   Controller,
+  Get,
+  Param,
   Post,
+  Res,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { Response } from 'express';
 
 @Controller('images')
 export class ImagesController {
@@ -22,5 +26,10 @@ export class ImagesController {
   )
   uploadImage(@UploadedFile() file: any) {
     return { url: `http://localhost:3000/images/${file.filename}` };
+  }
+
+  @Get(':path')
+  getImage(@Param('path') path: string, @Res() response: Response) {
+    response.sendFile(path, { root: 'uploads' });
   }
 }
