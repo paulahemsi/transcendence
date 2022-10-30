@@ -21,6 +21,6 @@ export class ImagesController {
     }),
   )
   uploadImage(@UploadedFile() file: any) {
-    console.log(file.filename);
+    return { url: `http://localhost:3000/images/${file.filename}` };
   }
 }
