@@ -5,14 +5,19 @@ import {
   MaxFileSizeValidator,
   Param,
   ParseFilePipe,
+  ParseUUIDPipe,
   Post,
+  Req,
   Res,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { Response } from 'express';
+import { Request, Response } from 'express';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const fs = require('fs');
 
 @Controller('images')
 export class ImagesController {
@@ -20,7 +25,12 @@ export class ImagesController {
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
-        destination: './uploads',
+        destination: (request, file, callback) => {
+          const user = request.user;
+          const path = `./uploads/${user}`;
+          fs.mkdirSync(path, { recursive: true });
+          callback(null, path);
+        },
         filename(_, file, callback) {
           return callback(null, `${file.originalname}`);
         },
@@ -37,12 +47,20 @@ export class ImagesController {
       }),
     )
     file: Express.Multer.File,
+    @Req() request: Request,
   ) {
-    return { url: `http://localhost:4444/images/${file.filename}` };
+    const userId = request.user;
+    return {
+      url: `http://localhost:4444/images/${userId}/${file.filename}`,
+    };
   }
 
-  @Get(':path')
-  getImage(@Param('path') path: string, @Res() response: Response) {
-    response.sendFile(path, { root: 'uploads' });
+  @Get(':id/:path')
+  getImage(
+    @Param('id') id: ParseUUIDPipe,
+    @Param('path') path: string,
+    @Res() response: Response,
+  ) {
+    response.sendFile(path, { root: `uploads/${id}` });
   }
 }
