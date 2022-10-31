@@ -2,6 +2,7 @@ import { Button, Dialog, Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import React, { FunctionComponent, useState } from "react"
 import AdminDialog, { AddMembersDialog } from "./AddMembersDialog"
+import ChangePasswordDialog from "./ChangePasswordDialog"
 import DeleteMembersDialog from "./DeleteMembersDialog"
 import LeaveChannelDialog from "./LeaveChannelDialog"
 
@@ -41,6 +42,7 @@ const buttonTypographyCss = {
 const ADD_MEMBER = 'add member';
 const LEAVE = 'leave channel';
 const KICK = 'kick member';
+const CHANGE_PASSWORD = 'change password';
 
 const AddMember = ({ setOpenDialog } : { setOpenDialog: booleanSetState }) => {
 	
@@ -115,14 +117,21 @@ const MuteMember = () => {
 	)
 }
 
-const ChangePassword = () => {
+const ChangePassword = ({ setOpenDialog } : { setOpenDialog: booleanSetState }) => {
+	
+	const handleClick = () => {
+		setOpenDialog(true);
+	}
+	
 	return (
 		<Button 
-		variant="outlined"
-		size="large"
-		sx={buttonCss}>
+			variant="outlined"
+			size="large"
+			sx={buttonCss}
+			onClick={handleClick}
+		>
 			<Typography sx={buttonTypographyCss}>
-				change password
+				{CHANGE_PASSWORD}
 			</Typography>
 		</Button>
 	)
@@ -132,6 +141,7 @@ export const AdminControlPannel: FunctionComponent<Props> = ({ setMembersMockDat
 	const [openAddDialog, setOpenAddDialog] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
+	const [openPasswordDialog, setOpenPasswordDialog] = useState(false);
 
 	const handleClose = () => {
 		setOpenAddDialog(false);
@@ -143,7 +153,7 @@ export const AdminControlPannel: FunctionComponent<Props> = ({ setMembersMockDat
 			<LeaveChannel setOpenDialog={setOpenLeaveDialog}/>
 			<KickMember setOpenDialog={setOpenDeleteDialog}/>
 			<MuteMember/>
-			<ChangePassword/>
+			<ChangePassword setOpenDialog={setOpenPasswordDialog}/>
 			<Dialog open={openAddDialog} fullWidth maxWidth="sm" onClose={handleClose}>
 				<AddMembersDialog setOpenDialog={setOpenAddDialog} setMembersMockData={setMembersMockData} channelData={channelData} />
 			</Dialog>
@@ -152,6 +162,9 @@ export const AdminControlPannel: FunctionComponent<Props> = ({ setMembersMockDat
 			</Dialog>
 			<Dialog open={openLeaveDialog} fullWidth maxWidth="sm" onClose={handleClose}>
 				<LeaveChannelDialog setOpenDialog={setOpenLeaveDialog} setMembersMockData={setMembersMockData} channelData={channelData} setActiveChannel={setActiveChannel}/>
+			</Dialog>
+			<Dialog open={openPasswordDialog} fullWidth maxWidth="sm" onClose={handleClose}>
+				<ChangePasswordDialog setOpenDialog={setOpenPasswordDialog} channelData={channelData}/>
 			</Dialog>
 		</Box>
 	)
