@@ -38,7 +38,7 @@ export class ImagesController {
     )
     file: Express.Multer.File,
   ) {
-    return { url: `http://localhost:3000/images/${file.filename}` };
+    return { url: `http://localhost:4444/images/${file.filename}` };
   }
 
   @Get(':path')
