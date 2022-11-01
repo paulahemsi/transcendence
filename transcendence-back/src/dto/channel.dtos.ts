@@ -27,8 +27,13 @@ export class CreateChannelDto {
 export class UpdateChannelDto {
   @IsOptional()
   @IsNotEmpty()
-  @MinLength(3)
-  name: string;
+  @IsEnum(channelType)
+  type: channelType;
+
+  @IsOptional()
+  @IsNotEmpty()
+  @IsUUID()
+  owner: string;
 
   @IsOptional()
   @MinLength(5)
