@@ -17,6 +17,7 @@ export const ChangePasswordDialog : FunctionComponent<Props> = ({ setOpenDialog,
 
 	const [password, setPassword] = useState("");
 	const [removePassword, setRemovePassword] = useState(false);
+	const [disabled, setDisabled] = useState(false);
 
 	const handlePasswordChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
 		setPassword(event.target.value);
@@ -51,6 +52,12 @@ export const ChangePasswordDialog : FunctionComponent<Props> = ({ setOpenDialog,
 		}
 	}
 	
+	const handleCheckBox = () => {
+		setRemovePassword(!removePassword);
+		setDisabled(!disabled);
+		setPassword("");
+	}
+	
 	return (
 		<>
 		<DialogTitle sx={{fontFamily: 'Orbitron'}}>
@@ -58,6 +65,7 @@ export const ChangePasswordDialog : FunctionComponent<Props> = ({ setOpenDialog,
 		</DialogTitle>
 		<DialogContent>
 			<TextField
+				disabled={disabled}
 				margin="dense"
 				id="name"
 				label="New Password"
@@ -73,7 +81,7 @@ export const ChangePasswordDialog : FunctionComponent<Props> = ({ setOpenDialog,
      		 <FormControlLabel
 			 	control={<Checkbox />}
 				label="Remove Password"
-				onChange={() => setRemovePassword(!removePassword) }
+				onChange={handleCheckBox}
 			/>
 		</DialogContent>
 		<DialogActions>
