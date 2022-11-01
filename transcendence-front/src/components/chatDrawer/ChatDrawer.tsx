@@ -16,8 +16,12 @@ interface Props {
 export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDrawer, setFriendsData }) => {
 	const [extraContent, setExtraContent] = useState(false);
 	const [channelsAdminPanel, setChannelsAdminPanel] = useState(false);
-	const [activeChannel, setActiveChannel] = useState(0)
+	const [activeChannel, setActiveChannel] = useState(-1)
 
+	if (activeChannel === 0) {
+		setOpenDrawer(false);
+	}
+	
 	return (
 		<>
 		  <Drawer
@@ -36,8 +40,11 @@ export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDraw
 						<ExtraContent activeChannel={activeChannel} />
 					}
 					{
-						channelsAdminPanel &&
-						<ChannelsAdminPanel activeChannel={activeChannel} />
+						channelsAdminPanel && (activeChannel > 0) &&
+						<ChannelsAdminPanel
+							activeChannel={activeChannel}
+							setActiveChannel={setActiveChannel}
+						/>
 					}
 				</Box>
 				<ControlPanel 

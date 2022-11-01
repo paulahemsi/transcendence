@@ -74,14 +74,14 @@ export const GroupsButtons :FunctionComponent<GroupsButtonsProps> = ({ setChanne
 	
 	const handleCreateClick = () => {
 		setOpenDialog(true);
-		setActiveChannel(0);
+		setActiveChannel(-1);
 		setExtraContent(false);
 		setChannelsAdminPanel(false);
 	}
 
 	const handleSearchClick = () => {
 		setOpenAddGroupsDialog(true);
-		setActiveChannel(0);
+		setActiveChannel(-1);
 		setExtraContent(false);
 		setChannelsAdminPanel(false);
 	}
