@@ -1,5 +1,8 @@
 import Phaser from 'phaser';
 import React from 'react'
+import io from 'socket.io-client';
+
+const gameSocket = io('/game');
 
 export class PhaserGame extends React.Component {
 	componentDidMount(): void {
@@ -46,6 +49,8 @@ export class PhaserGame extends React.Component {
 		}
 
 		function create(this: Phaser.Scene): void {
+			gameSocket.connect();
+			gameSocket.emit('test', 'aqui');
 			player1 = this.physics.add.sprite(100, 450, 'pad');
 			player2 = this.physics.add.sprite(1750, 450, 'pad');
 			ball = this.physics.add.sprite(this.sys.canvas.height / 2, this.sys.canvas.height / 2, 'ball');
