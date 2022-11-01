@@ -50,7 +50,6 @@ export class PhaserGame extends React.Component {
 
 		function create(this: Phaser.Scene): void {
 			gameSocket.connect();
-			gameSocket.emit('test', 'aqui');
 			player1 = this.physics.add.sprite(100, 450, 'pad');
 			player2 = this.physics.add.sprite(1750, 450, 'pad');
 			ball = this.physics.add.sprite(this.sys.canvas.height / 2, this.sys.canvas.height / 2, 'ball');
@@ -71,12 +70,12 @@ export class PhaserGame extends React.Component {
 			cursors = this.input.keyboard.createCursorKeys();
 
 			if (player1.y != player1PosY) {
-				console.log("PLAYER 1 Y POSITION: " + player1.y);
+				gameSocket.emit('player1', "PLAYER 1 Y POSITION: " + player1.y);
 				player1PosY = player1.y;
 			}
 
 			if (player2.y != player2PosY) {
-				console.log("PLAYER 2 Y POSITION: " + player2.y);
+				gameSocket.emit('player2', "PLAYER 2 Y POSITION: " + player2.y);
 				player2PosY = player2.y;
 			}
 
@@ -101,10 +100,22 @@ export class PhaserGame extends React.Component {
 			}
 
 			if (ball.x != ballPosX || ball.y != ballPosY) {
-				console.log("BALL POSITION X: " + ball.x + " Y: " + ball.y);
+				gameSocket.emit('ball', "BALL POSITION X: " + ball.x + " Y: " + ball.y);
 				ballPosX = ball.x;
 				ballPosY = ball.y;
 			}
+
+			gameSocket.off('player1').on('player1', (msg) => {
+				console.log(msg);
+			} );
+
+			gameSocket.off('player2').on('player2', (msg) => {
+				console.log(msg);
+			} );
+
+			gameSocket.off('ball').on('ball', (msg) => {
+				console.log(msg);
+			} );
 		}
 
 	function HandleCollision(this: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody) : void {

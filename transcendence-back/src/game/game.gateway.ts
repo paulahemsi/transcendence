@@ -47,8 +47,18 @@ export class GameGateway
     client.disconnect();
   }
 
-  @SubscribeMessage('test')
-  handleJoinChannel(client: Socket, message: string) {
-    console.log(message);
+  @SubscribeMessage('player1')
+  handlePlayer1(client: Socket, message: string) {
+    this.server.emit('player1', message);
+  }
+
+  @SubscribeMessage('player2')
+  handlePlayer2(client: Socket, message: string) {
+    this.server.emit('player2', message);
+  }
+
+  @SubscribeMessage('ball')
+  handleBall(client: Socket, message: string) {
+    this.server.emit('ball', message);
   }
 }
