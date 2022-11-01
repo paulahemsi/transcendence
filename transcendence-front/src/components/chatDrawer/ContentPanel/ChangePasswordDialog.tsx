@@ -1,14 +1,8 @@
 import React, { useState, FunctionComponent } from "react"
-import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, TextField } from "@mui/material"
+import { Button, Checkbox, DialogActions, DialogContent, DialogTitle, FormControlLabel, TextField } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
-import jwt from 'jwt-decode';
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
-type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
-
-type tokenData = {
-	id: string;
-}
 
 interface Props {
 	channelData: {[key: string]: any};
@@ -22,29 +16,32 @@ const PROTECTED = "PROTECTED"
 export const ChangePasswordDialog : FunctionComponent<Props> = ({ setOpenDialog, channelData }) => {
 
 	const [password, setPassword] = useState("");
-	const [type, setType] = useState(PUBLIC);
+	const [removePassword, setRemovePassword] = useState(false);
 
 	const handlePasswordChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
 		setPassword(event.target.value);
 	}
 
 	const handleSave = () => {
-		const tokenData: tokenData = jwt(document.cookie);
 		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 
-		// axios.post(`http://localhost:3000/channels`, {
-		// 	"name": channelName,
-		// 	"type": password ? PROTECTED : type,
-		// 	"owner": tokenData.id,
-		// 	"password": password,
-		// }, { headers: authToken }).then( (response) => {
-			// const newGroupsData
-			//  = groupsData.map((element : {[key: string]: any}) => element);
-			// newGroupsData.push(response.data);
-			// setGroupsData(newGroupsData)
+		let body: {[key: string]: any};
+
+		if (removePassword) {
+			body = {
+				"type": PUBLIC,
+			}
+		} else {
+			body = {
+				"type": PROTECTED,
+				"password": password
+			}
+		}
+		
+		axios.patch(`http://localhost:3000/channels/${channelData.id}`, body , { headers: authToken }).then(() => {
 			setOpenDialog(false);
-		// }
-		// )
+		}
+		)
 	}
 	
 	const keyDownHandler = ( event :  React.KeyboardEvent<HTMLInputElement>) => {
@@ -76,7 +73,7 @@ export const ChangePasswordDialog : FunctionComponent<Props> = ({ setOpenDialog,
      		 <FormControlLabel
 			 	control={<Checkbox />}
 				label="Remove Password"
-				onChange={() => setType(PRIVATE)}
+				onChange={() => setRemovePassword(!removePassword) }
 			/>
 		</DialogContent>
 		<DialogActions>

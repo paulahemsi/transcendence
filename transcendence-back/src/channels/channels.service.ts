@@ -159,7 +159,7 @@ export class ChannelsService {
 
   async update(id: number, channelDto: UpdateChannelDto) {
     const channel = await this.checkChannel(id);
-    
+    console.log(channelDto)
     this.updateOwner(channel, channelDto.owner);
     this.updatePassword(channel, channelDto.password, channelDto.type);
     this.updateType(channel, channelDto.type);
