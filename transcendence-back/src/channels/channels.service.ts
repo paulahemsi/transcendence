@@ -263,6 +263,7 @@ export class ChannelsService {
   }
 
   async addAdmin(channelId: number, userId: string) {
+    console.log("add admin")
     const { channel, user } = await this.checkChannelAndMember(
       channelId,
       userId,
