@@ -1,8 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { Box, Button, Divider, Typography } from "@mui/material";
 import axios, { AxiosRequestHeaders } from "axios";
 import ChannelMembers from "./ChannelMembers";
 import AdminControlPannel from "./AdminControlPannel";
+
+type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
+type numberSetState = React.Dispatch<React.SetStateAction<number>>
+
+interface BodyProps {
+	loading: boolean;
+	channelData: {[key: string]: any};
+	setMembersMockData: objectSetState;
+	setActiveChannel : numberSetState;
+}
 
 const MEMBERS = 'members';
 
@@ -41,21 +51,22 @@ const Header = ({ channelName } : { channelName : string }) => {
 	)
 }
 
-const Body = ({ loading, channelMembers } : { loading: boolean, channelMembers: {[key: string]: any}}) => {
+const Body: FunctionComponent<BodyProps> = ({ loading, channelData, setMembersMockData, setActiveChannel }) => {
 	return (
 		<Box display='flex' alignItems='center' height='55vh' marginTop='3vh' >
 			{
 				!loading &&
-				<ChannelMembers channelMembers={channelMembers}/>
+				<ChannelMembers channelMembers={channelData.members}/>
 			}
 			<Divider flexItem orientation='vertical' variant='middle' sx={{ borderBottomWidth: 3, border: "2px solid #B998FF" }} />
-			<AdminControlPannel/>
+			<AdminControlPannel setMembersMockData={setMembersMockData} channelData={channelData} setActiveChannel={setActiveChannel}/>
 		</Box>
 	)
 }
 
-export const ChannelsAdminPanel = ( { activeChannel } : { activeChannel : number }) => {
+export const ChannelsAdminPanel = ( { activeChannel, setActiveChannel } : { activeChannel : number, setActiveChannel: numberSetState }) => {
 
+	const [ membersMockData, setMembersMockData ] = useState<{[key: string]: any}>({});
 	const [ channelData, setChannelData ] = useState<{[key: string]: any}>({});
 	const [ loading, setLoading ] = useState(true);
 
@@ -67,7 +78,7 @@ export const ChannelsAdminPanel = ( { activeChannel } : { activeChannel : number
 		})
 	}
 	
-	useEffect(() => {requestChannelInfos()}, [activeChannel]);
+	useEffect(() => {requestChannelInfos()}, [membersMockData]);
 	
 	return (
 		<Box display="flex" flexDirection="column" justifyContent="space-around" bgcolor="blue" padding="3vh" sx={{minWidth: '30vw', height: '80vh',
@@ -75,7 +86,7 @@ export const ChannelsAdminPanel = ( { activeChannel } : { activeChannel : number
 		}}>
 			<Box sx={messagesBorderCSS}>
 				<Header channelName={channelData.name} />
-				<Body loading={loading} channelMembers={channelData.members} />
+				<Body loading={loading} channelData={channelData} setMembersMockData={setMembersMockData} setActiveChannel={setActiveChannel}/>
 			</Box>
 		</Box>
 	)

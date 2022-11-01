@@ -1,6 +1,19 @@
-import { Button, Typography } from "@mui/material"
+import { Button, Dialog, Typography } from "@mui/material"
 import { Box } from "@mui/system"
-import React from "react"
+import React, { FunctionComponent, useState } from "react"
+import AdminDialog, { AddMembersDialog } from "./AddMembersDialog"
+import DeleteMembersDialog from "./DeleteMembersDialog"
+import LeaveChannelDialog from "./LeaveChannelDialog"
+
+type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
+type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+type numberSetState = React.Dispatch<React.SetStateAction<number>>
+
+interface Props {
+	setMembersMockData: objectSetState;
+	channelData: {[key: string]: any};
+	setActiveChannel : numberSetState;
+}
 
 const buttonCss = {
 	margin: '1vh',
@@ -25,40 +38,65 @@ const buttonTypographyCss = {
 	color: '#311B92',
 }
 
-const InviteMember = () => {
+const ADD_MEMBER = 'add member';
+const LEAVE = 'leave channel';
+const KICK = 'kick member';
+
+const AddMember = ({ setOpenDialog } : { setOpenDialog: booleanSetState }) => {
+	
+	const handleClick = () => {
+		setOpenDialog(true);
+	}
+	
 	return (
 		<Button
-		variant="outlined"
-		size="large"
-		sx={buttonCss}>
+			variant="outlined"
+			size="large"
+			sx={buttonCss}
+			onClick={handleClick}
+		>
 			<Typography sx={buttonTypographyCss}>
-				invite member
+				{ADD_MEMBER}
 			</Typography>
 		</Button>
 	)
 }
 
-const LeaveChannel = () => {
+const LeaveChannel = ({ setOpenDialog } : { setOpenDialog: booleanSetState }) => {
+
+	const handleClick = () => {
+		setOpenDialog(true);
+	}
+
 	return (
 		<Button 
-		variant="outlined"
-		size="large"
-		sx={buttonCss}>
+			variant="outlined"
+			size="large"
+			sx={buttonCss}
+			onClick={handleClick}
+		>
 			<Typography sx={buttonTypographyCss}>
-				leave channel
+				{LEAVE}
 			</Typography>
 		</Button>
 	)
 }
 
-const KickMember = () => {
+const KickMember = ({ setOpenDialog } : { setOpenDialog: booleanSetState }) => {
+	
+	const handleClick = () => {
+		setOpenDialog(true);
+	}
+	
 	return (
 		<Button 
-		variant="outlined"
-		size="large"
-		sx={buttonCss}>
+			variant="outlined"
+			size="large"
+			sx={buttonCss}
+			onClick={handleClick}
+		>
 			<Typography sx={buttonTypographyCss}>
-				kick member
+				{KICK}
 			</Typography>
 		</Button>
 	)
@@ -90,15 +128,31 @@ const ChangePassword = () => {
 	)
 }
 
-export const AdminControlPannel = () => {
+export const AdminControlPannel: FunctionComponent<Props> = ({ setMembersMockData, channelData, setActiveChannel }) => {
+	const [openAddDialog, setOpenAddDialog] = useState(false);
+	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+	const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
 
+	const handleClose = () => {
+		setOpenAddDialog(false);
+	};
+	
 	return (
 		<Box display='flex' flexDirection='column' justifyContent='center' width='30vh' sx={{alignSelf: 'flex-start'}} >
-			<InviteMember/>
-			<LeaveChannel/>
-			<KickMember/>
+			<AddMember setOpenDialog={setOpenAddDialog} />
+			<LeaveChannel setOpenDialog={setOpenLeaveDialog}/>
+			<KickMember setOpenDialog={setOpenDeleteDialog}/>
 			<MuteMember/>
 			<ChangePassword/>
+			<Dialog open={openAddDialog} fullWidth maxWidth="sm" onClose={handleClose}>
+				<AddMembersDialog setOpenDialog={setOpenAddDialog} setMembersMockData={setMembersMockData} channelData={channelData} />
+			</Dialog>
+			<Dialog open={openDeleteDialog} fullWidth maxWidth="sm" onClose={handleClose}>
+				<DeleteMembersDialog setOpenDialog={setOpenDeleteDialog} setMembersMockData={setMembersMockData} channelData={channelData} />
+			</Dialog>
+			<Dialog open={openLeaveDialog} fullWidth maxWidth="sm" onClose={handleClose}>
+				<LeaveChannelDialog setOpenDialog={setOpenLeaveDialog} setMembersMockData={setMembersMockData} channelData={channelData} setActiveChannel={setActiveChannel}/>
+			</Dialog>
 		</Box>
 	)
 }
