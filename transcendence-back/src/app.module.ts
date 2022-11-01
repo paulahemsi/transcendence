@@ -14,6 +14,7 @@ import { ChatModule } from './chat/chat.module';
 import { AuthMiddleware } from './auth/auth.midlleware';
 import { SessionModule } from './session/session.module';
 import { ImagesModule } from './images/images.module';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ImagesModule } from './images/images.module';
     ChatModule,
     SessionModule,
     ImagesModule,
+    GameModule,
     PassportModule.register({ session: true }),
   ],
 })
