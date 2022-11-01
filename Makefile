@@ -13,6 +13,7 @@ front:
 		cd transcendence-front ; npm start
 
 back:
+		mkdir -p transcendence-back/uploads
 		cd transcendence-back ; npm run start:dev
 
 update-dependencies:

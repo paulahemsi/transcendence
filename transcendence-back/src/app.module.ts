@@ -13,6 +13,7 @@ import { ChannelsModule } from './channels/channels.module';
 import { ChatModule } from './chat/chat.module';
 import { AuthMiddleware } from './auth/auth.midlleware';
 import { SessionModule } from './session/session.module';
+import { ImagesModule } from './images/images.module';
 import { GameModule } from './game/game.module';
 
 @Module({
@@ -27,6 +28,7 @@ import { GameModule } from './game/game.module';
     AuthModule,
     ChatModule,
     SessionModule,
+    ImagesModule,
     GameModule,
     PassportModule.register({ session: true }),
   ],
@@ -38,6 +40,7 @@ export class AppModule implements NestModule {
       .exclude(
         { path: '/auth/login', method: RequestMethod.GET },
         { path: '/auth/redirect', method: RequestMethod.GET },
+        { path: '/images/:path', method: RequestMethod.GET },
       )
       .forRoutes('');
   }

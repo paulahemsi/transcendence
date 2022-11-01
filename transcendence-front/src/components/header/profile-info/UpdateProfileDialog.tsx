@@ -2,6 +2,7 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { Button, DialogActions, DialogContent, DialogTitle, TextField, } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
+import { ImageUpload } from './ImageUpload';
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -57,6 +58,7 @@ export const UpdateProfileDialog : FunctionComponent<Props> = ({ setOpen, setUse
 				onKeyDown={keyDownHandler}
 				onChange={handleChange}
 			/>
+			<ImageUpload/>
 			</DialogContent>
 			<DialogActions>
 			<Button
