@@ -3,8 +3,8 @@ import { Box } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import { ProfileButton } from "./ProfileButton";
-import { UpdateProfileDialog } from "../profile-edit/UpdateProfileDialog";
 import EditProfile from "../profile-edit/EditButton";
+import { UpdateUsernameDialog } from "../profile-edit/UpdateUsernameDialog";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -36,7 +36,7 @@ export const ProfileInfo = ({ setOpenCard } : { setOpenCard : booleanSetState })
 		<Box display='flex' flexDirection='row' alignItems="center">
 			<ProfileButton setOpenCard={setOpenCard} userData={userData} />
 			<EditProfile setOpenUsernameDialog={setOpenUsernameDialog}/>
-			<UpdateProfileDialog
+			<UpdateUsernameDialog
 				open={openUsernameDialog}
 				setOpen={setOpenUsernameDialog}
 				userData={userData}
