@@ -4,7 +4,7 @@ import { Box, Dialog, IconButton, Menu, MenuItem, Tooltip, Typography, Zoom } fr
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import { ProfileButton } from "./ProfileButton";
-import { UpdateProfileDialog } from "./UpdateProfileDialog";
+import { UpdateProfileDialog } from "../profile-edit/UpdateProfileDialog";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type anchorElSetState = React.Dispatch<React.SetStateAction<null | HTMLElement>>
