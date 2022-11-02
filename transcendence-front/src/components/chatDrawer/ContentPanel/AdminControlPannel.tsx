@@ -7,6 +7,7 @@ import ChangePasswordDialog from "./ChangePasswordDialog"
 import DeleteMembersDialog from "./DeleteMembersDialog"
 import LeaveChannelDialog from "./LeaveChannelDialog"
 import jwt from 'jwt-decode';
+import MuteMembersDialog from "./MuteMembersDialog"
 
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
@@ -52,6 +53,7 @@ const ADD_ADMIN = 'add admin';
 const LEAVE = 'leave channel';
 const KICK = 'kick member';
 const CHANGE_PASSWORD = 'change password';
+const MUTE = 'mute member';
 
 const AddMember = ({ setOpenDialog } : { setOpenDialog: booleanSetState }) => {
 	
@@ -136,14 +138,21 @@ const KickMember = ({ setOpenDialog, isAdmin } : { setOpenDialog: booleanSetStat
 }
 
 const MuteMember = ({ setOpenDialog, isAdmin } : { setOpenDialog: booleanSetState, isAdmin: boolean }) => {
+	
+	const handleClick = () => {
+		setOpenDialog(true);
+	}
+
 	return (
 		<Button
-		disabled={!isAdmin}
-		variant="outlined"
-		size="large"
-		sx={buttonCss}>
+			disabled={!isAdmin}
+			variant="outlined"
+			size="large"
+			sx={buttonCss}
+			onClick={handleClick}
+		>
 			<Typography sx={buttonTypographyCss(!isAdmin)}>
-				mute member
+				{MUTE}
 			</Typography>
 		</Button>
 	)
@@ -222,6 +231,9 @@ export const AdminControlPannel: FunctionComponent<Props> = ({ setMembersMockDat
 			</Dialog>
 			<Dialog open={openDeleteDialog} fullWidth maxWidth="sm" onClose={handleClose}>
 				<DeleteMembersDialog setOpenDialog={setOpenDeleteDialog} setMembersMockData={setMembersMockData} channelData={channelData} />
+			</Dialog>
+			<Dialog open={openMuteDialog} fullWidth maxWidth="sm" onClose={handleClose}>
+				<MuteMembersDialog setOpenDialog={setOpenMuteDialog} channelData={channelData} />
 			</Dialog>
 			<Dialog open={openLeaveDialog} fullWidth maxWidth="sm" onClose={handleClose}>
 				<LeaveChannelDialog setOpenDialog={setOpenLeaveDialog} setMembersMockData={setMembersMockData} channelData={channelData} setActiveChannel={setActiveChannel}/>
