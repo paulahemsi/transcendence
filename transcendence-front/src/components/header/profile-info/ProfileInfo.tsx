@@ -53,7 +53,7 @@ export const ProfileInfo = ({ setOpenCard } : { setOpenCard : booleanSetState })
 			<ProfileButton setOpenCard={setOpenCard} userData={userData} />
 			<EditButton setOpenDialog={setOpenDialog} />
 			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
-				<UpdateProfileDialog setOpen={setOpenDialog} setUserData={setUserData}/>
+				<UpdateProfileDialog setOpen={setOpenDialog} userData={userData} setUserData={setUserData}/>
 			</Dialog>
 		</Box>
 	)

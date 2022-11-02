@@ -12,11 +12,13 @@ type tokenData = {
 
 interface Props {
     setOpen: booleanSetState;
+	userData: { [key: string]: any; };
 	setUserData: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>;
 }
 
-export const UpdateProfileDialog : FunctionComponent<Props> = ({ setOpen, setUserData }) => {
+export const UpdateProfileDialog : FunctionComponent<Props> = ({ setOpen, userData ,setUserData }) => {
 	const [username, setUsername] = useState("");
+	const [imageUrl, setImageUrl] = useState("");
 
 	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
 		setUsername(event.target.value);
@@ -25,12 +27,30 @@ export const UpdateProfileDialog : FunctionComponent<Props> = ({ setOpen, setUse
 	const handleSave = () => {
 		const tokenData: tokenData = jwt(document.cookie);
 		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-
-		axios.patch(`http://localhost:3000/users/${tokenData.id}`, { "username": username }, { headers: authToken }).then( () => {
-			setUserData({ username: username });
-			setOpen(false);
+		if (username != "" && imageUrl != "") {
+			axios.patch(`http://localhost:3000/users/${tokenData.id}`,
+						{ "username": username, "image_url": imageUrl },
+						{ headers: authToken }).then( () => {
+				userData.username = username;
+				userData.image_url = imageUrl;
+				setUserData(userData);
+				setOpen(false);
+			})
 		}
-		)
+		if (username != "") {
+			axios.patch(`http://localhost:3000/users/${tokenData.id}`, { "username": username }, { headers: authToken }).then( () => {
+				userData.username = username;
+				setUserData(userData);
+				setOpen(false);
+			})
+		}
+		if (imageUrl != "") {
+			axios.patch(`http://localhost:3000/users/${tokenData.id}`, { "image_url": imageUrl }, { headers: authToken }).then( () => {
+				userData.image_url = imageUrl;
+				setUserData(userData);
+				setOpen(false);
+			})
+		}
 	}
 	
 	const keyDownHandler = ( event :  React.KeyboardEvent<HTMLInputElement>) => {
@@ -58,7 +78,7 @@ export const UpdateProfileDialog : FunctionComponent<Props> = ({ setOpen, setUse
 				onKeyDown={keyDownHandler}
 				onChange={handleChange}
 			/>
-			<ImageUpload/>
+			<ImageUpload setImageUrl={setImageUrl}/>
 			</DialogContent>
 			<DialogActions>
 			<Button
