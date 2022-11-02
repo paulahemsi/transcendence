@@ -128,9 +128,42 @@ export class ChannelsService {
     return channels;
   }
 
+  private wasProtected(oldType: channelType, newType: channelType) {
+    return  (oldType === channelType.PROTECTED) && (newType !== channelType.PROTECTED);
+  }
+  
+  private async updateOwner(channel: Channel, ownerId: string) {
+    if (ownerId) {
+      const newOwner = await this.usersService.findUser(ownerId);
+      channel.owner = newOwner;
+    }
+  }
+
+  private async updatePassword(channel: Channel, dtoPassword: string, newType: channelType) {
+    if (dtoPassword) {
+      const newPassword = await bcrypt.hash(dtoPassword, bcrypt.genSaltSync());
+      channel.password = newPassword;
+      this.channelRepository.save(channel);
+    }
+    if (this.wasProtected(channel.type.type, newType)) {
+      channel.password = null;
+    }
+  }
+
+  private async updateType(channel: Channel, dtoType: channelType) {
+    if (dtoType) {
+      const newType = await this.channelTypeService.getChannelType(dtoType);
+      channel.type = newType;
+    }
+  }
+
   async update(id: number, channelDto: UpdateChannelDto) {
     const channel = await this.checkChannel(id);
-    channel.update(channelDto);
+    console.log(channelDto)
+    this.updateOwner(channel, channelDto.owner);
+    this.updatePassword(channel, channelDto.password, channelDto.type);
+    this.updateType(channel, channelDto.type);
+
     this.channelRepository.save(channel);
   }
 
