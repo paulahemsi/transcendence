@@ -21,9 +21,19 @@ const aaa = {
 	fontSize: '2vh',
 }
 
-const EditMenu = ({ setAnchorEl, anchorEl, openEditMenu } : { setAnchorEl: anchorElSetState, anchorEl: null | HTMLElement , openEditMenu: boolean }) => {
+const EditMenu = ({ setAnchorEl, anchorEl, openEditMenu, setOpenUsernameDialog } : {
+		setAnchorEl: anchorElSetState,
+		anchorEl: null | HTMLElement ,
+		openEditMenu: boolean,
+		setOpenUsernameDialog: booleanSetState }) => {
+
 	const handleClose = () => {
 	  setAnchorEl(null);
+	};
+
+	const editUsername = () => {
+	  setAnchorEl(null);
+	  setOpenUsernameDialog(true);
 	};
 
 	return (
@@ -36,7 +46,7 @@ const EditMenu = ({ setAnchorEl, anchorEl, openEditMenu } : { setAnchorEl: ancho
 				'aria-labelledby': 'basic-button',
 			}}
 		>
-			<MenuItem onClick={handleClose}>
+			<MenuItem onClick={editUsername}>
 				<Typography sx={aaa}>
 					username
 				</Typography>
@@ -92,25 +102,29 @@ const requestUserData = async ({ setUserData } : { setUserData: React.Dispatch<R
 }
 
 export const ProfileInfo = ({ setOpenCard } : { setOpenCard : booleanSetState }) => {
-	const [openDialog, setOpenDialog] = useState(false);
 	const [userData, setUserData] = useState<{[key: string]: any}>({});
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const openEditMenu = Boolean(anchorEl);
+	const [openUsernameDialog, setOpenUsernameDialog] = useState(false);
 
 	useEffect(() => {requestUserData({setUserData})}, []);
-
-	const handleClose = () => {
-		setOpenDialog(false);
-	};
 
 	return(
 		<Box display='flex' flexDirection='row' alignItems="center">
 			<ProfileButton setOpenCard={setOpenCard} userData={userData} />
 			<EditButton setAnchorEl={setAnchorEl} openEditMenu={openEditMenu} />
-			<EditMenu setAnchorEl={setAnchorEl} anchorEl={anchorEl}  openEditMenu={openEditMenu} />
-			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
-				<UpdateProfileDialog setOpen={setOpenDialog} userData={userData} setUserData={setUserData}/>
-			</Dialog>
+			<EditMenu
+				setAnchorEl={setAnchorEl}
+				anchorEl={anchorEl}
+				openEditMenu={openEditMenu}
+				setOpenUsernameDialog={setOpenUsernameDialog}
+			/>
+			<UpdateProfileDialog
+				open={openUsernameDialog}
+				setOpen={setOpenUsernameDialog}
+				userData={userData}
+				setUserData={setUserData}
+			/>
 		</Box>
 	)
 }

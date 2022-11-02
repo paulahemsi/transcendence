@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { Button, DialogActions, DialogContent, DialogTitle, TextField, } from "@mui/material"
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import { ImageUpload } from './ImageUpload';
@@ -11,12 +11,13 @@ type tokenData = {
 }
 
 interface Props {
+    open: boolean;
     setOpen: booleanSetState;
 	userData: { [key: string]: any; };
 	setUserData: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>;
 }
 
-export const UpdateProfileDialog : FunctionComponent<Props> = ({ setOpen, userData ,setUserData }) => {
+export const UpdateProfileDialog : FunctionComponent<Props> = ({ open, setOpen, userData ,setUserData }) => {
 	const [username, setUsername] = useState("");
 	const [imageUrl, setImageUrl] = useState("");
 
@@ -60,41 +61,47 @@ export const UpdateProfileDialog : FunctionComponent<Props> = ({ setOpen, userDa
 		}
 	}
 
+	const handleClose = () => {
+		setOpen(false);
+	};
+
 	return (
 		<>
-			<DialogTitle sx={{fontFamily: 'Orbitron'}}>
-				Edit Profile
-			</DialogTitle>
-			<DialogContent>
-			<TextField
-				autoFocus
-				margin="dense"
-				id="name"
-				label="username"
-				type="email"
-				fullWidth
-				variant="standard"
-				value={username}
-				onKeyDown={keyDownHandler}
-				onChange={handleChange}
-			/>
-			<ImageUpload setImageUrl={setImageUrl}/>
-			</DialogContent>
-			<DialogActions>
-			<Button
-				onClick={() => setOpen(false)}
-				sx={{fontFamily: 'Orbitron'}}
-			>
-				Cancel
-			</Button>
-			<Button
-				variant="contained"
-				onClick={handleSave}
-				sx={{fontFamily: 'Orbitron'}}
-			>
-				Save
-			</Button>
-			</DialogActions>
+			<Dialog open={open} fullWidth maxWidth="sm" onClose={handleClose}>
+				<DialogTitle sx={{fontFamily: 'Orbitron'}}>
+					Edit Profile
+				</DialogTitle>
+				<DialogContent>
+				<TextField
+					autoFocus
+					margin="dense"
+					id="name"
+					label="username"
+					type="email"
+					fullWidth
+					variant="standard"
+					value={username}
+					onKeyDown={keyDownHandler}
+					onChange={handleChange}
+				/>
+				<ImageUpload setImageUrl={setImageUrl}/>
+				</DialogContent>
+				<DialogActions>
+				<Button
+					onClick={() => setOpen(false)}
+					sx={{fontFamily: 'Orbitron'}}
+				>
+					Cancel
+				</Button>
+				<Button
+					variant="contained"
+					onClick={handleSave}
+					sx={{fontFamily: 'Orbitron'}}
+				>
+					Save
+				</Button>
+				</DialogActions>
+			</Dialog>
 		</>
 	)
 }
