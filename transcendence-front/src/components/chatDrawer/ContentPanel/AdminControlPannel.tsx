@@ -1,15 +1,20 @@
 import { Button, Dialog, Typography } from "@mui/material"
 import { Box } from "@mui/system"
-import React, { FunctionComponent, useState } from "react"
+import React, { FunctionComponent, useEffect, useState } from "react"
 import AddAdminDialog from "./AddAdminDialog"
 import AdminDialog, { AddMembersDialog } from "./AddMembersDialog"
 import ChangePasswordDialog from "./ChangePasswordDialog"
 import DeleteMembersDialog from "./DeleteMembersDialog"
 import LeaveChannelDialog from "./LeaveChannelDialog"
+import jwt from 'jwt-decode';
 
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type numberSetState = React.Dispatch<React.SetStateAction<number>>
+
+type tokenData = {
+	id: string;
+}
 
 interface Props {
 	setMembersMockData: objectSetState;
@@ -166,14 +171,36 @@ const ChangePassword = ({ setOpenDialog, isOwner } : { setOpenDialog: booleanSet
 }
 
 export const AdminControlPannel: FunctionComponent<Props> = ({ setMembersMockData, channelData, setActiveChannel }) => {
+
 	const [openAddDialog, setOpenAddDialog] = useState(false);
 	const [openAddAdminDialog, setOpenAddAdminDialog] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [openMuteDialog, setOpenMuteDialog] = useState(false);
 	const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
 	const [openPasswordDialog, setOpenPasswordDialog] = useState(false);
-	const [isOwner, setIsOwner] = useState(false);
-	const [isAdmin, setIsAdmin] = useState(false);
+	const tokenData: tokenData = jwt(document.cookie);
+
+	let isOwner = false;
+	let isAdmin = false;
+
+	const isUserOwner = () => {
+		return (tokenData.id === channelData.ownerId);
+	}
+
+	const isUserAdmin = () => {
+		if (channelData.admin) {
+			return channelData.admin.some( (e: {[key: string]: any}) => e.id === tokenData.id )
+		}
+	}
+	
+	if (isUserAdmin())  {
+		isAdmin = true;
+	}
+
+	if (isUserOwner()) {
+		isOwner = true;
+		isAdmin = true;
+	}
 
 	const handleClose = () => {
 		setOpenAddDialog(false);
