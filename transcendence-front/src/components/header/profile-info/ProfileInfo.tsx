@@ -5,6 +5,7 @@ import jwt from 'jwt-decode';
 import { ProfileButton } from "./ProfileButton";
 import EditProfile from "../profile-edit/EditButton";
 import { UpdateUsernameDialog } from "../profile-edit/UpdateUsernameDialog";
+import { UpdateImageDialog } from "../profile-edit/UpdateImageDialog";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -29,16 +30,26 @@ const requestUserData = async ({ setUserData } : { setUserData: React.Dispatch<R
 export const ProfileInfo = ({ setOpenCard } : { setOpenCard : booleanSetState }) => {
 	const [userData, setUserData] = useState<{[key: string]: any}>({});
 	const [openUsernameDialog, setOpenUsernameDialog] = useState(false);
+	const [openImageDialog, setOpenImageDialog] = useState(false);
 
 	useEffect(() => {requestUserData({setUserData})}, []);
 
 	return(
 		<Box display='flex' flexDirection='row' alignItems="center">
 			<ProfileButton setOpenCard={setOpenCard} userData={userData} />
-			<EditProfile setOpenUsernameDialog={setOpenUsernameDialog}/>
+			<EditProfile
+				setOpenUsernameDialog={setOpenUsernameDialog}
+				setOpenImageDialog={setOpenImageDialog}
+				/>
 			<UpdateUsernameDialog
 				open={openUsernameDialog}
 				setOpen={setOpenUsernameDialog}
+				userData={userData}
+				setUserData={setUserData}
+			/>
+			<UpdateImageDialog
+				open={openImageDialog}
+				setOpen={setOpenImageDialog}
 				userData={userData}
 				setUserData={setUserData}
 			/>

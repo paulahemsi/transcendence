@@ -13,11 +13,12 @@ const aaa = {
 	fontSize: '2vh',
 }
 
-const EditMenu = ({ setAnchorEl, anchorEl, openEditMenu, setOpenUsernameDialog } : {
+const EditMenu = ({ setAnchorEl, anchorEl, openEditMenu, setOpenUsernameDialog, setOpenImageDialog } : {
 		setAnchorEl: anchorElSetState,
 		anchorEl: null | HTMLElement ,
 		openEditMenu: boolean,
-		setOpenUsernameDialog: booleanSetState }) => {
+		setOpenUsernameDialog: booleanSetState,
+		setOpenImageDialog: booleanSetState }) => {
 
 	const handleClose = () => {
 	  setAnchorEl(null);
@@ -26,6 +27,11 @@ const EditMenu = ({ setAnchorEl, anchorEl, openEditMenu, setOpenUsernameDialog }
 	const editUsername = () => {
 	  setAnchorEl(null);
 	  setOpenUsernameDialog(true);
+	};
+
+	const editImage= () => {
+	  setAnchorEl(null);
+	  setOpenImageDialog(true);
 	};
 
 	return (
@@ -43,7 +49,7 @@ const EditMenu = ({ setAnchorEl, anchorEl, openEditMenu, setOpenUsernameDialog }
 					username
 				</Typography>
 			</MenuItem>
-			<MenuItem onClick={handleClose}>
+			<MenuItem onClick={editImage}>
 				<Typography sx={aaa}>
 					image
 				</Typography>
@@ -79,7 +85,7 @@ const EditButton = ({ setAnchorEl, openEditMenu } : { setAnchorEl: anchorElSetSt
 	)
 }
 
-export const EditProfile = ({ setOpenUsernameDialog } : {setOpenUsernameDialog: booleanSetState }) => {
+export const EditProfile = ({ setOpenUsernameDialog, setOpenImageDialog } : {setOpenUsernameDialog: booleanSetState, setOpenImageDialog: booleanSetState }) => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const openEditMenu = Boolean(anchorEl);
 
@@ -91,6 +97,7 @@ export const EditProfile = ({ setOpenUsernameDialog } : {setOpenUsernameDialog: 
 				anchorEl={anchorEl}
 				openEditMenu={openEditMenu}
 				setOpenUsernameDialog={setOpenUsernameDialog}
+				setOpenImageDialog={setOpenImageDialog}
 			/>
 		</>
 	)
