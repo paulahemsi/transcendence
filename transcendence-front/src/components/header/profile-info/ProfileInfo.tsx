@@ -1,23 +1,76 @@
 import React, { useEffect, useState } from "react";
 import EditIcon from '@mui/icons-material/Edit';
-import { Box, Dialog, IconButton, Tooltip, Zoom } from "@mui/material"
+import { Box, Dialog, IconButton, Menu, MenuItem, Tooltip, Typography, Zoom } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import { ProfileButton } from "./ProfileButton";
 import { UpdateProfileDialog } from "./UpdateProfileDialog";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+type anchorElSetState = React.Dispatch<React.SetStateAction<null | HTMLElement>>
 
 type tokenData = {
 	id: string;
 }
 
-const EditButton = ({ setOpenDialog } : { setOpenDialog : booleanSetState }) => {
-	const handleOpenDialog = () => setOpenDialog(true)
-	
+
+const aaa = {
+	color: '#1E1E1E',
+	fontFamily: 'Orbitron',
+	fontWeight: 600,
+	fontSize: '2vh',
+}
+
+const EditMenu = ({ setAnchorEl, anchorEl, openEditMenu } : { setAnchorEl: anchorElSetState, anchorEl: null | HTMLElement , openEditMenu: boolean }) => {
+	const handleClose = () => {
+	  setAnchorEl(null);
+	};
+
+	return (
+		<Menu 
+			id="basic-menu"
+			anchorEl={anchorEl}
+			open={openEditMenu}
+			onClose={handleClose}
+			MenuListProps={{
+				'aria-labelledby': 'basic-button',
+			}}
+		>
+			<MenuItem onClick={handleClose}>
+				<Typography sx={aaa}>
+					username
+				</Typography>
+			</MenuItem>
+			<MenuItem onClick={handleClose}>
+				<Typography sx={aaa}>
+					image
+				</Typography>
+			</MenuItem>
+			<MenuItem onClick={handleClose}>
+				<Typography sx={aaa}>
+					two-factor authentication
+				</Typography>
+			</MenuItem>
+		</Menu>
+	)
+}
+
+
+const EditButton = ({ setAnchorEl, openEditMenu } : { setAnchorEl: anchorElSetState, openEditMenu: boolean }) => {
+	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+		setAnchorEl(event.currentTarget);
+	};
+
 	return (
 		<Tooltip title='edit profile' placement='right' arrow TransitionComponent={Zoom}>
-			<IconButton sx={{ alignSelf: 'center'}} onClick={handleOpenDialog}>
+			<IconButton 
+				sx={{ alignSelf: 'center'}}
+				id="basic-button"
+				aria-controls={openEditMenu ? 'basic-menu' : undefined}
+				aria-haspopup="true"
+				aria-expanded={openEditMenu ? 'true' : undefined}
+				onClick={handleClick}
+			>
 				<EditIcon sx={{ color: '#311B92' }}/>
 			</IconButton>
 		</Tooltip>
@@ -41,6 +94,8 @@ const requestUserData = async ({ setUserData } : { setUserData: React.Dispatch<R
 export const ProfileInfo = ({ setOpenCard } : { setOpenCard : booleanSetState }) => {
 	const [openDialog, setOpenDialog] = useState(false);
 	const [userData, setUserData] = useState<{[key: string]: any}>({});
+	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+	const openEditMenu = Boolean(anchorEl);
 
 	useEffect(() => {requestUserData({setUserData})}, []);
 
@@ -51,7 +106,8 @@ export const ProfileInfo = ({ setOpenCard } : { setOpenCard : booleanSetState })
 	return(
 		<Box display='flex' flexDirection='row' alignItems="center">
 			<ProfileButton setOpenCard={setOpenCard} userData={userData} />
-			<EditButton setOpenDialog={setOpenDialog} />
+			<EditButton setAnchorEl={setAnchorEl} openEditMenu={openEditMenu} />
+			<EditMenu setAnchorEl={setAnchorEl} anchorEl={anchorEl}  openEditMenu={openEditMenu} />
 			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
 				<UpdateProfileDialog setOpen={setOpenDialog} userData={userData} setUserData={setUserData}/>
 			</Dialog>
