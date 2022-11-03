@@ -1,15 +1,20 @@
 import { Button, Dialog, Typography } from "@mui/material"
 import { Box } from "@mui/system"
-import React, { FunctionComponent, useState } from "react"
+import React, { FunctionComponent, useEffect, useState } from "react"
 import AddAdminDialog from "./AddAdminDialog"
 import AdminDialog, { AddMembersDialog } from "./AddMembersDialog"
 import ChangePasswordDialog from "./ChangePasswordDialog"
 import DeleteMembersDialog from "./DeleteMembersDialog"
 import LeaveChannelDialog from "./LeaveChannelDialog"
+import jwt from 'jwt-decode';
 
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type numberSetState = React.Dispatch<React.SetStateAction<number>>
+
+type tokenData = {
+	id: string;
+}
 
 interface Props {
 	setMembersMockData: objectSetState;
@@ -33,11 +38,13 @@ const buttonCss = {
 	}
 }
 
-const buttonTypographyCss = {
-	textTransform: 'lowercase',
-	fontFamily: 'Orbitron',
-	fontSize: '3vh',
-	color: '#311B92',
+const buttonTypographyCss = (disabled: boolean) => {
+	return {
+		textTransform: 'lowercase',
+		fontFamily: 'Orbitron',
+		fontSize: '3vh',
+		color: disabled ? '#979797' : '#311B92',
+	}
 }
 
 const ADD_MEMBER = 'add member';
@@ -59,14 +66,14 @@ const AddMember = ({ setOpenDialog } : { setOpenDialog: booleanSetState }) => {
 			sx={buttonCss}
 			onClick={handleClick}
 		>
-			<Typography sx={buttonTypographyCss}>
+			<Typography sx={buttonTypographyCss(false)}>
 				{ADD_MEMBER}
 			</Typography>
 		</Button>
 	)
 }
 
-const AddAdmin = ({ setOpenDialog } : { setOpenDialog: booleanSetState }) => {
+const AddAdmin = ({ setOpenDialog, isOwner } : { setOpenDialog: booleanSetState, isOwner: boolean }) => {
 	
 	const handleClick = () => {
 		setOpenDialog(true);
@@ -74,12 +81,13 @@ const AddAdmin = ({ setOpenDialog } : { setOpenDialog: booleanSetState }) => {
 	
 	return (
 		<Button
+			disabled={!isOwner}
 			variant="outlined"
 			size="large"
 			sx={buttonCss}
 			onClick={handleClick}
 		>
-			<Typography sx={buttonTypographyCss}>
+			<Typography sx={buttonTypographyCss(!isOwner)}>
 				{ADD_ADMIN}
 			</Typography>
 		</Button>
@@ -99,14 +107,14 @@ const LeaveChannel = ({ setOpenDialog } : { setOpenDialog: booleanSetState }) =>
 			sx={buttonCss}
 			onClick={handleClick}
 		>
-			<Typography sx={buttonTypographyCss}>
+			<Typography sx={buttonTypographyCss(false)}>
 				{LEAVE}
 			</Typography>
 		</Button>
 	)
 }
 
-const KickMember = ({ setOpenDialog } : { setOpenDialog: booleanSetState }) => {
+const KickMember = ({ setOpenDialog, isAdmin } : { setOpenDialog: booleanSetState, isAdmin: boolean }) => {
 	
 	const handleClick = () => {
 		setOpenDialog(true);
@@ -114,32 +122,34 @@ const KickMember = ({ setOpenDialog } : { setOpenDialog: booleanSetState }) => {
 	
 	return (
 		<Button 
+			disabled={!isAdmin}
 			variant="outlined"
 			size="large"
 			sx={buttonCss}
 			onClick={handleClick}
 		>
-			<Typography sx={buttonTypographyCss}>
+			<Typography sx={buttonTypographyCss(!isAdmin)}>
 				{KICK}
 			</Typography>
 		</Button>
 	)
 }
 
-const MuteMember = () => {
+const MuteMember = ({ setOpenDialog, isAdmin } : { setOpenDialog: booleanSetState, isAdmin: boolean }) => {
 	return (
-		<Button 
+		<Button
+		disabled={!isAdmin}
 		variant="outlined"
 		size="large"
 		sx={buttonCss}>
-			<Typography sx={buttonTypographyCss}>
+			<Typography sx={buttonTypographyCss(!isAdmin)}>
 				mute member
 			</Typography>
 		</Button>
 	)
 }
 
-const ChangePassword = ({ setOpenDialog } : { setOpenDialog: booleanSetState }) => {
+const ChangePassword = ({ setOpenDialog, isOwner } : { setOpenDialog: booleanSetState, isOwner: boolean }) => {
 	
 	const handleClick = () => {
 		setOpenDialog(true);
@@ -147,12 +157,13 @@ const ChangePassword = ({ setOpenDialog } : { setOpenDialog: booleanSetState }) 
 	
 	return (
 		<Button 
+			disabled={!isOwner}
 			variant="outlined"
 			size="large"
 			sx={buttonCss}
 			onClick={handleClick}
 		>
-			<Typography sx={buttonTypographyCss}>
+			<Typography sx={buttonTypographyCss(!isOwner)}>
 				{CHANGE_PASSWORD}
 			</Typography>
 		</Button>
@@ -160,11 +171,36 @@ const ChangePassword = ({ setOpenDialog } : { setOpenDialog: booleanSetState }) 
 }
 
 export const AdminControlPannel: FunctionComponent<Props> = ({ setMembersMockData, channelData, setActiveChannel }) => {
+
 	const [openAddDialog, setOpenAddDialog] = useState(false);
 	const [openAddAdminDialog, setOpenAddAdminDialog] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+	const [openMuteDialog, setOpenMuteDialog] = useState(false);
 	const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
 	const [openPasswordDialog, setOpenPasswordDialog] = useState(false);
+	const tokenData: tokenData = jwt(document.cookie);
+
+	let isOwner = false;
+	let isAdmin = false;
+
+	const isUserOwner = () => {
+		return (tokenData.id === channelData.ownerId);
+	}
+
+	const isUserAdmin = () => {
+		if (channelData.admin) {
+			return channelData.admin.some( (e: {[key: string]: any}) => e.id === tokenData.id )
+		}
+	}
+	
+	if (isUserAdmin())  {
+		isAdmin = true;
+	}
+
+	if (isUserOwner()) {
+		isOwner = true;
+		isAdmin = true;
+	}
 
 	const handleClose = () => {
 		setOpenAddDialog(false);
@@ -173,11 +209,11 @@ export const AdminControlPannel: FunctionComponent<Props> = ({ setMembersMockDat
 	return (
 		<Box display='flex' flexDirection='column' justifyContent='center' width='30vh' sx={{alignSelf: 'flex-start'}} >
 			<AddMember setOpenDialog={setOpenAddDialog} />
-			<AddAdmin setOpenDialog={setOpenAddAdminDialog} />
+			<AddAdmin setOpenDialog={setOpenAddAdminDialog} isOwner={isOwner} />
 			<LeaveChannel setOpenDialog={setOpenLeaveDialog}/>
-			<KickMember setOpenDialog={setOpenDeleteDialog}/>
-			<MuteMember/>
-			<ChangePassword setOpenDialog={setOpenPasswordDialog}/>
+			<KickMember setOpenDialog={setOpenDeleteDialog} isAdmin={isAdmin}/>
+			<MuteMember setOpenDialog={setOpenMuteDialog} isAdmin={isAdmin}/>
+			<ChangePassword setOpenDialog={setOpenPasswordDialog} isOwner={isOwner}/>
 			<Dialog open={openAddDialog} fullWidth maxWidth="sm" onClose={handleClose}>
 				<AddMembersDialog setOpenDialog={setOpenAddDialog} setMembersMockData={setMembersMockData} channelData={channelData} />
 			</Dialog>

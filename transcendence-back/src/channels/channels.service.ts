@@ -31,6 +31,11 @@ type members = {
   status: string;
 };
 
+type admins = {
+  id: string;
+  name: string;
+};
+
 type channelData = {
   id: string;
   name: string;
@@ -247,6 +252,26 @@ export class ChannelsService {
     return channelMembers;
   }
 
+  async getAdmins(channelId: number) {
+    await this.checkChannel(channelId);
+    const adminsInfo = await this.channelAdminRepository.find({
+      relations: {
+        user: true,
+      },
+      where: {
+        channel: { id: channelId },
+      },
+    });
+    const admins: Array<admins> = [];
+    adminsInfo.map((element) => {
+      const admin = {} as admins;
+      admin.id = element.user.id;
+      admin.name = element.user.username;
+      admins.push(admin);
+    });
+    return admins;
+  }
+
   async deleteAdmin(channelId: number, userId: string) {
     await this.checkChannelAndMember(channelId, userId);
     const admin = await this.channelAdminRepository.findOne({
@@ -438,17 +463,29 @@ export class ChannelsService {
   }
 
   async getChannelData(channelId: number) {
-    const channel = await this.channelRepository.findOneBy({ id: channelId });
+    const channel = await this.channelRepository.findOne({
+      relations: {
+        owner: true,
+      },
+      where: [
+      {
+        id: channelId,
+      },
+    ],
+    });
     if (!channel) {
       throw new NotFoundException();
     }
 
     const members = await this.getMembers(channelId);
-
+    const admins = await this.getAdmins(channelId);
+    
     const channelData = {
       id: channel.id,
+      ownerId: channel.owner.id,
       name: channel.name,
       members: members,
+      admin: admins,
     }
 
     return channelData
