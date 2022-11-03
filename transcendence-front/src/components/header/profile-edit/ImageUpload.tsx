@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { FunctionComponent, useState } from "react";
 import axios, { AxiosRequestHeaders } from 'axios';
 
-export const ImageUpload = () => {
+interface Props {
+	setImageUrl: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export const ImageUpload: FunctionComponent<Props> = ({ setImageUrl }) => {
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
 	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
@@ -18,7 +22,7 @@ export const ImageUpload = () => {
 		if (selectedFile === null) return;
 		formData.append('image', selectedFile);
 		axios.post('http://localhost:3000/images', formData, {headers: authToken})
-		.then((response) => { console.log(response.data.url); })
+		.then((response) => { setImageUrl(response.data.url); })
 		.catch((response) => { console.log(response.response.data.message); });
 	}
 

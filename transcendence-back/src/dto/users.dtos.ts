@@ -18,7 +18,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   external_id: number;
 
-  @IsUrl()
+  @IsUrl({ require_tld: false })
   image_url: string;
 
   @IsNotEmpty()
@@ -33,6 +33,6 @@ export class UpdateUserDto {
   username: string;
 
   @IsOptional()
-  @IsUrl()
+  @IsUrl({ require_tld: false })
   image_url: string;
 }
