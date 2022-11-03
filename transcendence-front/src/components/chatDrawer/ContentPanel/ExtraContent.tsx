@@ -92,9 +92,9 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 				channel: activeChannel.toString(),
 				message: newMessage,
 			}
-			chatSocket.emit('chatMessage', msgToSend)
+			chatSocket.emit('chatMessage', msgToSend);
+			setNewMessage("");
 		}
-		setNewMessage("")
 	}
 	
 
@@ -119,7 +119,7 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 				type="text"
 				sx={{ width: '50vw' }}
 				variant="standard"
-				// value={newMessage}
+				value={newMessage}
 				onKeyDown={keyDownHandler}
 				onChange={handleChange}
 			/>
