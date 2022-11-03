@@ -6,7 +6,7 @@ type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type anchorElSetState = React.Dispatch<React.SetStateAction<null | HTMLElement>>
 
 
-const aaa = {
+const menuItemsCSS = {
 	color: '#1E1E1E',
 	fontFamily: 'Orbitron',
 	fontWeight: 600,
@@ -45,17 +45,17 @@ const EditMenu = ({ setAnchorEl, anchorEl, openEditMenu, setOpenUsernameDialog, 
 			}}
 		>
 			<MenuItem onClick={editUsername}>
-				<Typography sx={aaa}>
+				<Typography sx={menuItemsCSS}>
 					username
 				</Typography>
 			</MenuItem>
 			<MenuItem onClick={editImage}>
-				<Typography sx={aaa}>
+				<Typography sx={menuItemsCSS}>
 					image
 				</Typography>
 			</MenuItem>
 			<MenuItem onClick={handleClose}>
-				<Typography sx={aaa}>
+				<Typography sx={menuItemsCSS}>
 					two-factor authentication
 				</Typography>
 			</MenuItem>
