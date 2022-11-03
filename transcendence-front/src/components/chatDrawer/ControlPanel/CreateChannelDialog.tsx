@@ -24,7 +24,7 @@ export const CreateChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 
 	const [channelName, setChannelName] = useState("");
 	const [password, setPassword] = useState("");
-	const [type, setType] = useState(PUBLIC);
+	const [isPrivate, setIsPrivate] = useState(false);
 
 	const handleChannelNameChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
 		setChannelName(event.target.value);
@@ -38,6 +38,8 @@ export const CreateChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 		const tokenData: tokenData = jwt(document.cookie);
 		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 
+		const type = isPrivate ? PRIVATE : PUBLIC;
+		
 		axios.post(`http://localhost:3000/channels`, {
 			"name": channelName,
 			"type": password ? PROTECTED : type,
@@ -58,6 +60,11 @@ export const CreateChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 			event.preventDefault();
 			handleSave();
 		}
+	}
+	
+	const handleCheckBox = () => {
+		setIsPrivate(!isPrivate);
+		setPassword("");
 	}
 	
 	return (
@@ -81,6 +88,7 @@ export const CreateChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 		</DialogContent>
 		<DialogContent>
 			<TextField
+				disabled={isPrivate}
 				margin="dense"
 				id="name"
 				label="Channel Password"
@@ -96,7 +104,7 @@ export const CreateChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, 
      		 <FormControlLabel
 			 	control={<Checkbox />}
 				label="Private"
-				onChange={() => setType(PRIVATE)}
+				onChange={handleCheckBox}
 			/>
 		</DialogContent>
 		<DialogActions>
