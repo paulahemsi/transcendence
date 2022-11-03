@@ -1,27 +1,16 @@
 import React, { useEffect, useState } from "react";
-import EditIcon from '@mui/icons-material/Edit';
-import { Box, Dialog, IconButton, Tooltip, Zoom } from "@mui/material"
+import { Box } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import { ProfileButton } from "./ProfileButton";
-import { UpdateProfileDialog } from "./UpdateProfileDialog";
+import EditProfile from "../profile-edit/EditButton";
+import { UpdateUsernameDialog } from "../profile-edit/UpdateUsernameDialog";
+import { UpdateImageDialog } from "../profile-edit/UpdateImageDialog";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
 type tokenData = {
 	id: string;
-}
-
-const EditButton = ({ setOpenDialog } : { setOpenDialog : booleanSetState }) => {
-	const handleOpenDialog = () => setOpenDialog(true)
-	
-	return (
-		<Tooltip title='edit profile' placement='right' arrow TransitionComponent={Zoom}>
-			<IconButton sx={{ alignSelf: 'center'}} onClick={handleOpenDialog}>
-				<EditIcon sx={{ color: '#311B92' }}/>
-			</IconButton>
-		</Tooltip>
-	)
 }
 
 const requestUserData = async ({ setUserData } : { setUserData: React.Dispatch<React.SetStateAction<{[key: string]: any}>>}) => {
@@ -39,22 +28,31 @@ const requestUserData = async ({ setUserData } : { setUserData: React.Dispatch<R
 }
 
 export const ProfileInfo = ({ setOpenCard } : { setOpenCard : booleanSetState }) => {
-	const [openDialog, setOpenDialog] = useState(false);
 	const [userData, setUserData] = useState<{[key: string]: any}>({});
+	const [openUsernameDialog, setOpenUsernameDialog] = useState(false);
+	const [openImageDialog, setOpenImageDialog] = useState(false);
 
 	useEffect(() => {requestUserData({setUserData})}, []);
-
-	const handleClose = () => {
-		setOpenDialog(false);
-	};
 
 	return(
 		<Box display='flex' flexDirection='row' alignItems="center">
 			<ProfileButton setOpenCard={setOpenCard} userData={userData} />
-			<EditButton setOpenDialog={setOpenDialog} />
-			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
-				<UpdateProfileDialog setOpen={setOpenDialog} userData={userData} setUserData={setUserData}/>
-			</Dialog>
+			<EditProfile
+				setOpenUsernameDialog={setOpenUsernameDialog}
+				setOpenImageDialog={setOpenImageDialog}
+				/>
+			<UpdateUsernameDialog
+				open={openUsernameDialog}
+				setOpen={setOpenUsernameDialog}
+				userData={userData}
+				setUserData={setUserData}
+			/>
+			<UpdateImageDialog
+				open={openImageDialog}
+				setOpen={setOpenImageDialog}
+				userData={userData}
+				setUserData={setUserData}
+			/>
 		</Box>
 	)
 }
