@@ -84,6 +84,9 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 	const keyDownHandler = ( event :  React.KeyboardEvent<HTMLInputElement>) => {
 		if (event.key === 'Enter') {
 			event.preventDefault();
+			if (!newMessage.trim()) {
+				return ;
+			}
 			const msgToSend = {
 				user: getUserId(),
 				channel: activeChannel.toString(),
