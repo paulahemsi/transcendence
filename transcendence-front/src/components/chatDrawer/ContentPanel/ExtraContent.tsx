@@ -106,8 +106,6 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 		setMessagesData(newMessagesData);
 	} )
 
-	chatSocket.off('muteUser').on('muteUser', () => console.log('mutado'));
-
 	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
 		setNewMessage(event.target.value);
 	}
@@ -158,9 +156,10 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 
 export const ExtraContent = ( { activeChannel } : { activeChannel : number }) => {
 	const [ joined, setJoined ] = useState(false);
-	const [muted, setMuted] = useState(false);
+	const [ muted, setMuted ] = useState(false);
+	const [ mutedMockCounter, setMutedMockCounter ] = useState(0);
 
-	useEffect(() => {requestMembersFromChannel(activeChannel, setMuted)}, [activeChannel]);
+	useEffect(() => {requestMembersFromChannel(activeChannel, setMuted)}, [mutedMockCounter]);
 
 	chatSocket.emit('joinChannel', activeChannel);
 
@@ -169,6 +168,11 @@ export const ExtraContent = ( { activeChannel } : { activeChannel : number }) =>
 			setJoined(true);
 		}
 	} )
+
+	chatSocket.off('muteUser').on('muteUser', () => {
+		const update = mutedMockCounter + 1;
+		setMutedMockCounter(update);
+	});
 
 	chatSocket.on('leaveChannel', (room) => {
 		//?
