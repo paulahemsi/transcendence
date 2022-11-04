@@ -29,6 +29,7 @@ type members = {
   name: string;
   image: string;
   status: string;
+  muted: boolean;
 };
 
 type admins = {
@@ -492,4 +493,26 @@ export class ChannelsService {
     return channelData
   }
 
+  async muteMember(channelId: number, userId: string) {
+    const member = await this.channelMemberRepository.findOne({
+        relations: {
+        channel: true,
+        user: true,
+      },
+      where: [
+        {
+          channel: { id: channelId },
+          user: { id: userId },
+        }
+      ],
+    })
+    
+    if (!member) {
+      throw new NotFoundException();
+    }
+    
+    member.muted = true;
+    this.channelMemberRepository.save(member);
+    console.log(member)
+  }
 }
