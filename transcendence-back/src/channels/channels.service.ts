@@ -514,6 +514,5 @@ export class ChannelsService {
     
     member.muted = isMuted;
     this.channelMemberRepository.save(member);
-    console.log(member)
   }
 }

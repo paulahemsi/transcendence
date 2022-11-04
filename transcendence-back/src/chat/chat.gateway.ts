@@ -93,11 +93,9 @@ export class ChatGateway
       return;
     }
     this.server.to(muteEvent.channel.toString()).emit('muteUser', true);
-    console.log('mutou')
     setTimeout(() => {
       this.channelService.handleMute(muteEvent.channel, muteEvent.mutedUser, false);
       this.server.to(muteEvent.channel.toString()).emit('muteUser', true);
-      console.log('desmutou')
     }, muteEvent.duration);
   }
 }
