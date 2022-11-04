@@ -12,6 +12,7 @@ type tokenData = {
 const chatSocket = io('/chat');
 
 type arraySetState = React.Dispatch<React.SetStateAction<string[]>>
+type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
 const messagesBorderCSS = {
 	minWidth: '50vw',
@@ -33,6 +34,7 @@ const typographyCSS = {
 }
 
 const noMessages = "it's so quiet in here ......"
+const muted = "ooops! You're muted... Wait for while..."
 
 const NoMessages = () => {
 	return (
@@ -53,11 +55,38 @@ const NoMessages = () => {
 	)
 }
 
+const Muted = () => {
+	return (
+		<Box 
+			display="flex"
+			alignItems="center"
+			flexDirection="column"
+			flexWrap="wrap"
+			justifyContent="center"
+			sx={{width: '100%',  height: '50vh'}}
+		>
+			<Typography
+				sx={typographyCSS}
+			>
+				{muted}
+			</Typography>
+		</Box>
+	)
+}
+
 const requestMessagesFromChannel = async ( activeChannel : number , setMessagesData : arraySetState ) =>  {
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 	await axios.get(`http://localhost:4444/channels/${activeChannel}/messages`, { headers: authToken }).then((response) => {
 		setMessagesData(response.data);
 })
+}
+
+const requestMembersFromChannel = async ( activeChannel : number , setMutedData : booleanSetState ) =>  {
+	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+	await axios.get(`http://localhost:4444/channels/${activeChannel}/members`, { headers: authToken }).then((response) => {
+		const user = response.data.filter((member: {[key: string]: any}) => member.id === getUserId())
+		setMutedData(user[0].muted);
+	})
 }
 
 const getUserId = () => {
@@ -77,7 +106,7 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 		setMessagesData(newMessagesData);
 	} )
 
-	chatSocket.off('muteUser').on('muteUser', (msg) => console.log(msg));
+	chatSocket.off('muteUser').on('muteUser', () => console.log('mutado'));
 
 	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
 		setNewMessage(event.target.value);
@@ -129,6 +158,9 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 
 export const ExtraContent = ( { activeChannel } : { activeChannel : number }) => {
 	const [ joined, setJoined ] = useState(false);
+	const [muted, setMuted] = useState(false);
+
+	useEffect(() => {requestMembersFromChannel(activeChannel, setMuted)}, [activeChannel]);
 
 	chatSocket.emit('joinChannel', activeChannel);
 
@@ -141,6 +173,12 @@ export const ExtraContent = ( { activeChannel } : { activeChannel : number }) =>
 	chatSocket.on('leaveChannel', (room) => {
 		//?
 	} )
+	
+	if (muted) {
+		return (
+			<Muted/>
+		)
+	}
 	
 	return (
 		<>
