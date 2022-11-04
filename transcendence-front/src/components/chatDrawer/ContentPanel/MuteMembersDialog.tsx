@@ -1,5 +1,5 @@
 import React, { useState, FunctionComponent, useEffect } from "react"
-import { Button, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
+import { Button, Checkbox, DialogActions, DialogContent, DialogTitle, FormControlLabel, TextField } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import UsersList from "../ControlPanel/UsersList";
@@ -24,6 +24,7 @@ export const MuteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, ch
 	const [users, setUsers] = useState<{[key: string]: any}>({});
 	const [loading, setLoading] = useState<boolean>(true);
 	const [searchQuery, setSearchQuery] = useState("");
+	const [time, setTime] = useState(30000);
 	const tokenData: tokenData = jwt(document.cookie);
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 
@@ -66,15 +67,11 @@ export const MuteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, ch
 		const muteEvent = {
 			mutedUser: selectedUser[0].id,
 			channel: channelData.id,
-			duration: 5,
+			duration: time,
 		}
-		console.log('vou emtir o evento pro back')
+
 		chatSocket.emit('muteUser', muteEvent);
 		setOpenDialog(false);
-		
-		// axios.delete(`http://localhost:3000/channels/${channelData.id}/members`, { data: { "userId": selectedUser[0].id }, headers: { "Authorization": authToken.toString() } }).then( () => {
-		// 	setOpenDialog(false);
-		// }) 
 	}
 
 	useEffect(() => {requestUsersData()}, []);
@@ -102,6 +99,23 @@ export const MuteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, ch
 			<UsersList usersName={usersName} searchQuery={searchQuery} />
 		}
 		<DialogActions>
+		<DialogContent>
+     		 <FormControlLabel
+			 	control={<Checkbox defaultChecked/>}
+				label="30s"
+				onChange={() => setTime(30000)}
+			/>
+			<FormControlLabel
+			 	control={<Checkbox />}
+				label="2min"
+				onChange={() => setTime(120000)}
+			/>
+			<FormControlLabel
+			 	control={<Checkbox />}
+				label="5min"
+				onChange={() => setTime(300000)}
+			/>
+		</DialogContent>
 		<Button
 			onClick={() => setOpenDialog(false)}
 			sx={{fontFamily: 'Orbitron'}}
