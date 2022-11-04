@@ -494,7 +494,7 @@ export class ChannelsService {
     return channelData
   }
 
-  async muteMember(channelId: number, userId: string) {
+  async handleMute(channelId: number, userId: string, isMuted: boolean) {
     const member = await this.channelMemberRepository.findOne({
         relations: {
         channel: true,
@@ -512,7 +512,7 @@ export class ChannelsService {
       throw new NotFoundException();
     }
     
-    member.muted = true;
+    member.muted = isMuted;
     this.channelMemberRepository.save(member);
     console.log(member)
   }
