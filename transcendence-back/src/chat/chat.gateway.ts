@@ -21,6 +21,13 @@ type channelMessage = {
   creationDate: object;
 };
 
+type muteEvent = {
+  mutedUser: string;
+  channel: string;
+  duration: number;
+}
+
+
 @WebSocketGateway({ namespace: '/chat' })
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
@@ -75,5 +82,12 @@ export class ChatGateway
   handleLeaveChannel(client: Socket, channel: string) {
     client.leave(channel);
     client.emit('leaveChannel', channel);
+  }
+
+  @SubscribeMessage('muteUser')
+  handleMuteUser(client: Socket, muteEvent: muteEvent) {
+    console.log('muteEvent')
+    console.log(muteEvent)
+    this.server.to(muteEvent.channel.toString()).emit('muteUser', 'alguém foi mutado')
   }
 }

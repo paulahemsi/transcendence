@@ -3,6 +3,7 @@ import { Button, DialogActions, DialogContent, DialogTitle, TextField } from "@m
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import UsersList from "../ControlPanel/UsersList";
+import io from 'socket.io-client';
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
@@ -15,6 +16,8 @@ interface Props {
 	channelData: {[key: string]: any};
 	setOpenDialog: booleanSetState;
 }
+
+const chatSocket = io('/chat');
 
 export const MuteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, channelData }) => {
 	const [usersName, setUsersName] = useState<string[]>([]);
@@ -59,9 +62,19 @@ export const MuteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, ch
 
 	const handleSave = () => {
 		const selectedUser = users.filter((u: {[key: string]: any}) => u.username === searchQuery);
-		axios.delete(`http://localhost:3000/channels/${channelData.id}/members`, { data: { "userId": selectedUser[0].id }, headers: { "Authorization": authToken.toString() } }).then( () => {
-			setOpenDialog(false);
-		}) 
+		
+		const muteEvent = {
+			mutedUser: selectedUser[0].id,
+			channel: channelData.id,
+			duration: 5,
+		}
+		console.log('vou emtir o evento pro back')
+		chatSocket.emit('muteUser', muteEvent);
+		setOpenDialog(false);
+		
+		// axios.delete(`http://localhost:3000/channels/${channelData.id}/members`, { data: { "userId": selectedUser[0].id }, headers: { "Authorization": authToken.toString() } }).then( () => {
+		// 	setOpenDialog(false);
+		// }) 
 	}
 
 	useEffect(() => {requestUsersData()}, []);

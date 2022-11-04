@@ -77,6 +77,8 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 		setMessagesData(newMessagesData);
 	} )
 
+	chatSocket.off('muteUser').on('muteUser', (msg) => console.log(msg));
+
 	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
 		setNewMessage(event.target.value);
 	}
