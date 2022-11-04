@@ -23,7 +23,7 @@ type channelMessage = {
 
 type muteEvent = {
   mutedUser: string;
-  channel: string;
+  channel: number;
   duration: number;
 }
 
@@ -85,9 +85,15 @@ export class ChatGateway
   }
 
   @SubscribeMessage('muteUser')
-  handleMuteUser(client: Socket, muteEvent: muteEvent) {
-    console.log('muteEvent')
+  async handleMuteUser(client: Socket, muteEvent: muteEvent) {
     console.log(muteEvent)
-    this.server.to(muteEvent.channel.toString()).emit('muteUser', 'alguém foi mutado')
+    try {
+      await this.channelService.muteMember(muteEvent.channel, muteEvent.mutedUser);
+    } catch (err) {
+      client.emit('chatMessage', 'error');
+      return;
+    }
+
+    this.server.to(muteEvent.channel.toString()).emit('muteUser');
   }
 }
