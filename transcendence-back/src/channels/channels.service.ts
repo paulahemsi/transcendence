@@ -248,6 +248,7 @@ export class ChannelsService {
       member.name = element.user.username;
       member.image = element.user.image_url;
       member.status = element.user.status;
+      member.muted = element.muted;
       channelMembers.push(member);
     });
     return channelMembers;
