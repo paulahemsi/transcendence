@@ -86,14 +86,18 @@ export class ChatGateway
 
   @SubscribeMessage('muteUser')
   async handleMuteUser(client: Socket, muteEvent: muteEvent) {
-    console.log(muteEvent)
     try {
-      await this.channelService.muteMember(muteEvent.channel, muteEvent.mutedUser);
+      await this.channelService.handleMute(muteEvent.channel, muteEvent.mutedUser, true);
     } catch (err) {
-      client.emit('chatMessage', 'error');
+      client.emit('muteUser', false);
       return;
     }
-
-    this.server.to(muteEvent.channel.toString()).emit('muteUser');
+    this.server.to(muteEvent.channel.toString()).emit('muteUser', true);
+    console.log('mutou')
+    setTimeout(() => {
+      this.channelService.handleMute(muteEvent.channel, muteEvent.mutedUser, false);
+      this.server.to(muteEvent.channel.toString()).emit('muteUser', true);
+      console.log('desmutou')
+    }, muteEvent.duration);
   }
 }
