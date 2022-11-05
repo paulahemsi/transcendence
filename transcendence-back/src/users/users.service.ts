@@ -148,4 +148,10 @@ export class UsersService {
     const user = await this.findUser(id);
     return user.status;
   }
+
+  async setSecret(id: string, secret: string) {
+    const user = await this.checkUser(id);
+    user.secret = secret;
+    this.userRepository.save(user);
+  }
 }
