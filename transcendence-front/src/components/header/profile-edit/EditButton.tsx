@@ -13,12 +13,21 @@ const menuItemsCSS = {
 	fontSize: '2vh',
 }
 
-const EditMenu = ({ setAnchorEl, anchorEl, openEditMenu, setOpenUsernameDialog, setOpenImageDialog } : {
+const EditMenu = ({
+	setAnchorEl,
+	anchorEl,
+	openEditMenu,
+	setOpenUsernameDialog,
+	setOpenImageDialog,
+	setOpenTwoFactorAuthDialog,
+} : {
 		setAnchorEl: anchorElSetState,
 		anchorEl: null | HTMLElement ,
 		openEditMenu: boolean,
 		setOpenUsernameDialog: booleanSetState,
-		setOpenImageDialog: booleanSetState }) => {
+		setOpenImageDialog: booleanSetState,
+		setOpenTwoFactorAuthDialog: booleanSetState
+	}) => {
 
 	const handleClose = () => {
 	  setAnchorEl(null);
@@ -29,9 +38,14 @@ const EditMenu = ({ setAnchorEl, anchorEl, openEditMenu, setOpenUsernameDialog, 
 	  setOpenUsernameDialog(true);
 	};
 
-	const editImage= () => {
+	const editImage = () => {
 	  setAnchorEl(null);
 	  setOpenImageDialog(true);
+	};
+
+	const configTwoFactorAuth = () => {
+	  setAnchorEl(null);
+	  setOpenTwoFactorAuthDialog(true);
 	};
 
 	return (
@@ -54,7 +68,7 @@ const EditMenu = ({ setAnchorEl, anchorEl, openEditMenu, setOpenUsernameDialog, 
 					image
 				</Typography>
 			</MenuItem>
-			<MenuItem onClick={handleClose}>
+			<MenuItem onClick={configTwoFactorAuth}>
 				<Typography sx={menuItemsCSS}>
 					two-factor authentication
 				</Typography>
@@ -85,7 +99,15 @@ const EditButton = ({ setAnchorEl, openEditMenu } : { setAnchorEl: anchorElSetSt
 	)
 }
 
-export const EditProfile = ({ setOpenUsernameDialog, setOpenImageDialog } : {setOpenUsernameDialog: booleanSetState, setOpenImageDialog: booleanSetState }) => {
+export const EditProfile = ({
+	setOpenUsernameDialog,
+	setOpenImageDialog,
+	setOpenTwoFactorAuthDialog,
+} : {
+	setOpenUsernameDialog: booleanSetState,
+	setOpenImageDialog: booleanSetState,
+	setOpenTwoFactorAuthDialog: booleanSetState,
+}) => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const openEditMenu = Boolean(anchorEl);
 
@@ -98,6 +120,7 @@ export const EditProfile = ({ setOpenUsernameDialog, setOpenImageDialog } : {set
 				openEditMenu={openEditMenu}
 				setOpenUsernameDialog={setOpenUsernameDialog}
 				setOpenImageDialog={setOpenImageDialog}
+				setOpenTwoFactorAuthDialog={setOpenTwoFactorAuthDialog}
 			/>
 		</>
 	)
