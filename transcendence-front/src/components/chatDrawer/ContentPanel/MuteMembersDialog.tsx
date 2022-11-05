@@ -1,5 +1,5 @@
 import React, { useState, FunctionComponent, useEffect } from "react"
-import { Button, Checkbox, DialogActions, DialogContent, DialogTitle, FormControlLabel, TextField } from "@mui/material"
+import { Button, Checkbox, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, Radio, RadioGroup, TextField } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import UsersList from "../ControlPanel/UsersList";
@@ -76,6 +76,10 @@ export const MuteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, ch
 
 	useEffect(() => {requestUsersData()}, []);
 
+	const handleChangeTime = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setTime(Number((event.target as HTMLInputElement).value));
+	};
+
 	return (
 		<>
 		<DialogTitle sx={{fontFamily: 'Orbitron'}}>
@@ -98,37 +102,46 @@ export const MuteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, ch
 			!loading && 
 			<UsersList usersName={usersName} searchQuery={searchQuery} />
 		}
-		<DialogActions>
-		<DialogContent>
-     		 <FormControlLabel
-			 	control={<Checkbox defaultChecked/>}
-				label="30s"
-				onChange={() => setTime(30000)}
-			/>
-			<FormControlLabel
-			 	control={<Checkbox />}
-				label="2min"
-				onChange={() => setTime(120000)}
-			/>
-			<FormControlLabel
-			 	control={<Checkbox />}
-				label="5min"
-				onChange={() => setTime(300000)}
-			/>
-		</DialogContent>
-		<Button
-			onClick={() => setOpenDialog(false)}
-			sx={{fontFamily: 'Orbitron'}}
-		>
-			Cancel
-		</Button>
-		<Button
-			variant="contained"
-			onClick={handleSave}
-			sx={{fontFamily: 'Orbitron'}}
-		>
-			Mute
-		</Button>
+		<DialogActions sx={{justifyContent: 'space-around'}}>
+			<FormControl>
+				<RadioGroup
+					row
+					aria-labelledby="radio-buttons-group"
+					defaultValue="30s"
+					name="radio-buttons-group"
+					onChange={handleChangeTime}
+					
+				>
+					<FormControlLabel
+						value={30000}
+						control={<Radio />}
+						label="30s"
+					/>
+					<FormControlLabel
+						value={120000}
+						control={<Radio />}
+						label="2min"
+					/>
+					<FormControlLabel
+						value={300000}
+						control={<Radio />}
+						label="5min"
+					/>
+				</RadioGroup>
+			</FormControl>
+			<Button
+				onClick={() => setOpenDialog(false)}
+				sx={{fontFamily: 'Orbitron'}}
+			>
+				Cancel
+			</Button>
+			<Button
+				variant="contained"
+				onClick={handleSave}
+				sx={{fontFamily: 'Orbitron'}}
+			>
+				Mute
+			</Button>
 		</DialogActions>
 	</>
 	)
