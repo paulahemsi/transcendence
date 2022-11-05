@@ -9,10 +9,10 @@ type tokenData = {
 	id: string;
 }
 
-const chatSocket = io('/chat');
-
 type arraySetState = React.Dispatch<React.SetStateAction<string[]>>
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+
+const chatSocket = io('/chat');
 
 const messagesBorderCSS = {
 	minWidth: '50vw',
@@ -34,7 +34,7 @@ const typographyCSS = {
 }
 
 const noMessages = "it's so quiet in here ......"
-const muted = "ooops! You're muted... Wait for while..."
+const muted = "ooops! You're muted... Wait for a while..."
 
 const NoMessages = () => {
 	return (
@@ -57,26 +57,28 @@ const NoMessages = () => {
 
 const Muted = () => {
 	return (
-		<Box display="flex" flexDirection="column" justifyContent="space-between" bgcolor="blue" padding="3vh" sx={{minWidth: '50vw', height: '80vh',
-		background: '#F5F5F5',
-		}}>
-		<Box sx={messagesBorderCSS}>
-		
-			<Box 
-				display="flex"
-				alignItems="center"
-				flexDirection="column"
-				flexWrap="wrap"
-				justifyContent="center"
-				sx={{width: '100%',  height: '50vh'}}
-			>
-				<Typography
-					sx={typographyCSS}
+		<Box
+			display="flex" 
+			flexDirection="column"
+			justifyContent="space-between"
+			bgcolor="blue"
+			padding="3vh"
+			sx={{minWidth: '50vw', height: '80vh', background: '#F5F5F5',}}
+		>
+			<Box sx={messagesBorderCSS}>
+				<Box 
+					display="flex"
+					alignItems="center"
+					flexDirection="column"
+					flexWrap="wrap"
+					justifyContent="center"
+					sx={{width: '100%',  height: '50vh'}}
 				>
-					{muted}
-				</Typography>
+					<Typography sx={typographyCSS}>
+						{muted}
+					</Typography>
+				</Box>
 			</Box>
-		</Box>
 		</Box>
 	)
 }
@@ -132,32 +134,36 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 	
 
 	return (
-		<Box display="flex" flexDirection="column" justifyContent="space-between" bgcolor="blue" padding="3vh" sx={{minWidth: '50vw', height: '80vh',
-		background: '#F5F5F5',
-		}}>
-		<Box sx={messagesBorderCSS}>
-			{
-				messagesData[0] 
-				?
-					<MessagesList messagesData={messagesData}/>
-				:
-					<NoMessages />
-			}
+		<Box
+			display="flex"
+			flexDirection="column"
+			justifyContent="space-between"
+			bgcolor="blue"
+			padding="3vh"
+			sx={{minWidth: '50vw', height: '80vh', background: '#F5F5F5',}}>
+				<Box sx={messagesBorderCSS}>
+					{
+						messagesData[0] 
+						?
+							<MessagesList messagesData={messagesData}/>
+						:
+							<NoMessages />
+					}
+				</Box>
+				<Box>
+					<TextField
+						autoFocus
+						margin="dense"
+						id="message"
+						type="text"
+						sx={{ width: '50vw' }}
+						variant="standard"
+						// value={newMessage}
+						onKeyDown={keyDownHandler}
+						onChange={handleChange}
+					/>
+				</Box>
 		</Box>
-		<Box>
-			<TextField
-				autoFocus
-				margin="dense"
-				id="message"
-				type="text"
-				sx={{ width: '50vw' }}
-				variant="standard"
-				// value={newMessage}
-				onKeyDown={keyDownHandler}
-				onChange={handleChange}
-			/>
-		</Box>
-	</Box>
 	)
 }
 

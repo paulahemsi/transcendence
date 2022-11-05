@@ -6,7 +6,7 @@ import UsersList from "../ControlPanel/UsersList";
 import io from 'socket.io-client';
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
-type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
+type numberSetState = React.Dispatch<React.SetStateAction<number>>
 
 type tokenData = {
 	id: string;
@@ -17,7 +17,46 @@ interface Props {
 	setOpenDialog: booleanSetState;
 }
 
+const TIME30SEC = 30000;
+const TIME2MIN = 120000;
+const TIME5MIN = 300000;
+
 const chatSocket = io('/chat');
+
+const TimeRadios = ({setTime} : {setTime: numberSetState}) => {
+
+	const handleChangeTime = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setTime(Number((event.target as HTMLInputElement).value));
+	};
+
+	return (
+		<FormControl>
+			<RadioGroup
+				row
+				aria-labelledby="radio-buttons-group"
+				defaultValue={TIME30SEC}
+				name="radio-buttons-group"
+				onChange={handleChangeTime}
+			>
+				<FormControlLabel
+					value={TIME30SEC}
+					control={<Radio />}
+					label="30s"
+				/>
+				<FormControlLabel
+					value={TIME2MIN}
+					control={<Radio />}
+					label="2min"
+				/>
+				<FormControlLabel
+					value={TIME5MIN}
+					control={<Radio />}
+					label="5min"
+				/>
+			</RadioGroup>
+		</FormControl>
+	)
+}
 
 export const MuteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, channelData }) => {
 	const [usersName, setUsersName] = useState<string[]>([]);
@@ -64,6 +103,11 @@ export const MuteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, ch
 	const handleSave = () => {
 		const selectedUser = users.filter((u: {[key: string]: any}) => u.username === searchQuery);
 		
+		if (!selectedUser[0]) {
+			//alert?
+			return ;
+		}
+		
 		const muteEvent = {
 			mutedUser: selectedUser[0].id,
 			channel: channelData.id,
@@ -75,10 +119,6 @@ export const MuteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, ch
 	}
 
 	useEffect(() => {requestUsersData()}, []);
-
-	const handleChangeTime = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setTime(Number((event.target as HTMLInputElement).value));
-	};
 
 	return (
 		<>
@@ -103,32 +143,7 @@ export const MuteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, ch
 			<UsersList usersName={usersName} searchQuery={searchQuery} />
 		}
 		<DialogActions sx={{justifyContent: 'space-around'}}>
-			<FormControl>
-				<RadioGroup
-					row
-					aria-labelledby="radio-buttons-group"
-					defaultValue="30s"
-					name="radio-buttons-group"
-					onChange={handleChangeTime}
-					
-				>
-					<FormControlLabel
-						value={30000}
-						control={<Radio />}
-						label="30s"
-					/>
-					<FormControlLabel
-						value={120000}
-						control={<Radio />}
-						label="2min"
-					/>
-					<FormControlLabel
-						value={300000}
-						control={<Radio />}
-						label="5min"
-					/>
-				</RadioGroup>
-			</FormControl>
+			<TimeRadios setTime={setTime}/>
 			<Button
 				onClick={() => setOpenDialog(false)}
 				sx={{fontFamily: 'Orbitron'}}
