@@ -27,8 +27,13 @@ const typographyCSS = (fontSize: number) => {
 
 const getQRcode = async ({ setQrcode } : { setQrcode: React.Dispatch<React.SetStateAction<string>>}) => {
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-	const response = (await axios.get('http://localhost:3000/two-factor-auth/generate', { headers: authToken }));
+	const response = (await axios.get('http://localhost:4444/two-factor-auth/generate', { headers: authToken }));
 	setQrcode(response.data.url);
+}
+
+const enable = async () => {
+	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+	axios.post('http://localhost:4444/two-factor-auth/enable', { }, { headers: authToken });
 }
 
 const QrCodeButton = ({ setQrcode } : { setQrcode: React.Dispatch<React.SetStateAction<string>>}) => {
@@ -84,8 +89,8 @@ export const ConfigTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, set
 
 	const [qrcode, setQrcode] = useState('');
 
-	const handleSave = () => {
-		console.log('save')	;
+	const handleEnable = () => {
+		enable();
 		setOpen(false);
 	}
 	
@@ -115,10 +120,10 @@ export const ConfigTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, set
 				</Button>
 				<Button
 					variant="contained"
-					onClick={handleSave}
+					onClick={handleEnable}
 					sx={{fontFamily: 'Orbitron'}}
 				>
-					Save
+					Enable
 				</Button>
 				</DialogActions>
 			</Dialog>
