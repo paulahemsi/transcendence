@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from "react";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, } from "@mui/material"
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography, } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
@@ -9,6 +9,18 @@ interface Props {
     setOpen: booleanSetState;
 	userData: { [key: string]: any; };
 	setUserData: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>;
+}
+
+const message = 'Scan the image bellow with the two-factor authentication app on your phone.'
+
+
+const typographyCSS = (fontSize: number) => {
+	return {
+		color: '#212980',
+		fontFamily: 'Orbitron',
+		fontWeight: 200,
+		fontSize: `${fontSize}vh`,
+	}
 }
 
 const getQRcode = async ({ setQrcode } : { setQrcode: React.Dispatch<React.SetStateAction<string>>}) => {
@@ -33,14 +45,27 @@ const QrCodeButton = ({ setQrcode } : { setQrcode: React.Dispatch<React.SetState
 const EnebleQrCodeContent = ({ qrcode } : { qrcode: string }) => {
 	return (
 		<>
-			<Box component='img' src={qrcode} alt='Profile picture'
+			<Box
+				display="flex"
+				alignItems="center"
+				flexDirection="column"
+				flexWrap="wrap"
+				justifyContent="center"
+			>
+				<Typography sx={typographyCSS(1.7)}>
+					{message}
+				</Typography>
+				<Box
+					component='img'
+					src={qrcode}
+					alt='Profile picture'
 					sx={{
-						height: '20vh',
-						width: '20vh',
-						borderRadius: 2,
-						boxShadow: 1
-					}}>
-			</Box> 
+						height: '25vh',
+						width: '25vh',
+					}}
+					>
+				</Box> 
+			</Box>
 		</>
 	)
 }
