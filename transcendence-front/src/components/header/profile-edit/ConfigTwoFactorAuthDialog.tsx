@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from "react";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography, } from "@mui/material"
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography, } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
@@ -11,7 +11,9 @@ interface Props {
 	setUserData: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>;
 }
 
-const message = 'Scan the image bellow with the two-factor authentication app on your phone.'
+const qrCodeMessage = 'Scan the image bellow with the two-factor authentication app on your phone.'
+const sixDigitCodeMessage = 'After scanning the QR code image, the app will display a six-digit code.'
+const enterCodeMessage = 'Enter code below and confirm to enable two-factor authentication.'
 
 
 const typographyCSS = (fontSize: number) => {
@@ -53,7 +55,7 @@ const EnebleQrCodeContent = ({ qrcode } : { qrcode: string }) => {
 				justifyContent="center"
 			>
 				<Typography sx={typographyCSS(1.7)}>
-					{message}
+					{qrCodeMessage}
 				</Typography>
 				<Box
 					component='img'
@@ -65,6 +67,14 @@ const EnebleQrCodeContent = ({ qrcode } : { qrcode: string }) => {
 					}}
 					>
 				</Box> 
+				<Typography sx={typographyCSS(1.7)}>
+					{sixDigitCodeMessage}
+				</Typography>
+				<Typography sx={typographyCSS(1.7)}>
+					{enterCodeMessage}
+				</Typography>
+				<TextField>
+				</TextField>
 			</Box>
 		</>
 	)
