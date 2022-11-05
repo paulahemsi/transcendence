@@ -17,4 +17,8 @@ export class TwoFactorAuthService {
     this.usersService.setSecret(userId, secret);
     return { url: `http://localhost:4444/images/${userId}/qrcode.png` };
   }
+
+  async enable(userId: string) {
+    this.usersService.enableTwoFactorAuth(userId);
+  }
 }

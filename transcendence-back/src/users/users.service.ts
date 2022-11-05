@@ -154,4 +154,10 @@ export class UsersService {
     user.secret = secret;
     this.userRepository.save(user);
   }
+
+  async enableTwoFactorAuth(id: string) {
+    const user = await this.checkUser(id);
+    user.hasTwoFactorAuth = true;
+    this.userRepository.save(user);
+  }
 }
