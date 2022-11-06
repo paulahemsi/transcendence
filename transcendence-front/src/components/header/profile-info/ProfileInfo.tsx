@@ -24,7 +24,8 @@ const requestUserData = async ({ setUserData } : { setUserData: React.Dispatch<R
 		email: response.data.email,
 		status: response.data.status,
 		image_url: response.data.image_url,
-		external_id: response.data.external_id
+		external_id: response.data.external_id,
+		hasTwoFactorAuth: response.data.hasTwoFactorAuth,
 })})
 }
 
