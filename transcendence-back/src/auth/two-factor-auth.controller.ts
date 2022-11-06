@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { Request } from 'express';
+import { TwoFactorAuthCodeDto } from 'src/dto/two-factor-auth-code.dto';
 import { TwoFactorAuthService } from './two-factor-auth.service';
 
 @Controller('two-factor-auth')
@@ -13,8 +14,9 @@ export class TwoFactorAuthController {
   }
 
   @Post('enable')
-  async enable(@Req() request: Request) {
+  async enable(@Req() request: Request, @Body() code: TwoFactorAuthCodeDto) {
     const userId = request.user;
+    console.log(code.value);
     return this.twoFactorAuthService.enable(`${userId}`);
   }
 }
