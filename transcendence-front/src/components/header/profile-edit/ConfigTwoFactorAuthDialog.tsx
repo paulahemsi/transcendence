@@ -46,6 +46,12 @@ const CodeTextField = ({ code, setCode } : { code: string, setCode: React.Dispat
 		setCode(event.target.value);
 	}
 	
+	const handleKeyDown= ( event :  React.KeyboardEvent<HTMLInputElement>) => {
+		if (event.key === 'Enter') {
+			event.preventDefault();
+		}
+	}
+
 	return (
 	  <Box
 		component="form"
@@ -67,6 +73,7 @@ const CodeTextField = ({ code, setCode } : { code: string, setCode: React.Dispat
 			type="number"
 			value={code}
 			onChange={handleChange}
+			onKeyDown={handleKeyDown}
 		/>
 	  </Box>
 	);
