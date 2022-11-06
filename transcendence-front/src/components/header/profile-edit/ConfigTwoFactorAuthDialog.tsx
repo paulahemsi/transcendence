@@ -141,8 +141,8 @@ export const ConfigTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, set
 	const [code, setCode] = useState('');
 
 	const handleEnable = () => {
-		enable(code).then((aaa) => {
-			if (aaa) {
+		enable(code).then((success) => {
+			if (success) {
 				setOpen(false);
 			}
 			setCode('');
