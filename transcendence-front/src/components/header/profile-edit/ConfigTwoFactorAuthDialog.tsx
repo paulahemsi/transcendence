@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from "react";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography, } from "@mui/material"
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Input, TextField, Typography, } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
@@ -35,6 +35,39 @@ const enable = async () => {
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 	axios.post('http://localhost:4444/two-factor-auth/enable', { }, { headers: authToken });
 }
+
+const CodeTextField = () => {
+	const [code, setCode] = useState("");
+
+	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
+		setCode(event.target.value);
+	}
+	
+	return (
+	  <Box
+		component="form"
+		sx={{
+			'& .MuiInputBase-input': { 
+				m: 1,
+				width: '7ch',
+				fontFamily: 'Orbitron',
+				fontWeight: 400,
+				fontSize: '3vh',
+			},
+		}}
+		autoComplete="off"
+	  >
+		<TextField
+			required
+			id="outlined-basic"
+			variant="outlined"
+			type="number"
+			value={code}
+			onChange={handleChange}
+		/>
+	  </Box>
+	);
+  }
 
 const QrCodeButton = ({ setQrcode } : { setQrcode: React.Dispatch<React.SetStateAction<string>>}) => {
 	return (
@@ -78,8 +111,7 @@ const EnebleQrCodeContent = ({ qrcode } : { qrcode: string }) => {
 				<Typography sx={typographyCSS(1.7)}>
 					{enterCodeMessage}
 				</Typography>
-				<TextField>
-				</TextField>
+				<CodeTextField/>
 			</Box>
 		</>
 	)
