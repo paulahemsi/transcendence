@@ -14,9 +14,8 @@ export class TwoFactorAuthController {
   }
 
   @Post('enable')
-  async enable(@Req() request: Request, @Body() code: TwoFactorAuthCodeDto) {
+  async enable(@Req() request: Request, @Body() body: TwoFactorAuthCodeDto) {
     const userId = request.user;
-    console.log(code.value);
-    return this.twoFactorAuthService.enable(`${userId}`);
+    return this.twoFactorAuthService.enable(`${userId}`, body.code);
   }
 }

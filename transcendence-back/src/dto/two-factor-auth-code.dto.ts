@@ -10,5 +10,5 @@ export class TwoFactorAuthCodeDto {
   @MinLength(6)
   @MaxLength(6)
   @IsNumberString()
-  value: string;
+  code: string;
 }

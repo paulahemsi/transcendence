@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { authenticator } from 'otplib';
 
@@ -18,7 +18,16 @@ export class TwoFactorAuthService {
     return { url: `http://localhost:4444/images/${userId}/qrcode.png` };
   }
 
-  async enable(userId: string) {
+  async enable(userId: string, code: string) {
+    const secret = await this.usersService.getSecret(userId);
+    const isCodeInvalid = !authenticator.verify({
+      token: code,
+      secret: secret,
+    });
+
+    if (isCodeInvalid) {
+      throw new BadRequestException('Invalid Code');
+    }
     this.usersService.enableTwoFactorAuth(userId);
   }
 }
