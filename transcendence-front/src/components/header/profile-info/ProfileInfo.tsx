@@ -6,7 +6,7 @@ import { ProfileButton } from "./ProfileButton";
 import EditProfile from "../profile-edit/EditButton";
 import { UpdateUsernameDialog } from "../profile-edit/UpdateUsernameDialog";
 import { UpdateImageDialog } from "../profile-edit/UpdateImageDialog";
-import { ConfigTwoFactorAuthDialog } from "../profile-edit/ConfigTwoFactorAuthDialog";
+import { ConfigTwoFactorAuthDialog } from "../profile-edit/config-two-factor-auth/ConfigTwoFactorAuthDialog";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
