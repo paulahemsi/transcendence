@@ -31,14 +31,17 @@ const getQRcode = async ({ setQrcode } : { setQrcode: React.Dispatch<React.SetSt
 	setQrcode(response.data.url);
 }
 
-const enable = async () => {
+const enable = async (code: string) => {
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-	axios.post('http://localhost:4444/two-factor-auth/enable', { }, { headers: authToken });
+	try {
+		await axios.post('http://localhost:4444/two-factor-auth/enable', {code: code }, { headers: authToken });
+	} catch {
+		return false;
+	}
+	return true;
 }
 
-const CodeTextField = () => {
-	const [code, setCode] = useState("");
-
+const CodeTextField = ({ code, setCode } : { code: string, setCode: React.Dispatch<React.SetStateAction<string>>}) => {
 	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
 		setCode(event.target.value);
 	}
@@ -82,7 +85,15 @@ const QrCodeButton = ({ setQrcode } : { setQrcode: React.Dispatch<React.SetState
 	)
 }
 
-const EnebleQrCodeContent = ({ qrcode } : { qrcode: string }) => {
+const EnebleQrCodeContent = ({
+	qrcode,
+	code,
+	setCode, 
+} : {
+	qrcode: string ,
+	code: string,
+	setCode: React.Dispatch<React.SetStateAction<string>>,
+}) => {
 	return (
 		<>
 			<Box
@@ -111,7 +122,7 @@ const EnebleQrCodeContent = ({ qrcode } : { qrcode: string }) => {
 				<Typography sx={typographyCSS(1.7)}>
 					{enterCodeMessage}
 				</Typography>
-				<CodeTextField/>
+				<CodeTextField code={code} setCode={setCode}/>
 			</Box>
 		</>
 	)
@@ -120,10 +131,15 @@ const EnebleQrCodeContent = ({ qrcode } : { qrcode: string }) => {
 export const ConfigTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, setOpen, userData, setUserData }) => {
 
 	const [qrcode, setQrcode] = useState('');
+	const [code, setCode] = useState('');
 
 	const handleEnable = () => {
-		enable();
-		setOpen(false);
+		enable(code).then((aaa) => {
+			if (aaa) {
+				setOpen(false);
+			}
+			setCode('');
+		})
 	}
 	
 	const handleClose = () => {
@@ -139,7 +155,7 @@ export const ConfigTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, set
 				<DialogContent>
 					{
 						qrcode ?
-						<EnebleQrCodeContent qrcode={qrcode} /> :
+						<EnebleQrCodeContent qrcode={qrcode} code={code} setCode={setCode} /> :
 						<QrCodeButton setQrcode={setQrcode} />
 					}
 				</DialogContent>
