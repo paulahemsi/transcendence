@@ -135,8 +135,7 @@ const EnebleQrCodeContent = ({
 	)
 }
 
-export const ConfigTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, setOpen, userData, setUserData }) => {
-
+export const EnableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, setOpen, userData, setUserData }) => {
 	const [qrcode, setQrcode] = useState('');
 	const [code, setCode] = useState('');
 
@@ -184,4 +183,49 @@ export const ConfigTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, set
 			</Dialog>
 		</>
 	)
+}
+
+export const DisableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, setOpen, userData, setUserData }) => {
+
+	const handleDisable = () => {
+		setOpen(false);
+	}
+	
+	const handleClose = () => {
+		setOpen(false);
+	};
+
+	return (
+		<>
+			<Dialog open={open} fullWidth maxWidth="sm" onClose={handleClose}>
+				<DialogTitle sx={{fontFamily: 'Orbitron'}}>
+					Configure Two-Factor Authentication
+				</DialogTitle>
+				<DialogContent>
+				</DialogContent>
+				<DialogActions>
+				<Button
+					onClick={() => setOpen(false)}
+					sx={{fontFamily: 'Orbitron'}}
+				>
+					Cancel
+				</Button>
+				<Button
+					variant="contained"
+					onClick={handleDisable}
+					sx={{fontFamily: 'Orbitron'}}
+				>
+					Disable
+				</Button>
+				</DialogActions>
+			</Dialog>
+		</>
+	)
+}
+
+export const ConfigTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, setOpen, userData, setUserData }) => {
+	if (userData.hasTwoFactorAuth) {
+		return (DisableTwoFactorAuthDialog({ open, setOpen, userData, setUserData }))
+	}
+	return (EnableTwoFactorAuthDialog({ open, setOpen, userData, setUserData }));
 }
