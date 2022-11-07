@@ -12,8 +12,23 @@ interface Props {
 }
 
 export const ConfigTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, setOpen, userData, setUserData }) => {
-	if (userData.hasTwoFactorAuth) {
-		return (DisableTwoFactorAuthDialog({ open, setOpen, userData, setUserData }))
-	}
-	return (EnableTwoFactorAuthDialog({ open, setOpen, userData, setUserData }));
+	return (
+		<>
+		{
+			userData.hasTwoFactorAuth ?
+			<DisableTwoFactorAuthDialog
+				open={open}
+				setOpen={setOpen}
+				userData={userData}
+				setUserData={setUserData}
+			/> :
+			<EnableTwoFactorAuthDialog
+				open={open}
+				setOpen={setOpen}
+				userData={userData}
+				setUserData={setUserData}
+			/>
+		}
+		</>
+	)
 }
