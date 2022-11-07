@@ -19,15 +19,26 @@ export class TwoFactorAuthService {
   }
 
   async enable(userId: string, code: string) {
-    const secret = await this.usersService.getSecret(userId);
-    const isCodeInvalid = !authenticator.verify({
-      token: code,
-      secret: secret,
-    });
-
+    const isCodeInvalid = !this.verify(userId, code);
     if (isCodeInvalid) {
       throw new BadRequestException('Invalid Code');
     }
     this.usersService.enableTwoFactorAuth(userId);
+  }
+
+  async disable(userId: string, code: string) {
+    const isCodeInvalid = !this.verify(userId, code);
+    if (isCodeInvalid) {
+      throw new BadRequestException('Invalid Code');
+    }
+    this.usersService.disableTwoFactorAuth(userId);
+  }
+
+  private async verify(userId: string, code: string) {
+    const secret = await this.usersService.getSecret(userId);
+    return authenticator.verify({
+      token: code,
+      secret: secret,
+    });
   }
 }

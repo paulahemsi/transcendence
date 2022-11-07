@@ -179,4 +179,10 @@ export class UsersService {
     user.hasTwoFactorAuth = true;
     this.userRepository.save(user);
   }
+
+  async disableTwoFactorAuth(id: string) {
+    const user = await this.checkUser(id);
+    user.hasTwoFactorAuth = false;
+    this.userRepository.save(user);
+  }
 }

@@ -18,4 +18,10 @@ export class TwoFactorAuthController {
     const userId = request.user;
     return this.twoFactorAuthService.enable(`${userId}`, body.code);
   }
+
+  @Post('disable')
+  async disable(@Req() request: Request, @Body() body: TwoFactorAuthCodeDto) {
+    const userId = request.user;
+    return this.twoFactorAuthService.disable(`${userId}`, body.code);
+  }
 }
