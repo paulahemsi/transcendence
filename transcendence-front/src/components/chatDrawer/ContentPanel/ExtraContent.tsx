@@ -94,7 +94,9 @@ const requestMembersFromChannel = async ( activeChannel : number , setMutedData 
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 	await axios.get(`http://localhost:4444/channels/${activeChannel}/members`, { headers: authToken }).then((response) => {
 		const user = response.data.filter((member: {[key: string]: any}) => member.id === getUserId())
-		setMutedData(user[0].muted);
+		if (user.length) {
+			setMutedData(user[0].muted);
+		}
 	})
 }
 
