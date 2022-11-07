@@ -5,6 +5,7 @@ import { Footer } from "./footer/Footer";
 import ChatDrawer from "./chatDrawer/ChatDrawer";
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
+import io from 'socket.io-client';
 import ProfileCard from "./profileDrawer/ProfileDrawer";
 import { PhaserGame } from "./game/game"
 
@@ -13,6 +14,8 @@ type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type tokenData = {
 	id: string;
 }
+
+const sessionSocket = io('/session');
 
 const startGameButton = {
 	borderRadius: 3,
@@ -70,6 +73,8 @@ export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 	const [gameActive, setGameActive] = useState(false);
 	
 	useEffect(() => {requestFriendsData({setFriendsData})}, []);
+
+	sessionSocket.connect()
 
 	return (
 		<>

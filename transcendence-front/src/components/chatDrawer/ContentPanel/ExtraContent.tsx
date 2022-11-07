@@ -122,14 +122,17 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 	const keyDownHandler = ( event :  React.KeyboardEvent<HTMLInputElement>) => {
 		if (event.key === 'Enter') {
 			event.preventDefault();
+			if (!newMessage.trim()) {
+				return ;
+			}
 			const msgToSend = {
 				user: getUserId(),
 				channel: activeChannel.toString(),
 				message: newMessage,
 			}
-			chatSocket.emit('chatMessage', msgToSend)
+			chatSocket.emit('chatMessage', msgToSend);
+			setNewMessage("");
 		}
-		setNewMessage("")
 	}
 	
 
@@ -158,7 +161,7 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 						type="text"
 						sx={{ width: '50vw' }}
 						variant="standard"
-						// value={newMessage}
+						value={newMessage}
 						onKeyDown={keyDownHandler}
 						onChange={handleChange}
 					/>

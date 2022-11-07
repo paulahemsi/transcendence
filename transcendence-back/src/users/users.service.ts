@@ -7,6 +7,7 @@ import { MatchHistoryService } from 'src/match-history/match-history.service';
 import { Intra42UserData } from 'src/auth/strategies/intra42.strategy';
 import { channelType } from 'src/entity/channel-type.entity';
 import { ChannelTypeService } from 'src/channels/channel-type.service';
+import { status } from 'src/entity/user.entity';
 
 export class matchInfos {
   opponent: string;
@@ -36,6 +37,10 @@ export class UsersService {
 
   findUser(id: string) {
     return this.userRepository.findOneBy({ id });
+  }
+
+  findUserOrFail(id: string) {
+    return this.userRepository.findOneByOrFail({ id });
   }
 
   findUserByName(name: string) {
@@ -123,5 +128,24 @@ export class UsersService {
       channels.push(channel);
     });
     return channels;
+  }
+
+  private async setStatus(id: string, status: status) {
+    const user = await this.checkUser(id);
+    user.status = status;
+    this.userRepository.save(user);
+  }
+
+  setStatusOnline(id: string) {
+    this.setStatus(id, status.ONLINE);
+  }
+
+  setStatusOffline(id: string) {
+    this.setStatus(id, status.OFFLINE);
+  }
+
+  async getStatus(id: string) {
+    const user = await this.findUser(id);
+    return user.status;
   }
 }

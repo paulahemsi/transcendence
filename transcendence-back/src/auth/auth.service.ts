@@ -21,4 +21,12 @@ export class AuthService {
   async logout(response: any): Promise<any> {
     response.clearCookie('accessToken', { sameSite: 'Lax' });
   }
+
+  validateJwt(jwt: string) {
+    return this.jwtService.verify(jwt);
+  }
+
+  async validateUser(userId: string) {
+    return this.usersService.findUserOrFail(userId);
+  }
 }

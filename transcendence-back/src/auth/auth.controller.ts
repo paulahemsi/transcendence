@@ -2,7 +2,6 @@ import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { AuthService } from './auth.service';
 import { Intra42AuthGuard } from './guards/intra42.guard';
-import { JwtAuthGuard } from './guards/jwt.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -23,7 +22,6 @@ export class AuthController {
   }
 
   @Get('status')
-  @UseGuards(JwtAuthGuard)
   getUserStatus(@Res() response: Response) {
     response.sendStatus(200);
     console.log('\nCongratulations, your JWT guard works.\n');
