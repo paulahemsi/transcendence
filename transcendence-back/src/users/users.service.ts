@@ -39,6 +39,20 @@ export class UsersService {
     return this.userRepository.findOneBy({ id });
   }
 
+  async getUser(id: string) {
+    const user = await this.userRepository.findOneBy({ id });
+    return {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      external_id: user.external_id,
+      image_url: user.image_url,
+      rating: user.rating,
+      status: user.status,
+      hasTwoFactorAuth: user.hasTwoFactorAuth,
+    };
+  }
+
   findUserOrFail(id: string) {
     return this.userRepository.findOneByOrFail({ id });
   }
@@ -147,5 +161,28 @@ export class UsersService {
   async getStatus(id: string) {
     const user = await this.findUser(id);
     return user.status;
+  }
+
+  async setSecret(id: string, secret: string) {
+    const user = await this.checkUser(id);
+    user.secret = secret;
+    this.userRepository.save(user);
+  }
+
+  async getSecret(id: string) {
+    const user = await this.checkUser(id);
+    return user.secret;
+  }
+
+  async enableTwoFactorAuth(id: string) {
+    const user = await this.checkUser(id);
+    user.hasTwoFactorAuth = true;
+    this.userRepository.save(user);
+  }
+
+  async disableTwoFactorAuth(id: string) {
+    const user = await this.checkUser(id);
+    user.hasTwoFactorAuth = false;
+    this.userRepository.save(user);
   }
 }

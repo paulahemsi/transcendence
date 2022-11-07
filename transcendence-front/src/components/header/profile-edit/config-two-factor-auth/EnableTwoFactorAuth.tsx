@@ -1,6 +1,8 @@
 import React, { FunctionComponent, useState } from "react";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography, } from "@mui/material"
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Input, TextField, Typography, } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
+import { typographyCSS } from './auxiliary'
+import { CodeTextField } from "./CodeTextField";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -16,19 +18,20 @@ const sixDigitCodeMessage = 'After scanning the QR code image, the app will disp
 const enterCodeMessage = 'Enter code below and confirm to enable two-factor authentication.'
 
 
-const typographyCSS = (fontSize: number) => {
-	return {
-		color: '#212980',
-		fontFamily: 'Orbitron',
-		fontWeight: 200,
-		fontSize: `${fontSize}vh`,
-	}
-}
-
 const getQRcode = async ({ setQrcode } : { setQrcode: React.Dispatch<React.SetStateAction<string>>}) => {
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-	const response = (await axios.get('http://localhost:3000/two-factor-auth/generate', { headers: authToken }));
+	const response = (await axios.get('http://localhost:4444/two-factor-auth/generate', { headers: authToken }));
 	setQrcode(response.data.url);
+}
+
+const enable = async (code: string) => {
+	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+	try {
+		await axios.post('http://localhost:4444/two-factor-auth/enable', {code: code }, { headers: authToken });
+	} catch {
+		return false;
+	}
+	return true;
 }
 
 const QrCodeButton = ({ setQrcode } : { setQrcode: React.Dispatch<React.SetStateAction<string>>}) => {
@@ -44,7 +47,15 @@ const QrCodeButton = ({ setQrcode } : { setQrcode: React.Dispatch<React.SetState
 	)
 }
 
-const EnebleQrCodeContent = ({ qrcode } : { qrcode: string }) => {
+const EnebleQrCodeContent = ({
+	qrcode,
+	code,
+	setCode, 
+} : {
+	qrcode: string ,
+	code: string,
+	setCode: React.Dispatch<React.SetStateAction<string>>,
+}) => {
 	return (
 		<>
 			<Box
@@ -73,20 +84,25 @@ const EnebleQrCodeContent = ({ qrcode } : { qrcode: string }) => {
 				<Typography sx={typographyCSS(1.7)}>
 					{enterCodeMessage}
 				</Typography>
-				<TextField>
-				</TextField>
+				<CodeTextField code={code} setCode={setCode}/>
 			</Box>
 		</>
 	)
 }
 
-export const ConfigTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, setOpen, userData, setUserData }) => {
-
+export const EnableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, setOpen, userData, setUserData }) => {
 	const [qrcode, setQrcode] = useState('');
+	const [code, setCode] = useState('');
 
-	const handleSave = () => {
-		console.log('save')	;
-		setOpen(false);
+	const handleEnable = () => {
+		enable(code).then((success) => {
+			if (success) {
+				userData.hasTwoFactorAuth = true;
+				setUserData(userData);
+				setOpen(false);
+			}
+			setCode('');
+		})
 	}
 	
 	const handleClose = () => {
@@ -102,7 +118,7 @@ export const ConfigTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, set
 				<DialogContent>
 					{
 						qrcode ?
-						<EnebleQrCodeContent qrcode={qrcode} /> :
+						<EnebleQrCodeContent qrcode={qrcode} code={code} setCode={setCode} /> :
 						<QrCodeButton setQrcode={setQrcode} />
 					}
 				</DialogContent>
@@ -115,10 +131,10 @@ export const ConfigTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, set
 				</Button>
 				<Button
 					variant="contained"
-					onClick={handleSave}
+					onClick={handleEnable}
 					sx={{fontFamily: 'Orbitron'}}
 				>
-					Save
+					Enable
 				</Button>
 				</DialogActions>
 			</Dialog>

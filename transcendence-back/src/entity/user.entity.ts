@@ -47,6 +47,17 @@ export class User {
   })
   status: status;
 
+  @Column({
+    nullable: true,
+  })
+  secret: string;
+
+  @Column({
+    default: false,
+    nullable: false,
+  })
+  hasTwoFactorAuth: boolean;
+
   private updateUsername(username: string) {
     this.username = username;
   }

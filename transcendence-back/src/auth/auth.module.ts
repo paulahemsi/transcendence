@@ -7,6 +7,7 @@ import { AuthService } from './auth.service';
 import { Intra42Strategy } from './strategies/intra42.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { TwoFactorAuthController } from './two-factor-auth.controller';
+import { TwoFactorAuthService } from './two-factor-auth.service';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { TwoFactorAuthController } from './two-factor-auth.controller';
       signOptions: { expiresIn: '86400s' },
     }),
   ],
-  providers: [AuthService, Intra42Strategy, JwtStrategy],
+  providers: [AuthService, TwoFactorAuthService, Intra42Strategy, JwtStrategy],
   controllers: [AuthController, TwoFactorAuthController],
   exports: [AuthService],
 })

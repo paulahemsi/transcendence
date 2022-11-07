@@ -28,7 +28,7 @@ export class UsersController {
 
   @Get(':id')
   findUser(@Param('id', ParseUUIDPipe) id: string) {
-    return this.usersService.findUser(id);
+    return this.usersService.getUser(id);
   }
 
   @Patch(':id')
