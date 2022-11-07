@@ -6,6 +6,7 @@ import { ProfileButton } from "./ProfileButton";
 import EditProfile from "../profile-edit/EditButton";
 import { UpdateUsernameDialog } from "../profile-edit/UpdateUsernameDialog";
 import { UpdateImageDialog } from "../profile-edit/UpdateImageDialog";
+import { ConfigTwoFactorAuthDialog } from "../profile-edit/ConfigTwoFactorAuthDialog";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -31,6 +32,7 @@ export const ProfileInfo = ({ setOpenCard } : { setOpenCard : booleanSetState })
 	const [userData, setUserData] = useState<{[key: string]: any}>({});
 	const [openUsernameDialog, setOpenUsernameDialog] = useState(false);
 	const [openImageDialog, setOpenImageDialog] = useState(false);
+	const [openTwoFactorAuthDialog, setOpenTwoFactorAuthDialog] = useState(false);
 
 	useEffect(() => {requestUserData({setUserData})}, []);
 
@@ -40,6 +42,7 @@ export const ProfileInfo = ({ setOpenCard } : { setOpenCard : booleanSetState })
 			<EditProfile
 				setOpenUsernameDialog={setOpenUsernameDialog}
 				setOpenImageDialog={setOpenImageDialog}
+				setOpenTwoFactorAuthDialog={setOpenTwoFactorAuthDialog}
 				/>
 			<UpdateUsernameDialog
 				open={openUsernameDialog}
@@ -50,6 +53,12 @@ export const ProfileInfo = ({ setOpenCard } : { setOpenCard : booleanSetState })
 			<UpdateImageDialog
 				open={openImageDialog}
 				setOpen={setOpenImageDialog}
+				userData={userData}
+				setUserData={setUserData}
+			/>
+			<ConfigTwoFactorAuthDialog
+				open={openTwoFactorAuthDialog}
+				setOpen={setOpenTwoFactorAuthDialog}
 				userData={userData}
 				setUserData={setUserData}
 			/>

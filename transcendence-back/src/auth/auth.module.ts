@@ -6,6 +6,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { Intra42Strategy } from './strategies/intra42.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { TwoFactorAuthController } from './two-factor-auth.controller';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     }),
   ],
   providers: [AuthService, Intra42Strategy, JwtStrategy],
-  controllers: [AuthController],
+  controllers: [AuthController, TwoFactorAuthController],
   exports: [AuthService],
 })
 export class AuthModule {}
