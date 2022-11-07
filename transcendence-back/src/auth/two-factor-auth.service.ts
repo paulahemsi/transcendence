@@ -19,7 +19,7 @@ export class TwoFactorAuthService {
   }
 
   async enable(userId: string, code: string) {
-    const isCodeInvalid = !this.verify(userId, code);
+    const isCodeInvalid = !(await this.verify(userId, code));
     if (isCodeInvalid) {
       throw new BadRequestException('Invalid Code');
     }
@@ -27,7 +27,7 @@ export class TwoFactorAuthService {
   }
 
   async disable(userId: string, code: string) {
-    const isCodeInvalid = !this.verify(userId, code);
+    const isCodeInvalid = !(await this.verify(userId, code));
     if (isCodeInvalid) {
       throw new BadRequestException('Invalid Code');
     }
