@@ -2,6 +2,7 @@ import React, { FunctionComponent, useState } from "react";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography, } from "@mui/material"
 import { typographyCSS } from './auxiliary'
 import { CodeTextField } from "./CodeTextField";
+import axios, { AxiosRequestHeaders } from "axios";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -39,12 +40,27 @@ const DisableContent = ({
 	)
 }
 
+const disable = async (code: string) => {
+	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+	try {
+		await axios.post('http://localhost:4444/two-factor-auth/disable', {code: code }, { headers: authToken });
+	} catch {
+		return false;
+	}
+	return true;
+}
+
 export const DisableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, setOpen, userData, setUserData }) => {
 
 	const [code, setCode] = useState('');
 
 	const handleDisable = () => {
-		setOpen(false);
+		disable(code).then((success) => {
+			if (success) {
+				setOpen(false);
+			}
+			setCode('');
+		})
 	}
 	
 	const handleClose = () => {
