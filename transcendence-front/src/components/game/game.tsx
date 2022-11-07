@@ -1,11 +1,13 @@
 import Phaser from 'phaser';
 import React from 'react'
 import io from 'socket.io-client';
+import { useEffect } from 'react'
+
 
 const gameSocket = io('/game');
 
-export class PhaserGame extends React.Component {
-	componentDidMount(): void {
+export const PhaserGame = ({ setScore } : { setScore: React.Dispatch<React.SetStateAction<number[]>>}) => {
+	useEffect(() =>  {
 		const gameConfig: Phaser.Types.Core.GameConfig = {
 			type: Phaser.AUTO,
 			width: window.innerWidth,
@@ -31,16 +33,23 @@ export class PhaserGame extends React.Component {
 
 		let player1: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 		let player2: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+		let rightGoal: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+		let leftGoal: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 		let ball: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 		let cursors: Phaser.Types.Input.Keyboard.CursorKeys;
 		let keyW : Phaser.Input.Keyboard.Key;
 		let keyS : Phaser.Input.Keyboard.Key;
 		let ballVelocity : number[] = [1000, -1000];
+		let screenWidth : number = window.innerWidth;
+		let screenHeight : number = window.innerHeight;
 
 		let player1PosY: number = 0;
 		let player2PosY: number = 0;
 		let ballPosX: number = 0;
 		let ballPosY: number = 0;
+
+		let player1Score: number = 0;
+		let player2Score: number = 0;
 
 		function preload(this: Phaser.Scene): void {
 	
@@ -50,12 +59,16 @@ export class PhaserGame extends React.Component {
 
 		function create(this: Phaser.Scene): void {
 			gameSocket.connect();
-			player1 = this.physics.add.sprite(100, 450, 'pad');
-			player2 = this.physics.add.sprite(1750, 450, 'pad');
-			ball = this.physics.add.sprite(this.sys.canvas.height / 2, this.sys.canvas.height / 2, 'ball');
+			player1 = this.physics.add.sprite(screenWidth * 0.1, screenHeight * 0.5, 'pad');
+			player2 = this.physics.add.sprite(screenWidth * 0.9, screenHeight * 0.5, 'pad');
+			ball = this.physics.add.sprite(this.sys.canvas.width / 2, this.sys.canvas.height / 2, 'ball').setSize(30, 30);
+			rightGoal = this.physics.add.sprite(screenWidth, screenHeight * 0.5, 'pad').setSize(screenWidth * 0.01, screenHeight).setVisible(false);
+			leftGoal = this.physics.add.sprite(1, screenHeight * 0.5, 'pad').setSize(screenWidth * 0.01, screenHeight).setVisible(false);
 
 			player1.setCollideWorldBounds(true);
 			player1.body.setImmovable(true);
+			rightGoal.body.setImmovable(true);
+			leftGoal.body.setImmovable(true);
 			player2.setCollideWorldBounds(true);
 			player2.body.setImmovable(true);
 			ball.setCollideWorldBounds(true);
@@ -100,7 +113,7 @@ export class PhaserGame extends React.Component {
 			}
 
 			if (ball.x != ballPosX || ball.y != ballPosY) {
-				gameSocket.emit('ball', "BALL POSITION X: " + ball.x + " Y: " + ball.y);
+				//gameSocket.emit('ball', "BALL POSITION X: " + ball.x + " Y: " + ball.y);
 				ballPosX = ball.x;
 				ballPosY = ball.y;
 			}
@@ -127,7 +140,27 @@ export class PhaserGame extends React.Component {
 		{
 		ball.setVelocityY(10 * (ball.y - this.y));
 		}
-	}	
+	}
+
+	function sleep(milliseconds: number) {
+        return new Promise(resolve => setTimeout(resolve, milliseconds))
+    }
+
+	function increaseP1Score(this: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody) {
+		setScore([player1Score += 1, player2Score]);
+		ball.x = screenWidth / 2;
+		ball.y = screenHeight / 2;
+		ball.body.velocity.setTo(0);
+		sleep(700).then(() => {ball.body.velocity.setTo(ballVelocity[Math.floor(Math.random() * 2)], ballVelocity[Math.floor(Math.random() * 2)]);});
+	}
+
+	function increaseP2Score(this: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody) {
+		setScore([player1Score, player2Score += 1]);
+		ball.x = screenWidth / 2;
+		ball.y = screenHeight / 2;
+		ball.body.velocity.setTo(0);
+		sleep(700).then(() => {ball.body.velocity.setTo(ballVelocity[Math.floor(Math.random() * 2)], ballVelocity[Math.floor(Math.random() * 2)]);});
+	}
 
 	function start(this: Phaser.Scene) : void {
 		(ball.body as Phaser.Physics.Arcade.Body).onWorldBounds = true;
@@ -135,13 +168,13 @@ export class PhaserGame extends React.Component {
 		ball.setBounce(1);
 		this.physics.add.collider(ball, player1, HandleCollision, () => (console.log("COLLIDED WITH PLAYER 1")), player1);
 		this.physics.add.collider(ball, player2, HandleCollision, () => (console.log("COLLIDED WITH PLAYER 2")), player2);
+		this.physics.add.collider(ball, rightGoal, increaseP1Score, () => (console.log("COLLIDED WITH RIGHT GOAL")), rightGoal);
+		this.physics.add.collider(ball, leftGoal, increaseP2Score, () => (console.log("COLLIDED WITH LEFT GOAL")), leftGoal);
 	}
+
+	}, [])
+
+	return (<div id="transcendence-pong-game" />)
 }
 
-	shouldComponentUpdate(): boolean {
-		return false;
-	}
-	render(): React.ReactNode {
-		return <div id="transcendence-pong-game" />;
-	}
-}
+export default PhaserGame
