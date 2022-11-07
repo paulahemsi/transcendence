@@ -29,6 +29,7 @@ type members = {
   name: string;
   image: string;
   status: string;
+  muted: boolean;
 };
 
 type admins = {
@@ -164,7 +165,6 @@ export class ChannelsService {
 
   async update(id: number, channelDto: UpdateChannelDto) {
     const channel = await this.checkChannel(id);
-    console.log(channelDto)
     this.updateOwner(channel, channelDto.owner);
     this.updatePassword(channel, channelDto.password, channelDto.type);
     this.updateType(channel, channelDto.type);
@@ -247,6 +247,7 @@ export class ChannelsService {
       member.name = element.user.username;
       member.image = element.user.image_url;
       member.status = element.user.status;
+      member.muted = element.muted;
       channelMembers.push(member);
     });
     return channelMembers;
@@ -491,4 +492,25 @@ export class ChannelsService {
     return channelData
   }
 
+  async handleMute(channelId: number, userId: string, isMuted: boolean) {
+    const member = await this.channelMemberRepository.findOne({
+        relations: {
+        channel: true,
+        user: true,
+      },
+      where: [
+        {
+          channel: { id: channelId },
+          user: { id: userId },
+        }
+      ],
+    })
+    
+    if (!member) {
+      throw new NotFoundException();
+    }
+    
+    member.muted = isMuted;
+    this.channelMemberRepository.save(member);
+  }
 }

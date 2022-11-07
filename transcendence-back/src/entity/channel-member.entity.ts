@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Channel } from './channel.entity';
 import { User } from './user.entity';
 
@@ -20,4 +20,10 @@ export class ChannelMember {
     onDelete: 'CASCADE',
   })
   user: User;
+  
+  @Column({
+    nullable: false,
+    default: false,
+  })
+  muted: boolean;
 }
