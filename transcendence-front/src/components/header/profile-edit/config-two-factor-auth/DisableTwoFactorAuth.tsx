@@ -1,5 +1,7 @@
-import React, { FunctionComponent } from "react";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, } from "@mui/material"
+import React, { FunctionComponent, useState } from "react";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography, } from "@mui/material"
+import { typographyCSS } from './auxiliary'
+import { CodeTextField } from "./CodeTextField";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -10,7 +12,36 @@ interface Props {
 	setUserData: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>;
 }
 
+const enterCodeMessage = 'Enter code below and confirm to disable two-factor authentication.'
+
+const DisableContent = ({
+	code,
+	setCode, 
+} : {
+	code: string,
+	setCode: React.Dispatch<React.SetStateAction<string>>,
+}) => {
+	return (
+		<>
+			<Box
+				display="flex"
+				alignItems="center"
+				flexDirection="column"
+				flexWrap="wrap"
+				justifyContent="center"
+			>
+				<Typography sx={typographyCSS(1.7)}>
+					{enterCodeMessage}
+				</Typography>
+				<CodeTextField code={code} setCode={setCode}/>
+			</Box>
+		</>
+	)
+}
+
 export const DisableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, setOpen, userData, setUserData }) => {
+
+	const [code, setCode] = useState('');
 
 	const handleDisable = () => {
 		setOpen(false);
@@ -27,6 +58,7 @@ export const DisableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, se
 					Configure Two-Factor Authentication
 				</DialogTitle>
 				<DialogContent>
+					<DisableContent code={code} setCode={setCode} />
 				</DialogContent>
 				<DialogActions>
 				<Button

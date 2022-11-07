@@ -1,6 +1,8 @@
 import React, { FunctionComponent, useState } from "react";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Input, TextField, Typography, } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
+import { typographyCSS } from './auxiliary'
+import { CodeTextField } from "./CodeTextField";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -15,15 +17,6 @@ const qrCodeMessage = 'Scan the image bellow with the two-factor authentication 
 const sixDigitCodeMessage = 'After scanning the QR code image, the app will display a six-digit code.'
 const enterCodeMessage = 'Enter code below and confirm to enable two-factor authentication.'
 
-
-const typographyCSS = (fontSize: number) => {
-	return {
-		color: '#212980',
-		fontFamily: 'Orbitron',
-		fontWeight: 200,
-		fontSize: `${fontSize}vh`,
-	}
-}
 
 const getQRcode = async ({ setQrcode } : { setQrcode: React.Dispatch<React.SetStateAction<string>>}) => {
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
@@ -40,44 +33,6 @@ const enable = async (code: string) => {
 	}
 	return true;
 }
-
-const CodeTextField = ({ code, setCode } : { code: string, setCode: React.Dispatch<React.SetStateAction<string>>}) => {
-	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
-		setCode(event.target.value);
-	}
-	
-	const handleKeyDown= ( event :  React.KeyboardEvent<HTMLInputElement>) => {
-		if (event.key === 'Enter') {
-			event.preventDefault();
-		}
-	}
-
-	return (
-	  <Box
-		component="form"
-		sx={{
-			'& .MuiInputBase-input': { 
-				m: 1,
-				width: '7ch',
-				fontFamily: 'Orbitron',
-				fontWeight: 400,
-				fontSize: '3vh',
-			},
-		}}
-		autoComplete="off"
-	  >
-		<TextField
-			required
-			id="outlined-basic"
-			variant="outlined"
-			type="number"
-			value={code}
-			onChange={handleChange}
-			onKeyDown={handleKeyDown}
-		/>
-	  </Box>
-	);
-  }
 
 const QrCodeButton = ({ setQrcode } : { setQrcode: React.Dispatch<React.SetStateAction<string>>}) => {
 	return (
