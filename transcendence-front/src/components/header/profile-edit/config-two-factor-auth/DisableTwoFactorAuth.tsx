@@ -57,6 +57,8 @@ export const DisableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, se
 	const handleDisable = () => {
 		disable(code).then((success) => {
 			if (success) {
+				userData.hasTwoFactorAuth = false;
+				setUserData(userData);
 				setOpen(false);
 			}
 			setCode('');

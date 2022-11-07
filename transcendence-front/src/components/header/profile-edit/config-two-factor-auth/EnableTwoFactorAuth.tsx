@@ -97,6 +97,8 @@ export const EnableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, set
 	const handleEnable = () => {
 		enable(code).then((success) => {
 			if (success) {
+				userData.hasTwoFactorAuth = true;
+				setUserData(userData);
 				setOpen(false);
 			}
 			setCode('');
