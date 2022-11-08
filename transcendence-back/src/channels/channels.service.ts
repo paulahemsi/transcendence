@@ -186,7 +186,6 @@ export class ChannelsService {
       this.deleteChannel(channel);
       return;
     }
-    console.log(newOwner);
     this.updateOwner(channel, newOwner.user.id);
     this.channelRepository.save(channel);
   }
