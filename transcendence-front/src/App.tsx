@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import './App.css';
 import { useState } from 'react';
 import LoginCard from './components/LoginCard'
@@ -27,16 +28,26 @@ function isLoggedIn() {
   return validateToken(cookie);
 }
 
-function App() {
+export const PreHome = () => {
   const[ loggedIn, setLoggedIn ] = useState(isLoggedIn());
-  return (
-  <>
+
+	return (
     <main>
-        {loggedIn
-        ? <Home setLoggedIn={setLoggedIn}/>
-        : <LoginCard/> }
+      {loggedIn
+      ? <Home setLoggedIn={setLoggedIn}/>
+      : <LoginCard/> }
     </main>
-  </>
+	);
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<PreHome/>} />
+        <Route path='/login' element={<LoginCard/>} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
