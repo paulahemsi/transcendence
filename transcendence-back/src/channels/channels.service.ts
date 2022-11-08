@@ -76,6 +76,7 @@ export class ChannelsService {
     return this.channelRepository.findOne({
       relations: {
         type: true,
+        owner: true,
       },
       where: {
         id: id,
@@ -171,9 +172,27 @@ export class ChannelsService {
 
     this.channelRepository.save(channel);
   }
-
+  
+  async defineNewOwner(channel: Channel) {
+    const newOwner = await this.channelMemberRepository.findOne({
+      relations: {
+        user: true,
+      },
+      where: {
+        channel: { id: channel.id },
+      },
+    });
+    if (!newOwner) {
+      this.deleteChannel(channel);
+      return;
+    }
+    console.log(newOwner);
+    this.updateOwner(channel, newOwner.user.id);
+    this.channelRepository.save(channel);
+  }
+  
   async deleteMember(channelId: number, userId: string) {
-    await this.checkChannelAndMember(channelId, userId);
+    const { channel } = await this.checkChannelAndMember(channelId, userId);
     const member = await this.channelMemberRepository.findOne({
       relations: {
         channel: true,
@@ -184,7 +203,10 @@ export class ChannelsService {
         user: { id: userId },
       },
     });
-    this.channelMemberRepository.delete(member.id);
+    await this.channelMemberRepository.delete(member.id);
+    if (channel.owner.id === userId) {
+      await this.defineNewOwner(channel);
+    }
   }
 
   authorizedMember(channel: Channel, password: string) {
