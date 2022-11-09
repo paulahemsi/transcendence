@@ -23,7 +23,7 @@ export const LeaveChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, c
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 
 	const handleSave = () => {
-		axios.delete(`http://localhost:3000/channels/${channelData.id}/members`, { data: { "userId": tokenData.id }, headers: { "Authorization": authToken.toString() } }).then( () => {
+		axios.delete(`http://localhost:3000/channels/${channelData.id}/members/${tokenData.id}`, { headers: authToken }).then( () => {
 			setActiveChannel(0);
 			setOpenDialog(false);
 		}) 

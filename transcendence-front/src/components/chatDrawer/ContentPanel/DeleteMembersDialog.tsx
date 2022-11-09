@@ -60,7 +60,7 @@ export const DeleteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 
 	const handleSave = () => {
 		const selectedUser = users.filter((u: {[key: string]: any}) => u.username === searchQuery);
-		axios.delete(`http://localhost:3000/channels/${channelData.id}/members`, { data: { "userId": selectedUser[0].id }, headers: { "Authorization": authToken.toString() } }).then( () => {
+		axios.delete(`http://localhost:3000/channels/${channelData.id}/members/${selectedUser[0].id}`, { headers: authToken }).then( () => {
 			setMembersMockData(selectedUser);
 			setOpenDialog(false);
 		}) 
