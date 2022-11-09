@@ -67,12 +67,12 @@ export class UsersController {
     return this.friedshipService.getFriends(userId);
   }
 
-  @Delete(':id/friends')
+  @Delete(':id/friends/:friendId')
   deleteFriend(
     @Param('id', ParseUUIDPipe) userId: string,
-    @Body() friend: FriendDto,
+    @Param('friendId', ParseUUIDPipe) friendId: string,
   ) {
-    return this.friedshipService.deleteFriendship(userId, friend.id);
+    return this.friedshipService.deleteFriendship(userId, friendId);
   }
 
   @Get(':id/channels')

@@ -53,11 +53,10 @@ export class ChannelsController {
     return this.channelService.addMember(channelId, userId);
   }
 
-  @Delete(':id/members')
+  @Delete(':channelId/members/:userId')
   deleteMember(
-    @Param('id') channelId: number,
-    @Body('userId', ParseUUIDPipe) userId: string,
-    @Body('password') password: string,
+    @Param('channelId') channelId: number,
+    @Param('userId') userId: string,
   ) {
     return this.channelService.deleteMember(channelId, userId);
   }
@@ -84,7 +83,7 @@ export class ChannelsController {
   @Delete(':id/admin')
   deleteAdmin(
     @Param('id') channelId: number,
-    @Body('userId', ParseUUIDPipe) userId: string,
+    @Param('userId') userId: string,
   ) {
     return this.channelService.deleteAdmin(channelId, userId);
   }
