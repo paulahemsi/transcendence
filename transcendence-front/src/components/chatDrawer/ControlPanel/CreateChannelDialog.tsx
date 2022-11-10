@@ -65,7 +65,6 @@ export const CreateChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 			setGroupsData(newGroupsData)
 			setOpenDialog(false);
 		}).catch( (error) => {
-			console.log(error)
 			setState({ toastError: true, toastMessage: error.response.data.message === 'Channel name alredy exists' ? "Ooops there's already a group with this name :/" : DEFAULT_TOAST_MSG })
 		})
 	}
