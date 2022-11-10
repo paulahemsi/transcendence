@@ -1,5 +1,5 @@
-import React, { FunctionComponent } from "react"
-import { Button, DialogActions, DialogTitle } from "@mui/material"
+import React, { FunctionComponent, useReducer } from "react"
+import { Alert, Button, DialogActions, DialogTitle, Snackbar } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 
@@ -18,7 +18,18 @@ interface Props {
 	setActiveChannel : numberSetState;
 }
 
+const DEFAULT_TOAST_MSG = "ooops, something went wrong";
+
+const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) => {
+	return { ...state, ...newState};
+}
+
 export const LeaveChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, channelData, setActiveChannel }) => {
+	const [state, setState] = useReducer(reducer, {
+		toastError: false,
+		toastMessage: DEFAULT_TOAST_MSG,
+	});
+	
 	const tokenData: tokenData = jwt(document.cookie);
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 
@@ -26,7 +37,9 @@ export const LeaveChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, c
 		axios.delete(`http://localhost:3000/channels/${channelData.id}/members/${tokenData.id}`, { headers: authToken }).then( () => {
 			setActiveChannel(0);
 			setOpenDialog(false);
-		}) 
+		}).catch( () => {
+			setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
+		});
 	}
 
 	return (
@@ -49,6 +62,16 @@ export const LeaveChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, c
 			Leave
 		</Button>
 		</DialogActions>
+		<Snackbar
+			open={state.toastError}
+			autoHideDuration={6000}
+			onClose={() => setState({ toastError: false })}
+			anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+		>
+			<Alert variant="filled" onClose={() => setState({ toastError: false })} severity="error" sx={{ width: '100%' }}>
+				{state.toastMessage}
+			</Alert>
+		</Snackbar>
 	</>
 	)
 }
