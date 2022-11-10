@@ -48,6 +48,11 @@ export const CreateChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 
 		const type = state.isPrivate ? PRIVATE : PUBLIC;
 		
+		if (!state.channelName) {
+			setState({ toastError: true, toastMessage: "?!? you must choose a name" });
+			return;
+		}
+		
 		axios.post(`http://localhost:3000/channels`, {
 			"name": state.channelName,
 			"type": state.password ? PROTECTED : type,
