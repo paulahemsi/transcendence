@@ -130,6 +130,16 @@ export const CreateChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 			Create
 		</Button>
 		</DialogActions>
+		<Snackbar
+			open={state.toastError}
+			autoHideDuration={6000}
+			onClose={() => setState({ toastError: false })}
+			anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+		>
+			<Alert variant="filled" onClose={() => setState({ toastError: false })} severity="error" sx={{ width: '100%' }}>
+				{state.toastMessage}
+			</Alert>
+		</Snackbar>
 	</>
 	)
 }
