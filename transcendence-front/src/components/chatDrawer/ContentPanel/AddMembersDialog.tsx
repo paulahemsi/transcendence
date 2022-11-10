@@ -1,5 +1,5 @@
-import React, { useState, FunctionComponent, useEffect } from "react"
-import { Button, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
+import React, { useState, FunctionComponent, useEffect, useReducer } from "react"
+import { Alert, Button, DialogActions, DialogContent, DialogTitle, Snackbar, TextField } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import UsersList from "../ControlPanel/UsersList";
@@ -17,16 +17,27 @@ interface Props {
 	setMembersMockData: objectSetState;
 }
 
+const DEFAULT_TOAST_MSG = "ooops, something went wrong";
+
+const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
+	return {...state, ...newState};
+}
+
 export const AddMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, setMembersMockData, channelData }) => {
-	const [usersName, setUsersName] = useState<string[]>([]);
-	const [users, setUsers] = useState<{[key: string]: any}>({});
-	const [loading, setLoading] = useState<boolean>(true);
-	const [searchQuery, setSearchQuery] = useState("");
+	const [state, setState] = useReducer(reducer, {
+		usersName: [],
+		users: {},
+		loading: true,
+		searchQuery: "",
+		toastError: false,
+		toastMessage: DEFAULT_TOAST_MSG,
+	});
+
 	const tokenData: tokenData = jwt(document.cookie);
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 
 	const handleQuery = (event :  React.ChangeEvent<HTMLInputElement>) => {
-		setSearchQuery(event.target.value);
+		setState({ searchQuery: event.target.value });
 	}
 
 	const keyDownHandler = ( event :  React.KeyboardEvent<HTMLInputElement>) => {
@@ -38,7 +49,7 @@ export const AddMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 
 	const requestUsersData = async () => {
 		await axios.get("http://localhost:3000/users/", { headers: authToken }).then((response: {[key: string]: any}) => {
-			setUsers(response.data);
+			setState({ users: response.data });
 			var usersName: Array<string> = [];
 			response.data.forEach((userData: {[key: string]: any}) => {
 				if (userData.id !== tokenData.id) {
@@ -57,19 +68,26 @@ export const AddMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 			let unique2 = membersName.filter((o) => usersName.indexOf(o) === -1);
 			const unique = unique1.concat(unique2);
 			
-			setUsersName(unique);
-			setLoading(false);
+			setState({ usersName: unique, loading: false });
 		})
 	}
 
 	const handleSave = () => {
-		const selectedUser = users.filter((u: {[key: string]: any}) => u.username === searchQuery);
+		const selectedUser = state.users.filter((u: {[key: string]: any}) => u.username === state.searchQuery);
+		
+		if (!selectedUser.length) {
+			setState({ toastError: true, toastMessage: "there's no user with this name :s" });
+			return;
+		}
+		
 		axios.patch(`http://localhost:3000/channels/${channelData.id}/members`, {
 			"userId": selectedUser[0].id,
 		}, { headers: authToken }).then( () => {
 			setMembersMockData(selectedUser);
 			setOpenDialog(false);
-		})
+		}).catch( (error) => {
+			setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
+		});
 	}
 
 	useEffect(() => {requestUsersData()}, []);
@@ -87,14 +105,14 @@ export const AddMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 				type="email"
 				fullWidth
 				variant="standard"
-				value={searchQuery}
+				value={state.searchQuery}
 				onKeyDown={keyDownHandler}
 				onChange={handleQuery}
 			/>
 		</DialogContent>
 		{
-			!loading && 
-			<UsersList usersName={usersName} searchQuery={searchQuery} />
+			!state.loading && 
+			<UsersList usersName={state.usersName} searchQuery={state.searchQuery} />
 		}
 		<DialogActions>
 		<Button
@@ -111,6 +129,16 @@ export const AddMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 			Add
 		</Button>
 		</DialogActions>
+		<Snackbar
+			open={state.toastError}
+			autoHideDuration={6000}
+			onClose={() => setState({ toastError: false })}
+			anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+		>
+			<Alert variant="filled" onClose={() => setState({ toastError: false })} severity="error" sx={{ width: '100%' }}>
+				{state.toastMessage}
+			</Alert>
+		</Snackbar>
 	</>
 	)
 }
