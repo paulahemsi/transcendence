@@ -85,7 +85,7 @@ export const AddMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 		}, { headers: authToken }).then( () => {
 			setMembersMockData(selectedUser);
 			setOpenDialog(false);
-		}).catch( (error) => {
+		}).catch( () => {
 			setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
 		});
 	}
