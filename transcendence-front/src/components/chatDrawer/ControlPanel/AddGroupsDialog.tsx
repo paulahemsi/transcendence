@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useEffect, useReducer } from "react"
-import { Button, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
+import { Alert, Button, DialogActions, DialogContent, DialogTitle, Snackbar, TextField } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import SearchGroupsList from "./SearchGroupsList";
@@ -15,6 +15,7 @@ const JOIN_LABEL = 'Group name'
 const PASSWORD_LABEL = 'Password'
 const JOIN_BUTTON = 'Add'
 const PASSWORD_BUTTON = 'Join'
+const DEFAULT_TOAST_MSG = "ooops, something went wrong"
 
 type groupsData = {
 	name: string;
@@ -46,6 +47,8 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 		button: JOIN_BUTTON,
 		groupName: "",
 		password: "",
+		toastError: false,
+		toastMessage: DEFAULT_TOAST_MSG,
 	});
 
 	const tokenData: tokenData = jwt(document.cookie);
@@ -90,8 +93,7 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 			setUserGroupsData();
 			setOpenDialog(false);
 		}).catch( (error) => {
-			console.log(error);
-			setOpenDialog(false);
+			setState({ toastError: true, toastMessage: error.response.data.statusCode == 403 ? "Wrong password :| " : DEFAULT_TOAST_MSG })
 		})
 	}
 	
@@ -103,6 +105,10 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 	const handleAdd = () => {
 		setState({ groupName: state.searchQuery, loading: true, password: "abobora" });
 		const group = selectedGroup(state.searchQuery);
+		if (!group.length) {
+			setState({ toastError: true, toastMessage: "oops! There's no such group :(" });
+			return ;
+		}
 		if ( group[0].type === PUBLIC ) {
 			handleSave();
 		} else if ( group[0].type === PROTECTED ) {
@@ -157,6 +163,16 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 			{state.button}
 		</Button>
 		</DialogActions>
+		<Snackbar
+			open={state.toastError}
+			autoHideDuration={6000}
+			onClose={() => setState({ toastError: false })}
+			anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+		>
+			<Alert variant="filled" onClose={() => setState({ toastError: false })} severity="error" sx={{ width: '100%' }}>
+				{state.toastMessage}
+			</Alert>
+		</Snackbar>
 	</>
 	)
 }
