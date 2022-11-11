@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { TextField, Box, Typography } from "@mui/material";
 import io from 'socket.io-client';
 import axios, { AxiosRequestHeaders } from 'axios';
@@ -10,7 +10,7 @@ type tokenData = {
 }
 
 type arraySetState = React.Dispatch<React.SetStateAction<string[]>>
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
 
 const chatSocket = io('/chat');
 
@@ -35,6 +35,10 @@ const typographyCSS = {
 
 const noMessages = "it's so quiet in here ......"
 const muted = "ooops! You're muted... Wait for a while..."
+
+const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) => {
+	return { ...state, ...newState };
+}
 
 const NoMessages = () => {
 	return (
@@ -90,12 +94,12 @@ const requestMessagesFromChannel = async ( activeChannel : number , setMessagesD
 })
 }
 
-const requestMembersFromChannel = async ( activeChannel : number , setMutedData : booleanSetState ) =>  {
+const requestMembersFromChannel = async ( activeChannel : number , setState : objectSetState ) =>  {
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 	await axios.get(`http://localhost:4444/channels/${activeChannel}/members`, { headers: authToken }).then((response) => {
 		const user = response.data.filter((member: {[key: string]: any}) => member.id === getUserId())
 		if (user.length) {
-			setMutedData(user[0].muted);
+			setState({muted: user[0].muted});
 		}
 	})
 }
@@ -173,30 +177,32 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 }
 
 export const ExtraContent = ( { activeChannel } : { activeChannel : number }) => {
-	const [ joined, setJoined ] = useState(false);
-	const [ muted, setMuted ] = useState(false);
-	const [ mutedMockCounter, setMutedMockCounter ] = useState(0);
-
-	useEffect(() => {requestMembersFromChannel(activeChannel, setMuted)}, [mutedMockCounter]);
+	const [state, setState] = useReducer(reducer, {
+		joined: false,
+		muted: false,
+		mutedMockCounter: 0,
+	});
+	
+	useEffect(() => {requestMembersFromChannel(activeChannel, setState)}, [state.mutedMockCounter]);
 
 	chatSocket.emit('joinChannel', activeChannel);
 
 	chatSocket.on('joinChannel', (room) => {
 		if ( room == activeChannel) {
-			setJoined(true);
+			setState({ joined: true });
 		}
 	} )
 
 	chatSocket.off('muteUser').on('muteUser', () => {
-		const update = mutedMockCounter + 1;
-		setMutedMockCounter(update);
+			const update = state.mutedMockCounter + 1;
+			setState({ mutedMockCounter: update });
 	});
 
 	chatSocket.on('leaveChannel', (room) => {
 		//?
 	} )
 	
-	if (muted) {
+	if (state.muted) {
 		return (
 			<Muted/>
 		)
@@ -205,7 +211,7 @@ export const ExtraContent = ( { activeChannel } : { activeChannel : number }) =>
 	return (
 		<>
 			{
-				joined && 
+				state.joined && 
 				<ChannelMessage activeChannel={activeChannel} />
 			}
 		</>
