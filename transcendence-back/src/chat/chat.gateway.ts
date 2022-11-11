@@ -107,6 +107,7 @@ export class ChatGateway
       client.emit('muteUser', false);
       return;
     }
+    client.emit('muteUser', true);
     this.server.to(muteEvent.channel.toString()).emit('muteUser', true);
     setTimeout(() => {
       this.channelService.handleMute(muteEvent.channel, muteEvent.mutedUser, false);

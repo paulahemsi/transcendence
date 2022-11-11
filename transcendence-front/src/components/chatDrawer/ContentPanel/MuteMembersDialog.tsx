@@ -1,12 +1,12 @@
-import React, { useState, FunctionComponent, useEffect } from "react"
-import { Button, Checkbox, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, Radio, RadioGroup, TextField } from "@mui/material"
+import React, { FunctionComponent, useEffect, useReducer } from "react"
+import { Alert, Button, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, Radio, RadioGroup, Snackbar, TextField } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import UsersList from "../ControlPanel/UsersList";
 import io from 'socket.io-client';
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
-type numberSetState = React.Dispatch<React.SetStateAction<number>>
+type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
 
 type tokenData = {
 	id: string;
@@ -23,10 +23,16 @@ const TIME5MIN = 300000;
 
 const chatSocket = io('/chat');
 
-const TimeRadios = ({setTime} : {setTime: numberSetState}) => {
+const DEFAULT_TOAST_MSG = "ooops, something went wrong";
+
+const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) => {
+	return { ...state, ...newState };
+}
+
+const TimeRadios = ({setState} : {setState: objectSetState}) => {
 
 	const handleChangeTime = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setTime(Number((event.target as HTMLInputElement).value));
+		setState({ time: (Number((event.target as HTMLInputElement).value)) });
 	};
 
 	return (
@@ -59,16 +65,31 @@ const TimeRadios = ({setTime} : {setTime: numberSetState}) => {
 }
 
 export const MuteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, channelData }) => {
-	const [usersName, setUsersName] = useState<string[]>([]);
-	const [users, setUsers] = useState<{[key: string]: any}>({});
-	const [loading, setLoading] = useState<boolean>(true);
-	const [searchQuery, setSearchQuery] = useState("");
-	const [time, setTime] = useState(30000);
+	const [state, setState] = useReducer(reducer, {
+		usersName: [],
+		users: {},
+		loading: true,
+		searchQuery: "",
+		time: 30000,
+		toastError: false,
+		toastMessage: DEFAULT_TOAST_MSG,
+	});
+	
 	const tokenData: tokenData = jwt(document.cookie);
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+	
+	useEffect(() => {
+		chatSocket.on('muteUser', (mutedSuccefully) => {
+			if (!mutedSuccefully) {
+				setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
+			} else {
+				setOpenDialog(false);
+			}
+		});
+	  }, []);
 
 	const handleQuery = (event :  React.ChangeEvent<HTMLInputElement>) => {
-		setSearchQuery(event.target.value);
+		setState({ searchQuery: event.target.value });
 	}
 
 	const keyDownHandler = ( event :  React.KeyboardEvent<HTMLInputElement>) => {
@@ -80,7 +101,7 @@ export const MuteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, ch
 
 	const requestUsersData = async () => {
 		await axios.get("http://localhost:3000/users/", { headers: authToken }).then((response: {[key: string]: any}) => {
-			setUsers(response.data);
+			setState({ users: response.data });
 			var usersName: Array<string> = [];
 			response.data.forEach((userData: {[key: string]: any}) => {
 				if (userData.id !== tokenData.id) {
@@ -95,31 +116,27 @@ export const MuteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, ch
 				}
 			});
 
-			setUsersName(membersName);
-			setLoading(false);
+			setState({ usersName: membersName, loading: false });
 		})
 	}
 
 	const handleSave = () => {
-		const selectedUser = users.filter((u: {[key: string]: any}) => u.username === searchQuery);
-		
-		if (!selectedUser[0]) {
-			//alert?
-			return ;
+		const selectedUser = state.users.filter((u: {[key: string]: any}) => u.username === state.searchQuery);
+		if (!selectedUser.length || !state.usersName.includes(selectedUser[0].username)) {
+			setState({ toastError: true, toastMessage: "there's no user in the group with this name :s" });
+			return;
 		}
 		
 		const muteEvent = {
 			mutedUser: selectedUser[0].id,
 			channel: channelData.id,
-			duration: time,
+			duration: state.time,
 		}
 
 		chatSocket.emit('muteUser', muteEvent);
-		setOpenDialog(false);
 	}
 
 	useEffect(() => {requestUsersData()}, []);
-
 	return (
 		<>
 		<DialogTitle sx={{fontFamily: 'Orbitron'}}>
@@ -133,17 +150,17 @@ export const MuteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, ch
 				type="email"
 				fullWidth
 				variant="standard"
-				value={searchQuery}
+				value={state.searchQuery}
 				onKeyDown={keyDownHandler}
 				onChange={handleQuery}
 			/>
 		</DialogContent>
 		{
-			!loading && 
-			<UsersList usersName={usersName} searchQuery={searchQuery} />
+			!state.loading && 
+			<UsersList usersName={state.usersName} searchQuery={state.searchQuery} />
 		}
 		<DialogActions sx={{justifyContent: 'space-around'}}>
-			<TimeRadios setTime={setTime}/>
+			<TimeRadios setState={setState}/>
 			<Button
 				onClick={() => setOpenDialog(false)}
 				sx={{fontFamily: 'Orbitron'}}
@@ -158,6 +175,16 @@ export const MuteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, ch
 				Mute
 			</Button>
 		</DialogActions>
+		<Snackbar
+			open={state.toastError}
+			autoHideDuration={6000}
+			onClose={() => setState({ toastError: false })}
+			anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+		>
+			<Alert variant="filled" onClose={() => setState({ toastError: false })} severity="error" sx={{ width: '100%' }}>
+				{state.toastMessage}
+			</Alert>
+		</Snackbar>
 	</>
 	)
 }
