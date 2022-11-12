@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState, useEffect } from "react";
 import { Drawer, Box } from '@mui/material';
-import ExtraContent from "./ContentPanel/ExtraContent";
+import ChatMessages from "./ContentPanel/chatMessages/ChatMessages";
 import ControlPanel from "./ControlPanel/ControlPanel";
 import ChannelsAdminPanel from "./ContentPanel/ChannelsAdminPanel";
 import axios, { AxiosRequestHeaders } from "axios";
@@ -55,7 +55,7 @@ export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDraw
 				<Box>
 					{
 						extraContent &&
-						<ExtraContent activeChannel={activeChannel} isDM={isDM}/>
+						<ChatMessages activeChannel={activeChannel} isDM={isDM}/>
 					}
 					{
 						channelsAdminPanel && (activeChannel > 0) && !isDM && 

@@ -30,3 +30,13 @@ export const typographyCSS = {
 	paddingLeft: '1.7vh',
 	whiteSpace: 'pre-wrap', overflowWrap: 'break-word', width: '24vw'
 }
+
+export const messagesBorderCSS = {
+	minWidth: '50vw',
+	height: '64vh',
+	background: '#F5F5F5',
+	border: 4,
+	borderColor: '#212980',
+	borderRadius: 3,
+	boxShadow: 5
+}
