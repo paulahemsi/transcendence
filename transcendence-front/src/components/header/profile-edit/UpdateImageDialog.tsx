@@ -1,8 +1,7 @@
 import React, { FunctionComponent, useState } from "react";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, } from "@mui/material"
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
-import { ImageUpload } from './ImageUpload';
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -17,20 +16,45 @@ interface Props {
 	setUserData: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>;
 }
 
-export const UpdateImageDialog : FunctionComponent<Props> = ({ open, setOpen, userData ,setUserData }) => {
-	const [imageUrl, setImageUrl] = useState("");
+const ImageUpload = ({ setSelectedFile } : { setSelectedFile: React.Dispatch<React.SetStateAction<File | null>> }) => {
 
-	const handleSave = () => {
+	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
+		const filesList = event.target.files;
+		if (filesList === null) return;
+		setSelectedFile(filesList[0]);
+	}
+
+	return(
+		<div>
+			<input type='file' name='file' onChange={handleChange} />
+		</div>
+	)
+}
+
+export const UpdateImageDialog : FunctionComponent<Props> = ({ open, setOpen, userData ,setUserData }) => {
+	const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+	const handleSave = async () => {
+		const formData = new FormData();
+		const authToken: AxiosRequestHeaders = {
+			'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 		const tokenData: tokenData = jwt(document.cookie);
-		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+	
+		if (selectedFile === null) return;
+		formData.append('image', selectedFile);
+		axios.post('http://localhost:3000/images', formData, {headers: authToken})
+		.then((response) => {
+			if (response.data.url != "") {
+				const imageUrl = response.data.url;
+				axios.patch(`http://localhost:3000/users/${tokenData.id}`, { "image_url": imageUrl }, { headers: authToken }).then( () => {
+					userData.image_url = imageUrl;
+					setUserData(userData);
+					setOpen(false);
+				})
+			}
 		
-		if (imageUrl != "") {
-			axios.patch(`http://localhost:3000/users/${tokenData.id}`, { "image_url": imageUrl }, { headers: authToken }).then( () => {
-				userData.image_url = imageUrl;
-				setUserData(userData);
-				setOpen(false);
-			})
-		}
+		})
+		.catch((response) => { console.log(response.response.data.message); });
 	}
 	
 	const handleClose = () => {
@@ -44,7 +68,7 @@ export const UpdateImageDialog : FunctionComponent<Props> = ({ open, setOpen, us
 					Edit Image
 				</DialogTitle>
 				<DialogContent>
-				<ImageUpload setImageUrl={setImageUrl}/>
+				<ImageUpload setSelectedFile={setSelectedFile}/>
 				</DialogContent>
 				<DialogActions>
 				<Button
