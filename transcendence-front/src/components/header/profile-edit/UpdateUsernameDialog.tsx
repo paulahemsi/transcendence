@@ -1,5 +1,5 @@
-import React, { FunctionComponent, useReducer, useState } from "react";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, } from "@mui/material"
+import React, { FunctionComponent, useReducer } from "react";
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, TextField, } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 
@@ -17,6 +17,7 @@ interface Props {
 }
 
 const DEFAULT_TOAST_MSG = "ooops, something went wrong"
+const REPEATED_NAME = "oops! It seem's there's already an user with this name. Please try another one"
 
 const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
 	return {...state, ...newState};
@@ -42,6 +43,8 @@ export const UpdateUsernameDialog : FunctionComponent<Props> = ({ open, setOpen,
 				userData.username = state.username;
 				setUserData(userData);
 				setOpen(false);
+			}).catch( (error) => {
+				setState({ toastError: true, toastMessage: error.response.data.statusCode == 422 ? REPEATED_NAME : DEFAULT_TOAST_MSG })
 			})
 		}
 	}
@@ -72,7 +75,7 @@ export const UpdateUsernameDialog : FunctionComponent<Props> = ({ open, setOpen,
 					type="email"
 					fullWidth
 					variant="standard"
-					value={username}
+					value={state.username}
 					onKeyDown={keyDownHandler}
 					onChange={handleChange}
 				/>
@@ -93,6 +96,16 @@ export const UpdateUsernameDialog : FunctionComponent<Props> = ({ open, setOpen,
 				</Button>
 				</DialogActions>
 			</Dialog>
+			<Snackbar
+				open={state.toastError}
+				autoHideDuration={6000}
+				onClose={() => setState({ toastError: false })}
+				anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+			>
+				<Alert variant="filled" onClose={() => setState({ toastError: false })} severity="error" sx={{ width: '100%' }}>
+					{state.toastMessage}
+				</Alert>
+			</Snackbar>
 		</>
 	)
 }
