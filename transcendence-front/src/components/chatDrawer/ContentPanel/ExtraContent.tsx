@@ -12,6 +12,10 @@ type tokenData = {
 type arraySetState = React.Dispatch<React.SetStateAction<string[]>>
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
 
+const PROFILE = "Go to profile";
+const BLOCK = "Block";
+const INVITE = "Invite to game";
+
 const chatSocket = io('/chat');
 
 const messagesBorderCSS = {
@@ -34,10 +38,8 @@ const typographyCSS = {
 }
 
 const buttonCss = {
-	// margin: '1vh',
-	// marginLeft: '10vh',
 	width: '15vw',
-	height: '7vh',
+	height: '6vh',
 	background: '#F5F5F5',
 	borderRadius: 5,
 	border: '3px solid',
@@ -172,7 +174,7 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 			justifyContent="space-between"
 			bgcolor="blue"
 			padding="3vh"
-			sx={{minWidth: '50vw', height: '80vh', background: '#F5F5F5',}}>
+			sx={{minWidth: '50vw', height: '74vh', background: '#F5F5F5',}}>
 				<Box sx={messagesBorderCSS}>
 					{
 						messagesData[0] 
@@ -213,7 +215,7 @@ const InviteToGame = () => {
 			onClick={handleClick}
 		>
 			<Typography sx={buttonTypographyCss}>
-				Invite to game
+				{INVITE}
 			</Typography>
 		</Button>
 	)
@@ -233,7 +235,7 @@ const BlockUser = () => {
 			onClick={handleClick}
 		>
 			<Typography sx={buttonTypographyCss}>
-				Block
+				{BLOCK}
 			</Typography>
 		</Button>
 	)
@@ -253,7 +255,7 @@ const GoToProfile = () => {
 			onClick={handleClick}
 		>
 			<Typography sx={buttonTypographyCss}>
-				Go profile
+				{PROFILE}
 			</Typography>
 		</Button>
 	)
