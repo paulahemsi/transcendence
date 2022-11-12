@@ -3,6 +3,7 @@ import { Drawer, Box } from '@mui/material';
 import ExtraContent from "./ContentPanel/ExtraContent";
 import ControlPanel from "./ControlPanel/ControlPanel";
 import ChannelsAdminPanel from "./ContentPanel/ChannelsAdminPanel";
+import axios, { AxiosRequestHeaders } from "axios";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
@@ -17,10 +18,27 @@ export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDraw
 	const [extraContent, setExtraContent] = useState(false);
 	const [channelsAdminPanel, setChannelsAdminPanel] = useState(false);
 	const [activeChannel, setActiveChannel] = useState(-1)
+	const [isDM, setIsDM] = useState(false);
+
+	const requestChannelInfos = async () => {
+		if (activeChannel <= 0) {
+			return ;
+		}
+		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+		await axios.get(`http://localhost:4444/channels/${activeChannel}`, { headers: authToken }).then((response) => {
+			if (response.data.name === "directMessage") {
+				setIsDM(true);
+			} else {
+				setIsDM(false);
+			}
+		})
+	}
 
 	if (activeChannel === 0) {
 		setOpenDrawer(false);
 	}
+	
+	useEffect(() => {requestChannelInfos()}, [activeChannel]);
 	
 	return (
 		<>
@@ -40,7 +58,7 @@ export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDraw
 						<ExtraContent activeChannel={activeChannel} />
 					}
 					{
-						channelsAdminPanel && (activeChannel > 0) &&
+						channelsAdminPanel && (activeChannel > 0) && !isDM && 
 						<ChannelsAdminPanel
 							activeChannel={activeChannel}
 							setActiveChannel={setActiveChannel}
