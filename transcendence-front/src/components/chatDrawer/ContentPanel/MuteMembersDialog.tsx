@@ -1,9 +1,10 @@
 import React, { FunctionComponent, useEffect, useReducer } from "react"
-import { Alert, Button, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, Radio, RadioGroup, Snackbar, TextField } from "@mui/material"
+import { Button, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, Radio, RadioGroup, TextField } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import UsersList from "../ControlPanel/UsersList";
 import io from 'socket.io-client';
+import ErrorToast from "../../utils/ErrorToast";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
@@ -177,16 +178,7 @@ export const MuteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, ch
 				Mute
 			</Button>
 		</DialogActions>
-		<Snackbar
-			open={state.toastError}
-			autoHideDuration={6000}
-			onClose={() => setState({ toastError: false })}
-			anchorOrigin={{vertical: 'top', horizontal: 'right'}}
-		>
-			<Alert variant="filled" onClose={() => setState({ toastError: false })} severity="error" sx={{ width: '100%' }}>
-				{state.toastMessage}
-			</Alert>
-		</Snackbar>
+		<ErrorToast state={state} setState={setState}/>
 	</>
 	)
 }

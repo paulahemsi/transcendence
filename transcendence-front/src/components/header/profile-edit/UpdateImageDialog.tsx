@@ -1,8 +1,9 @@
-import React, { FunctionComponent, useState } from "react";
-import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar } from "@mui/material"
+import React, { FunctionComponent, useReducer } from "react";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import { Box } from "@mui/system";
+import ErrorToast from "../../utils/ErrorToast";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -19,12 +20,16 @@ interface Props {
 
 const DEFAULT_TOAST_MSG = "ooops, something went wrong"
 
-const ImageUpload = ({ setSelectedFile } : { setSelectedFile: React.Dispatch<React.SetStateAction<File | null>> }) => {
+const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
+	return {...state, ...newState};
+}
+
+const ImageUpload = ({ setState } : { setState: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>> }) => {
 
 	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
 		const filesList = event.target.files;
 		if (filesList === null) return;
-		setSelectedFile(filesList[0]);
+		setState({ selectedFile: filesList[0]});
 	}
 
 	return(
@@ -35,18 +40,20 @@ const ImageUpload = ({ setSelectedFile } : { setSelectedFile: React.Dispatch<Rea
 }
 
 export const UpdateImageDialog : FunctionComponent<Props> = ({ open, setOpen, userData ,setUserData }) => {
-	const [selectedFile, setSelectedFile] = useState<File | null>(null);
-	const [toastError, setToastError] = useState(false);
-	const [toastMessage, setToastMessage] = useState(DEFAULT_TOAST_MSG);
-
+	const [state, setState] = useReducer(reducer, {
+		selectedFile: null,
+		toastError: false,
+		toastMessage: DEFAULT_TOAST_MSG,
+	});
+	
 	const handleSave = async () => {
 		const formData = new FormData();
 		const authToken: AxiosRequestHeaders = {
 			'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 		const tokenData: tokenData = jwt(document.cookie);
 	
-		if (selectedFile === null) return;
-		formData.append('image', selectedFile);
+		if (state.selectedFile === null) return;
+		formData.append('image', state.selectedFile);
 		axios.post('http://localhost:3000/images', formData, {headers: authToken})
 		.then((response) => {
 			if (response.data.url != "") {
@@ -60,7 +67,7 @@ export const UpdateImageDialog : FunctionComponent<Props> = ({ open, setOpen, us
 		
 		})
 		.catch((response) => {
-			setToastError(true);
+			setState({ toastError: true });
 		});
 	}
 	
@@ -75,7 +82,7 @@ export const UpdateImageDialog : FunctionComponent<Props> = ({ open, setOpen, us
 					Edit Image
 				</DialogTitle>
 				<DialogContent>
-				<ImageUpload setSelectedFile={setSelectedFile}/>
+				<ImageUpload setState={setState}/>
 				</DialogContent>
 				<DialogActions>
 				<Button
@@ -93,16 +100,7 @@ export const UpdateImageDialog : FunctionComponent<Props> = ({ open, setOpen, us
 				</Button>
 				</DialogActions>
 			</Dialog>
-			<Snackbar
-				open={toastError}
-				autoHideDuration={6000}
-				onClose={() => setToastError(false)}
-				anchorOrigin={{vertical: 'top', horizontal: 'right'}}
-			>
-				<Alert variant="filled" onClose={() => setToastError(false)} severity="error" sx={{ width: '100%' }}>
-					{toastMessage}
-				</Alert>
-			</Snackbar>
+			<ErrorToast state={state} setState={setState}/>
 		</>
 	)
 }
