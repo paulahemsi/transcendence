@@ -21,3 +21,12 @@ export const LIST_CSS = {
 		borderRadius: 5,
 	}
 }
+
+export const typographyCSS = {
+	color: '#212980',
+	fontFamily: 'Orbitron',
+	fontWeight: 600,
+	fontSize: '5vh',
+	paddingLeft: '1.7vh',
+	whiteSpace: 'pre-wrap', overflowWrap: 'break-word', width: '24vw'
+}

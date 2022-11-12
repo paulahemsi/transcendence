@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 import axios, { AxiosRequestHeaders } from 'axios';
 import MessagesList from "./MessagesList";
 import jwt from 'jwt-decode';
+import { typographyCSS } from "../../utils/constants";
 
 type tokenData = {
 	id: string;
@@ -26,15 +27,6 @@ const messagesBorderCSS = {
 	borderColor: '#212980',
 	borderRadius: 3,
 	boxShadow: 5
-}
-
-const typographyCSS = {
-	color: '#212980',
-	fontFamily: 'Orbitron',
-	fontWeight: 600,
-	fontSize: '5vh',
-	paddingLeft: '1.7vh',
-	whiteSpace: 'pre-wrap', overflowWrap: 'break-word', width: '24vw'
 }
 
 const buttonCss = {

@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { Box, Button, List, ListItem, Typography } from "@mui/material";
-import { LIST_CSS } from "../../utils/constants";
+import { LIST_CSS, typographyCSS } from "../../utils/constants";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type numberSetState = React.Dispatch<React.SetStateAction<number>>
@@ -27,15 +27,6 @@ const groupCSS = ( isActiveGroup : boolean ) => {
 		borderRadius: '0',
 		backgroundColor: bgColor ,
 	}
-}
-
-const typographyCSS = {
-	color: '#212980',
-	fontFamily: 'Orbitron',
-	fontWeight: 600,
-	fontSize: '5vh',
-	paddingLeft: '1.7vh',
-	whiteSpace: 'pre-wrap', overflowWrap: 'break-word', width: '24vw'
 }
 
 const NoGroups = () => {
