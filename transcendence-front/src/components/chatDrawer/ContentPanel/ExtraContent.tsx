@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useState } from "react";
-import { TextField, Box, Typography } from "@mui/material";
+import { TextField, Box, Typography, Button } from "@mui/material";
 import io from 'socket.io-client';
 import axios, { AxiosRequestHeaders } from 'axios';
 import MessagesList from "./MessagesList";
@@ -31,6 +31,29 @@ const typographyCSS = {
 	fontSize: '5vh',
 	paddingLeft: '1.7vh',
 	whiteSpace: 'pre-wrap', overflowWrap: 'break-word', width: '24vw'
+}
+
+const buttonCss = {
+	// margin: '1vh',
+	// marginLeft: '10vh',
+	width: '15vw',
+	height: '7vh',
+	background: '#F5F5F5',
+	borderRadius: 5,
+	border: '3px solid',
+	borderColor: '#212980',
+	boxShadow: 7,
+	':hover': { 
+		background: '#B998FF',
+		borderColor: '#B998FF'
+	}
+}
+
+const buttonTypographyCss = {
+	textTransform: 'lowercase',
+	fontFamily: 'Orbitron',
+	fontSize: '2.5vh',
+	color: '#311B92',
 }
 
 const noMessages = "it's so quiet in here ......"
@@ -176,7 +199,77 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 	)
 }
 
-export const ExtraContent = ( { activeChannel } : { activeChannel : number }) => {
+const InviteToGame = () => {
+	
+	const handleClick = () => {
+		
+	}
+	
+	return (
+		<Button
+			variant="outlined"
+			size="large"
+			sx={buttonCss}
+			onClick={handleClick}
+		>
+			<Typography sx={buttonTypographyCss}>
+				Invite to game
+			</Typography>
+		</Button>
+	)
+}
+
+const BlockUser = () => {
+	
+	const handleClick = () => {
+		
+	}
+	
+	return (
+		<Button
+			variant="outlined"
+			size="large"
+			sx={buttonCss}
+			onClick={handleClick}
+		>
+			<Typography sx={buttonTypographyCss}>
+				Block
+			</Typography>
+		</Button>
+	)
+}
+
+const GoToProfile = () => {
+	
+	const handleClick = () => {
+		
+	}
+	
+	return (
+		<Button
+			variant="outlined"
+			size="large"
+			sx={buttonCss}
+			onClick={handleClick}
+		>
+			<Typography sx={buttonTypographyCss}>
+				Go profile
+			</Typography>
+		</Button>
+	)
+}
+
+const DMButtons = () => {
+	return (
+		<Box display="flex" justifyContent="space-around" minWidth="50vw" marginTop="1vh">
+			<InviteToGame/>
+			<BlockUser/>
+			<GoToProfile/>
+		</Box>
+	)
+}
+
+export const ExtraContent = ( { activeChannel, isDM } : { activeChannel : number, isDM: boolean }) => {
 	const [state, setState] = useReducer(reducer, {
 		joined: false,
 		muted: false,
@@ -210,6 +303,10 @@ export const ExtraContent = ( { activeChannel } : { activeChannel : number }) =>
 	
 	return (
 		<>
+			{
+				state.joined && isDM &&
+				<DMButtons />
+			}
 			{
 				state.joined && 
 				<ChannelMessage activeChannel={activeChannel} />
