@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { Chip, List, ListItem } from "@mui/material";
 import jwt from 'jwt-decode';
-import { listCss } from "../../utils/constants";
+import { LIST_CSS } from "../../utils/constants";
 
 type tokenData = {
 	id: string;
@@ -61,7 +61,7 @@ export const MessagesList : FunctionComponent<Props> = ({ messagesData }) => {
 	})
 
 	return (
-		<List disablePadding sx={listCss} >
+		<List disablePadding sx={LIST_CSS} >
 			{messages}
 		</List>
 		

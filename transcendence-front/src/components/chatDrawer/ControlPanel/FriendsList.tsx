@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { Box, Button, List, ListItem, Typography } from "@mui/material";
 import FriendsInfo from "./FriendsInfo";
-import { listCss } from "../../utils/constants";
+import { LIST_CSS } from "../../utils/constants";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type numberSetState = React.Dispatch<React.SetStateAction<number>>
@@ -78,7 +78,7 @@ export const FriendsList : FunctionComponent<Props> = ({ friendsData, setExtraCo
 			?
 			<List 
 				disablePadding 
-				sx=	{listCss}
+				sx=	{LIST_CSS}
 			>
 				{friends}
 			</List>

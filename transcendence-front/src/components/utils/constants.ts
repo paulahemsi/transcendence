@@ -1,7 +1,7 @@
 
 export const DEFAULT_TOAST_MSG = "ooops, something went wrong";
 
-export const listCss = { 
+export const LIST_CSS = { 
 	width: '100%',  height: '64vh', position: 'relative', overflow: 'auto',   overflowY: "auto",
 	margin: 0,
 	padding: 0,

@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { Box, Button, List, ListItem, Typography } from "@mui/material";
-import { listCss } from "../../utils/constants";
+import { LIST_CSS } from "../../utils/constants";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type numberSetState = React.Dispatch<React.SetStateAction<number>>
@@ -95,7 +95,7 @@ export const GroupsList : FunctionComponent<Props> = ({ groupsData, setChannelsA
 				?
 				<List
 					disablePadding
-					sx={listCss}
+					sx={LIST_CSS}
 				>
 					{groups}
 				</List>
