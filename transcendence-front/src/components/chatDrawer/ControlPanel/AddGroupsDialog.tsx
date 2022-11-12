@@ -1,5 +1,5 @@
-import React, { useState, FunctionComponent, useEffect } from "react"
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
+import React, { FunctionComponent, useEffect, useReducer } from "react"
+import { Button, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import SearchGroupsList from "./SearchGroupsList";
@@ -31,26 +31,33 @@ interface Props {
 	setGroupsData: objectSetState;
 }
 
+const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
+	return {...state, ...newState};
+}
+
+
 export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setGroupsData }) => {
-	const [groupsList, setGroupsList] = useState<{[key: string]: any}>({});
-	const [loading, setLoading] = useState<boolean>(true);
-	const [searchQuery, setSearchQuery] = useState("");
-	const [title, setTitle] = useState(JOIN_TITLE);
-	const [label, setLabel] = useState(JOIN_LABEL);
-	const [button, setButton] = useState(JOIN_BUTTON);
+	const [state, setState] = useReducer(reducer, {
+		groupsList: {},
+		loading: true,
+		searchQuery: "",
+		title: JOIN_TITLE,
+		label: JOIN_LABEL,
+		button: JOIN_BUTTON,
+		groupName: "",
+		password: "",
+	});
 
 	const tokenData: tokenData = jwt(document.cookie);
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-
-	const [groupName, setGroupName] = useState("");
-	const [password, setPassword] = useState("");
 	
 	const handleQuery = (event :  React.ChangeEvent<HTMLInputElement>) => {
-		setSearchQuery(event.target.value);
+		setState({ searchQuery: event.target.value });
 	}
 
 	const selectedGroup = (name: string) => {
-		return groupsList.filter((group: {[key: string]: any}) => group.name === name)
+		const group = state.groupsList.filter((group: {[key: string]: any}) => group.name === name)
+		return group;
 	}
 
 	const requestGroupsData = async () => {
@@ -64,8 +71,7 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 					}
 					groupsList.push(newGroup);
 			});
-			setGroupsList(groupsList);
-			setLoading(false);
+			setState({ groupsList: groupsList, loading: false });
 		})
 	}
 
@@ -76,10 +82,10 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 	}
 	
 	const handleSave = () => {
-		const group = selectedGroup(groupName);
+		const group = state.title === JOIN_TITLE ? selectedGroup(state.searchQuery) : selectedGroup(state.groupName);
 		axios.post(`http://localhost:3000/channels/${group[0].id}/members`, {
 			"userId": tokenData.id,
-			"password": searchQuery
+			"password": state.searchQuery
 		}, { headers: authToken }).then( () => {
 			setUserGroupsData();
 			setOpenDialog(false);
@@ -90,27 +96,24 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 	}
 	
 	const handleJoin = () => {
-		setPassword(searchQuery);
+		setState({ password: state.searchQuery });
 		handleSave();
 	}
 	
 	const handleAdd = () => {
-		setGroupName(searchQuery);
-		const group = selectedGroup(searchQuery);
+		setState({ groupName: state.searchQuery, loading: true, password: "abobora" });
+		const group = selectedGroup(state.searchQuery);
 		if ( group[0].type === PUBLIC ) {
 			handleSave();
 		} else if ( group[0].type === PROTECTED ) {
-			setTitle(PASSWORD_TITLE);
-			setLabel(PASSWORD_LABEL);
-			setButton(PASSWORD_BUTTON);
-			setSearchQuery("");
+			setState({ title: PASSWORD_TITLE, label: PASSWORD_LABEL, button: PASSWORD_BUTTON, searchQuery: "" });
 		}
 	}
 
 	const keyDownHandler = ( event :  React.KeyboardEvent<HTMLInputElement>) => {
 		if (event.key === 'Enter') {
 			event.preventDefault();
-			(title === JOIN_TITLE) ? handleAdd() : handleJoin();
+			(state.title === JOIN_TITLE) ? handleAdd() :  handleJoin() ;
 		}
 	}
 
@@ -119,7 +122,7 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 	return (
 		<>
 		<DialogTitle sx={{fontFamily: 'Orbitron'}}>
-			{title}
+			{state.title}
 		</DialogTitle>
 		<DialogContent>
 			<TextField
@@ -129,15 +132,15 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 				type="email"
 				fullWidth
 				variant="standard"
-				label={label}
-				value={searchQuery}
+				label={state.label}
+				value={state.searchQuery}
 				onKeyDown={keyDownHandler}
 				onChange={handleQuery}
 			/>
 		</DialogContent>
 		{
-			!loading && ( title === JOIN_TITLE ) &&
-			<SearchGroupsList groupsList={groupsList} searchQuery={searchQuery} />
+			!state.loading && ( state.title === JOIN_TITLE ) &&
+			<SearchGroupsList groupsList={state.groupsList} searchQuery={state.searchQuery} />
 		}
 		<DialogActions>
 		<Button
@@ -148,10 +151,10 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 		</Button>
 		<Button
 			variant="contained"
-			onClick={(title === JOIN_TITLE) ? handleAdd : handleJoin}
+			onClick={((state.title === JOIN_TITLE) ? handleAdd : handleJoin)}
 			sx={{fontFamily: 'Orbitron'}}
 		>
-			{button}
+			{state.button}
 		</Button>
 		</DialogActions>
 	</>
