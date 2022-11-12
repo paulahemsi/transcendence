@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useReducer, useState } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
@@ -16,20 +16,30 @@ interface Props {
 	setUserData: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>;
 }
 
+const DEFAULT_TOAST_MSG = "ooops, something went wrong"
+
+const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
+	return {...state, ...newState};
+}
+
 export const UpdateUsernameDialog : FunctionComponent<Props> = ({ open, setOpen, userData ,setUserData }) => {
-	const [username, setUsername] = useState("");
+	const [state, setState] = useReducer(reducer, {
+		username: "",
+		toastError: false,
+		toastMessage: DEFAULT_TOAST_MSG,
+	});
 
 	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
-		setUsername(event.target.value);
+		setState({ username: event.target.value });
 	}
 
 	const handleSave = () => {
 		const tokenData: tokenData = jwt(document.cookie);
 		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 		
-		if (username != "") {
-			axios.patch(`http://localhost:3000/users/${tokenData.id}`, { "username": username }, { headers: authToken }).then( () => {
-				userData.username = username;
+		if (state.username != "") {
+			axios.patch(`http://localhost:3000/users/${tokenData.id}`, { "username": state.username }, { headers: authToken }).then( () => {
+				userData.username = state.username;
 				setUserData(userData);
 				setOpen(false);
 			})
