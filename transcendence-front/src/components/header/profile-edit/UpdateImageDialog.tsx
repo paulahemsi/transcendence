@@ -4,6 +4,7 @@ import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import { Box } from "@mui/system";
 import ErrorToast from "../../utils/ErrorToast";
+import { DEFAULT_TOAST_MSG } from "../../utils/constants";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -17,8 +18,6 @@ interface Props {
 	userData: { [key: string]: any; };
 	setUserData: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>;
 }
-
-const DEFAULT_TOAST_MSG = "ooops, something went wrong"
 
 const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
 	return {...state, ...newState};

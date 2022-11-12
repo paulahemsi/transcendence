@@ -3,6 +3,7 @@ import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, 
 import { typographyCSS } from './auxiliary'
 import { CodeTextField } from "./CodeTextField";
 import axios, { AxiosRequestHeaders } from "axios";
+import { DEFAULT_TOAST_MSG } from "../../../utils/constants";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -53,8 +54,6 @@ const disable = async (code: string) => {
 const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
 	return {...state, ...newState};
 }
-
-const DEFAULT_TOAST_MSG = "ooops, something went wrong";
 
 export const DisableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, setOpen, userData, setUserData }) => {
 	const [state, setState] = useReducer(reducer, {

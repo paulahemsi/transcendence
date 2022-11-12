@@ -3,6 +3,7 @@ import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, 
 import axios, { AxiosRequestHeaders } from 'axios';
 import { typographyCSS } from './auxiliary'
 import { CodeTextField } from "./CodeTextField";
+import { DEFAULT_TOAST_MSG } from "../../../utils/constants";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -16,7 +17,6 @@ interface Props {
 const qrCodeMessage = 'Scan the image bellow with the two-factor authentication app on your phone.'
 const sixDigitCodeMessage = 'After scanning the QR code image, the app will display a six-digit code.'
 const enterCodeMessage = 'Enter code below and confirm to enable two-factor authentication.'
-const DEFAULT_TOAST_MSG = "ooops, something went wrong";
 
 const getQRcode = async ({ setState } : { setState: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>}) => {
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};

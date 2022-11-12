@@ -5,6 +5,7 @@ import jwt from 'jwt-decode';
 import UsersList from "../ControlPanel/UsersList";
 import io from 'socket.io-client';
 import ErrorToast from "../../utils/ErrorToast";
+import { DEFAULT_TOAST_MSG } from "../../utils/constants";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
@@ -23,8 +24,6 @@ const TIME2MIN = 120000;
 const TIME5MIN = 300000;
 
 const chatSocket = io('/chat');
-
-const DEFAULT_TOAST_MSG = "ooops, something went wrong";
 
 const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) => {
 	return { ...state, ...newState };

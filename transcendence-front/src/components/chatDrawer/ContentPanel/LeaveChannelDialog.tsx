@@ -3,6 +3,7 @@ import { Button, DialogActions, DialogTitle } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import ErrorToast from "../../utils/ErrorToast";
+import { DEFAULT_TOAST_MSG } from "../../utils/constants";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
@@ -18,8 +19,6 @@ interface Props {
 	setMembersMockData: objectSetState;
 	setActiveChannel : numberSetState;
 }
-
-const DEFAULT_TOAST_MSG = "ooops, something went wrong";
 
 const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) => {
 	return { ...state, ...newState};

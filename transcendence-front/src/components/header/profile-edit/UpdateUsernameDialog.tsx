@@ -2,6 +2,7 @@ import React, { FunctionComponent, useReducer } from "react";
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, TextField, } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
+import { DEFAULT_TOAST_MSG } from "../../utils/constants";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -16,7 +17,6 @@ interface Props {
 	setUserData: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>;
 }
 
-const DEFAULT_TOAST_MSG = "ooops, something went wrong"
 const REPEATED_NAME = "oops! It seem's there's already an user with this name. Please try another one"
 const EMPTY_NAME = "You must choose a name (:"
 
