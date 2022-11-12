@@ -11,6 +11,7 @@ interface Props {
 	setChannelsAdminPanel: booleanSetState;
     setExtraContent: booleanSetState;
 	setActiveChannel: numberSetState;
+	activeChannel: number;
 }
 
 const typographyCSS = {
@@ -20,6 +21,20 @@ const typographyCSS = {
 	fontSize: '5vh',
 	paddingLeft: '1.7vh',
 	whiteSpace: 'pre-wrap', overflowWrap: 'break-word', width: '24vw'
+}
+
+const friendsCSS = ( isActiveGroup : boolean ) => {
+	const bgColor = isActiveGroup ? '#B998FF' : '#F5F5F5';
+
+	return {
+		'&:hover': {
+			backgroundColor: '#B998FF',
+		},
+		width: '100%',
+		textTransform: 'lowercase',
+		borderRadius: '0',
+		backgroundColor: bgColor ,
+	}
 }
 
 const noFriends = "you dont have any friends yet \r\n\r\n :("
@@ -43,20 +58,12 @@ const NoFriends = () => {
 	)
 }
 
-const onHoverFriend = {
-	'&:hover': {
-		backgroundColor: '#B998FF',
-	},
-	width: '100%',
-	textTransform: 'lowercase',
-	borderRadius: '0'
-}
-
-export const FriendsList : FunctionComponent<Props> = ({ friendsData, setExtraContent, setActiveChannel, setChannelsAdminPanel }) => {
+export const FriendsList : FunctionComponent<Props> = ({ friendsData, setExtraContent, setActiveChannel, activeChannel, setChannelsAdminPanel }) => {
 	
 	const friends = [] as JSX.Element[];
 	friendsData.forEach((element : {[key: string]: any}) => {
-		
+		const isActiveGroup = element.channel === activeChannel;
+
 		const handleClick = () => {
 			setActiveChannel(element.channel);
 			setExtraContent(true);
@@ -65,7 +72,7 @@ export const FriendsList : FunctionComponent<Props> = ({ friendsData, setExtraCo
 
 		friends.push(
 		<ListItem disablePadding key={element.username} sx={{marginBottom: '1vh'}}> 
-			<Button sx={onHoverFriend} onClick={handleClick}>
+			<Button sx={friendsCSS(isActiveGroup)} onClick={handleClick}>
 				<FriendsInfo userData={element}/>
 			</Button>
 		</ListItem>);

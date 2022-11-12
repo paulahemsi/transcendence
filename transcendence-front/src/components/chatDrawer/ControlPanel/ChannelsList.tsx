@@ -25,6 +25,7 @@ export const ChannelsList : FunctionComponent<Props> = ({ setExtraContent, setCh
 				setExtraContent={setExtraContent}
 				setActiveChannel={setActiveChannel}
 				setChannelsAdminPanel={setChannelsAdminPanel}
+				activeChannel={activeChannel}
 				loading={loading}
 			/>
 		)
