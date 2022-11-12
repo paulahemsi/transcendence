@@ -1,7 +1,8 @@
 import React, { FunctionComponent, useState } from "react";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
+import { Box } from "@mui/system";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -16,6 +17,8 @@ interface Props {
 	setUserData: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>;
 }
 
+const DEFAULT_TOAST_MSG = "ooops, something went wrong"
+
 const ImageUpload = ({ setSelectedFile } : { setSelectedFile: React.Dispatch<React.SetStateAction<File | null>> }) => {
 
 	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
@@ -25,14 +28,16 @@ const ImageUpload = ({ setSelectedFile } : { setSelectedFile: React.Dispatch<Rea
 	}
 
 	return(
-		<div>
-			<input type='file' name='file' onChange={handleChange} />
-		</div>
+		<Box paddingTop='1vh'>
+			<input type='file' name='file' onChange={handleChange}  />
+		</Box>
 	)
 }
 
 export const UpdateImageDialog : FunctionComponent<Props> = ({ open, setOpen, userData ,setUserData }) => {
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
+	const [toastError, setToastError] = useState(false);
+	const [toastMessage, setToastMessage] = useState(DEFAULT_TOAST_MSG);
 
 	const handleSave = async () => {
 		const formData = new FormData();
@@ -54,7 +59,9 @@ export const UpdateImageDialog : FunctionComponent<Props> = ({ open, setOpen, us
 			}
 		
 		})
-		.catch((response) => { console.log(response.response.data.message); });
+		.catch((response) => {
+			setToastError(true);
+		});
 	}
 	
 	const handleClose = () => {
@@ -86,6 +93,16 @@ export const UpdateImageDialog : FunctionComponent<Props> = ({ open, setOpen, us
 				</Button>
 				</DialogActions>
 			</Dialog>
+			<Snackbar
+				open={toastError}
+				autoHideDuration={6000}
+				onClose={() => setToastError(false)}
+				anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+			>
+				<Alert variant="filled" onClose={() => setToastError(false)} severity="error" sx={{ width: '100%' }}>
+					{toastMessage}
+				</Alert>
+			</Snackbar>
 		</>
 	)
 }
