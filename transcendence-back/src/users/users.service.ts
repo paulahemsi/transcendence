@@ -110,10 +110,11 @@ export class UsersService {
     if (!username) {
       return false;
     }
-    const name = this.userRepository.find({
+    const name = await this.userRepository.findOne({
       where: {
         username: username
       }});
+    console.log(name)
     if (name) {
       return true;
     }
