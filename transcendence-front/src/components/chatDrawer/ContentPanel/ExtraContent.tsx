@@ -44,7 +44,7 @@ const buttonCss = {
 	borderRadius: 5,
 	border: '3px solid',
 	borderColor: '#212980',
-	boxShadow: 7,
+	boxShadow: 5,
 	':hover': { 
 		background: '#B998FF',
 		borderColor: '#B998FF'
