@@ -1,5 +1,5 @@
-import React, { FunctionComponent, useState } from "react";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography, } from "@mui/material"
+import React, { FunctionComponent, useReducer, useState } from "react";
+import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, Typography, } from "@mui/material"
 import { typographyCSS } from './auxiliary'
 import { CodeTextField } from "./CodeTextField";
 import axios, { AxiosRequestHeaders } from "axios";
@@ -17,10 +17,10 @@ const enterCodeMessage = 'Enter code below and confirm to disable two-factor aut
 
 const DisableContent = ({
 	code,
-	setCode, 
+	setState, 
 } : {
 	code: string,
-	setCode: React.Dispatch<React.SetStateAction<string>>,
+	setState: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>,
 }) => {
 	return (
 		<>
@@ -34,7 +34,7 @@ const DisableContent = ({
 				<Typography sx={typographyCSS(1.7)}>
 					{enterCodeMessage}
 				</Typography>
-				<CodeTextField code={code} setCode={setCode}/>
+				<CodeTextField code={code} setState={setState}/>
 			</Box>
 		</>
 	)
@@ -50,19 +50,30 @@ const disable = async (code: string) => {
 	return true;
 }
 
-export const DisableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, setOpen, userData, setUserData }) => {
+const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
+	return {...state, ...newState};
+}
 
-	const [code, setCode] = useState('');
+const DEFAULT_TOAST_MSG = "ooops, something went wrong";
+
+export const DisableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, setOpen, userData, setUserData }) => {
+	const [state, setState] = useReducer(reducer, {
+		code: "",
+		toastError: false,
+		toastMessage: DEFAULT_TOAST_MSG,
+	});
 
 	const handleDisable = () => {
-		disable(code).then((success) => {
+		disable(state.code).then((success) => {
 			if (success) {
 				userData.hasTwoFactorAuth = false;
 				setUserData(userData);
 				setOpen(false);
 			}
-			setCode('');
-		})
+			setState({ code: '' });
+		}).catch( () => {
+			setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
+		});
 	}
 	
 	const handleClose = () => {
@@ -76,7 +87,7 @@ export const DisableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, se
 					Configure Two-Factor Authentication
 				</DialogTitle>
 				<DialogContent>
-					<DisableContent code={code} setCode={setCode} />
+					<DisableContent code={state.code} setState={setState} />
 				</DialogContent>
 				<DialogActions>
 				<Button
@@ -94,6 +105,16 @@ export const DisableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, se
 				</Button>
 				</DialogActions>
 			</Dialog>
+			<Snackbar
+				open={state.toastError}
+				autoHideDuration={6000}
+				onClose={() => setState({ toastError: false })}
+				anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+			>
+				<Alert variant="filled" onClose={() => setState({ toastError: false })} severity="error" sx={{ width: '100%' }}>
+					{state.toastMessage}
+				</Alert>
+			</Snackbar>
 		</>
 	)
 }

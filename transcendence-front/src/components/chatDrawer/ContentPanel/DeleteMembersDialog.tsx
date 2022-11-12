@@ -65,7 +65,9 @@ export const DeleteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 			});
 
 			setState({ usersName: membersName, loading: false });
-		})
+		}).catch( () => {
+			setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
+		});
 	}
 
 	const handleSave = () => {

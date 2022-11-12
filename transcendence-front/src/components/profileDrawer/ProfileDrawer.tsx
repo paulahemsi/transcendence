@@ -18,7 +18,7 @@ const requestUserProfile = async ({ setUserProfile } : { setUserProfile: React.D
 	
 	axios.get(`http://localhost:3000/users/${tokenData.id}/profile`, { headers: authToken }).then((response) => {
 		setUserProfile(response.data);
-	})
+	}).catch( () => {});
 }
 
 export const ProfileCard = ({ setOpenCard } : { setOpenCard: booleanSetState })  => {

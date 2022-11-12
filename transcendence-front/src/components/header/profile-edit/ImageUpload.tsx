@@ -23,7 +23,7 @@ export const ImageUpload: FunctionComponent<Props> = ({ setImageUrl }) => {
 		formData.append('image', selectedFile);
 		axios.post('http://localhost:3000/images', formData, {headers: authToken})
 		.then((response) => { setImageUrl(response.data.url); })
-		.catch((response) => { console.log(response.response.data.message); });
+		.catch( () => {});
 	}
 
 	return(

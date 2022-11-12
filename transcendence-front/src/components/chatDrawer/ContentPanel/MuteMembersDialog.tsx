@@ -117,7 +117,9 @@ export const MuteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, ch
 			});
 
 			setState({ usersName: membersName, loading: false });
-		})
+		}).catch( () => {
+			setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
+		});
 	}
 
 	const handleSave = () => {

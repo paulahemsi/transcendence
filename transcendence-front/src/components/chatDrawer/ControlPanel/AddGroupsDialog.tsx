@@ -75,13 +75,17 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 					groupsList.push(newGroup);
 			});
 			setState({ groupsList: groupsList, loading: false });
-		})
+		}).catch( () => {
+			setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
+		});
 	}
 
 	const setUserGroupsData = async () => {
 		await axios.get(`http://localhost:3000/users/${tokenData.id}/channels`, { headers: authToken }).then((response) => {
 			setGroupsData(response.data);
-	})
+	}).catch( () => {
+		setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
+	});
 	}
 	
 	const handleSave = () => {

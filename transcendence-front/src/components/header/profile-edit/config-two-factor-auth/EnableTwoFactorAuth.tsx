@@ -1,5 +1,5 @@
-import React, { FunctionComponent, useState } from "react";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Input, TextField, Typography, } from "@mui/material"
+import React, { FunctionComponent, useReducer, useState } from "react";
+import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Input, Snackbar, TextField, Typography, } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import { typographyCSS } from './auxiliary'
 import { CodeTextField } from "./CodeTextField";
@@ -16,12 +16,12 @@ interface Props {
 const qrCodeMessage = 'Scan the image bellow with the two-factor authentication app on your phone.'
 const sixDigitCodeMessage = 'After scanning the QR code image, the app will display a six-digit code.'
 const enterCodeMessage = 'Enter code below and confirm to enable two-factor authentication.'
+const DEFAULT_TOAST_MSG = "ooops, something went wrong";
 
-
-const getQRcode = async ({ setQrcode } : { setQrcode: React.Dispatch<React.SetStateAction<string>>}) => {
+const getQRcode = async ({ setState } : { setState: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>}) => {
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 	const response = (await axios.get('http://localhost:4444/two-factor-auth/generate', { headers: authToken }));
-	setQrcode(response.data.url);
+	setState({ qrcode: response.data.url });
 }
 
 const enable = async (code: string) => {
@@ -34,11 +34,11 @@ const enable = async (code: string) => {
 	return true;
 }
 
-const QrCodeButton = ({ setQrcode } : { setQrcode: React.Dispatch<React.SetStateAction<string>>}) => {
+const QrCodeButton = ({ setState } : { setState: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>}) => {
 	return (
 		<>
 			<Button
-				onClick={() => getQRcode({setQrcode})}
+				onClick={() => getQRcode({setState})}
 				sx={{fontFamily: 'Orbitron'}}
 			>
 			qrcode	
@@ -50,11 +50,11 @@ const QrCodeButton = ({ setQrcode } : { setQrcode: React.Dispatch<React.SetState
 const EnebleQrCodeContent = ({
 	qrcode,
 	code,
-	setCode, 
+	setState, 
 } : {
 	qrcode: string ,
 	code: string,
-	setCode: React.Dispatch<React.SetStateAction<string>>,
+	setState: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>,
 }) => {
 	return (
 		<>
@@ -84,25 +84,35 @@ const EnebleQrCodeContent = ({
 				<Typography sx={typographyCSS(1.7)}>
 					{enterCodeMessage}
 				</Typography>
-				<CodeTextField code={code} setCode={setCode}/>
+				<CodeTextField code={code} setState={setState}/>
 			</Box>
 		</>
 	)
 }
 
+const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
+	return {...state, ...newState};
+}
+
 export const EnableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, setOpen, userData, setUserData }) => {
-	const [qrcode, setQrcode] = useState('');
-	const [code, setCode] = useState('');
+	const [state, setState] = useReducer(reducer, {
+		qrcode: "",
+		code: "",
+		toastError: false,
+		toastMessage: DEFAULT_TOAST_MSG,
+	});
 
 	const handleEnable = () => {
-		enable(code).then((success) => {
+		enable(state.code).then((success) => {
 			if (success) {
 				userData.hasTwoFactorAuth = true;
 				setUserData(userData);
 				setOpen(false);
 			}
-			setCode('');
-		})
+			setState({ code: '' });
+		}).catch( () => {
+			setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
+		});
 	}
 	
 	const handleClose = () => {
@@ -117,9 +127,9 @@ export const EnableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, set
 				</DialogTitle>
 				<DialogContent>
 					{
-						qrcode ?
-						<EnebleQrCodeContent qrcode={qrcode} code={code} setCode={setCode} /> :
-						<QrCodeButton setQrcode={setQrcode} />
+						state.qrcode ?
+						<EnebleQrCodeContent qrcode={state.qrcode} code={state.code} setState={setState} /> :
+						<QrCodeButton setState={setState} />
 					}
 				</DialogContent>
 				<DialogActions>
@@ -138,6 +148,16 @@ export const EnableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, set
 				</Button>
 				</DialogActions>
 			</Dialog>
+			<Snackbar
+				open={state.toastError}
+				autoHideDuration={6000}
+				onClose={() => setState({ toastError: false })}
+				anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+			>
+				<Alert variant="filled" onClose={() => setState({ toastError: false })} severity="error" sx={{ width: '100%' }}>
+					{state.toastMessage}
+				</Alert>
+			</Snackbar>
 		</>
 	)
 }

@@ -54,13 +54,17 @@ export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 				}
 			});
 			setState({ usersName: usersName, loading: false });
-		})
+		}).catch( () => {
+			setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
+		});
 	}
 
 	const requestFriendsData = async () => {
 		await axios.get(`http://localhost:3000/users/${tokenData.id}/friends`, { headers: authToken }).then((response) => {
 			setFriendsData(response.data);
-	})
+	}).catch( () => {
+		setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
+	});
 	}
 	
 	const handleSave = () => {
