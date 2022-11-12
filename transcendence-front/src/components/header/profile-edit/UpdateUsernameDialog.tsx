@@ -18,6 +18,7 @@ interface Props {
 
 const DEFAULT_TOAST_MSG = "ooops, something went wrong"
 const REPEATED_NAME = "oops! It seem's there's already an user with this name. Please try another one"
+const EMPTY_NAME = "You must choose a name (:"
 
 const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
 	return {...state, ...newState};
@@ -38,15 +39,18 @@ export const UpdateUsernameDialog : FunctionComponent<Props> = ({ open, setOpen,
 		const tokenData: tokenData = jwt(document.cookie);
 		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 		
-		if (state.username != "") {
-			axios.patch(`http://localhost:3000/users/${tokenData.id}`, { "username": state.username }, { headers: authToken }).then( () => {
-				userData.username = state.username;
-				setUserData(userData);
-				setOpen(false);
-			}).catch( (error) => {
-				setState({ toastError: true, toastMessage: error.response.data.statusCode == 422 ? REPEATED_NAME : DEFAULT_TOAST_MSG })
-			})
+		if (state.username.trim() == "") {
+			setState({ toastError: true, toastMessage: EMPTY_NAME })
+			return ;
 		}
+		
+		axios.patch(`http://localhost:3000/users/${tokenData.id}`, { "username": state.username }, { headers: authToken }).then( () => {
+			userData.username = state.username;
+			setUserData(userData);
+			setOpen(false);
+		}).catch( (error) => {
+			setState({ toastError: true, toastMessage: error.response.data.statusCode == 422 ? REPEATED_NAME : DEFAULT_TOAST_MSG })
+		})
 	}
 
 	const keyDownHandler = ( event :  React.KeyboardEvent<HTMLInputElement>) => {
