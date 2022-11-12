@@ -1,10 +1,10 @@
 import React, { useEffect, useReducer, useState } from "react";
-import { TextField, Box, Typography, Button } from "@mui/material";
+import { TextField, Box } from "@mui/material";
 import io from 'socket.io-client';
 import axios, { AxiosRequestHeaders } from 'axios';
 import MessagesList from "../MessagesList";
 import jwt from 'jwt-decode';
-import { messagesBorderCSS, typographyCSS } from "../../../utils/constants";
+import { messagesBorderCSS } from "../../../utils/constants";
 import DMButtons from "./DMButtons";
 import Muted from "./Muted";
 import NoMessages from "./NoMessages";
