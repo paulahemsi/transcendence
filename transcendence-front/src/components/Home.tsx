@@ -66,7 +66,8 @@ const requestFriendsData = async ({ setFriendsData } : { setFriendsData: React.D
 }
 
 export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
-	
+	const tokenData: tokenData = jwt(document.cookie);
+
 	const [openDrawer, setOpenDrawer] = useState(false)
 	const [openCard, setOpenCard] = useState(false)
 	const [friendsData, setFriendsData] = useState<{[key: string]: any}>({});
@@ -79,7 +80,7 @@ export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 	return (
 		<>
 			<Header setOpenDrawer={setOpenDrawer} setOpenCard={setOpenCard} numberOfFriends={friendsData.length}/>
-			{ openCard && <ProfileCard setOpenCard={setOpenCard}/> }
+			{ openCard && <ProfileCard setOpenCard={setOpenCard} userId={tokenData.id}/> }
 			{ openDrawer && <ChatDrawer friendsData={friendsData} setOpenDrawer={setOpenDrawer} setFriendsData={setFriendsData} />}
 			{ gameActive ? <PhaserGame/> : <Background setGameActive={setGameActive} />}
 			<Footer setLoggedIn={setLoggedIn}/>

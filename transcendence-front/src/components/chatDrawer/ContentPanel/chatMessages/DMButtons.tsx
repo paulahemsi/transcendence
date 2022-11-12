@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Typography, Button } from "@mui/material";
+import ProfileCard from "../../../profileDrawer/ProfileDrawer";
 
 const PROFILE = "Go to profile";
 const BLOCK = "Block";
@@ -87,12 +88,20 @@ const GoToProfile = () => {
 }
 
 export const DMButtons = () => {
+	const [openCard, setOpenCard] = useState(false)
+
 	return (
-		<Box display="flex" justifyContent="space-around" minWidth="50vw" marginTop="1vh">
-			<InviteToGame/>
-			<BlockUser/>
-			<GoToProfile/>
-		</Box>
+		<>
+			<Box display="flex" justifyContent="space-around" minWidth="50vw" marginTop="1vh">
+				<InviteToGame/>
+				<BlockUser/>
+				<GoToProfile/>
+			</Box>
+			{/* {
+				openCard && 
+				<ProfileCard setOpenCard={setOpenCard}/>
+			} */}
+		</>
 	)
 }
 

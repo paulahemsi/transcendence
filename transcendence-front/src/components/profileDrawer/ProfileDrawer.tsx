@@ -11,19 +11,20 @@ type tokenData = {
 	id: string;
 }
 
-const requestUserProfile = async ({ setUserProfile } : { setUserProfile: React.Dispatch<React.SetStateAction<{[key: string]: any}>>}) => {
+const requestUserProfile = async ({ setUserProfile, userId } : { setUserProfile: React.Dispatch<React.SetStateAction<{[key: string]: any}>>, userId: string }) => {
 
-	const tokenData: tokenData = jwt(document.cookie);
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 	
-	axios.get(`http://localhost:3000/users/${tokenData.id}/profile`, { headers: authToken }).then((response) => {
+	axios.get(`http://localhost:3000/users/${userId}/profile`, { headers: authToken }).then((response) => {
 		setUserProfile(response.data);
 	}).catch( () => {});
 }
 
-export const ProfileCard = ({ setOpenCard } : { setOpenCard: booleanSetState })  => {
+export const ProfileCard = ({ setOpenCard, userId } : { setOpenCard: booleanSetState, userId: string })  => {
 	const [userProfile, setUserProfile] = useState<{[key: string]: any}>({});
-	useEffect(() => {requestUserProfile({setUserProfile})}, []);
+
+	useEffect(() => {requestUserProfile({setUserProfile, userId})}, []);
+
 	return (
 		<>
 		<Drawer open={true} transitionDuration={500} onClose={() => setOpenCard(false)} anchor="left" PaperProps={{
