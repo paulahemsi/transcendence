@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { Chip, List, ListItem } from "@mui/material";
 import jwt from 'jwt-decode';
-import { LIST_CSS } from "../../utils/constants";
+import { LIST_CSS } from "../../../utils/constants";
 
 type tokenData = {
 	id: string;
