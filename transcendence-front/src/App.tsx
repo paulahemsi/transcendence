@@ -5,6 +5,7 @@ import { useState } from 'react';
 import LoginCard from './components/LoginCard'
 import Home from './components/Home'
 import jwt from 'jwt-decode';
+import TwoFactorAuthCard from './components/TwoFactorAuthCard';
 
 type tokenData = {
 	id: string;
@@ -28,7 +29,7 @@ function isLoggedIn() {
   return validateToken(cookie);
 }
 
-export const PreHome = () => {
+const PreHome = () => {
   const[ loggedIn, setLoggedIn ] = useState(isLoggedIn());
 
 	return (
@@ -46,6 +47,7 @@ function App() {
       <Routes>
         <Route path='/' element={<PreHome/>} />
         <Route path='/login' element={<LoginCard/>} />
+        <Route path='/2fa' element={<TwoFactorAuthCard/>} />
       </Routes>
     </BrowserRouter>
   );
