@@ -1,11 +1,9 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import './App.css';
 import { useState } from 'react';
 import LoginCard from './components/LoginCard'
 import Home from './components/Home'
 import jwt from 'jwt-decode';
-import TwoFactorAuthCard from './components/TwoFactorAuthCard';
 
 type tokenData = {
 	id: string;
@@ -29,27 +27,16 @@ function isLoggedIn() {
   return validateToken(cookie);
 }
 
-const PreHome = () => {
-  const[ loggedIn, setLoggedIn ] = useState(isLoggedIn());
-
-	return (
-    <main>
-      {loggedIn
-      ? <Home setLoggedIn={setLoggedIn}/>
-      : <LoginCard/> }
-    </main>
-	);
-}
-
 function App() {
+  const[ loggedIn, setLoggedIn ] = useState(isLoggedIn());
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<PreHome/>} />
-        <Route path='/login' element={<LoginCard/>} />
-        <Route path='/2fa' element={<TwoFactorAuthCard/>} />
-      </Routes>
-    </BrowserRouter>
+  <>
+    <main>
+        {loggedIn
+        ? <Home setLoggedIn={setLoggedIn}/>
+        : <LoginCard/> }
+    </main>
+  </>
   );
 }
 
