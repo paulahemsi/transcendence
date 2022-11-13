@@ -1,11 +1,16 @@
 import Phaser from 'phaser';
-import React from 'react'
+import React, { FunctionComponent } from 'react'
 import io from 'socket.io-client';
 import { useEffect } from 'react';
 
 const gameSocket = io('/game');
 
-export const PhaserGame = ({ setScore } : { setScore: React.Dispatch<React.SetStateAction<number[]>>}) => {
+interface Props {
+	setScore: React.Dispatch<React.SetStateAction<number[]>>
+	setGameActive: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export const PhaserGame: FunctionComponent<Props> = ({setScore, setGameActive}) => {
 	useEffect(() =>  {
 		const gameConfig: Phaser.Types.Core.GameConfig = {
 			type: Phaser.AUTO,
@@ -49,6 +54,7 @@ export const PhaserGame = ({ setScore } : { setScore: React.Dispatch<React.SetSt
 
 		let player1Score: number = 0;
 		let player2Score: number = 0;
+		let endingScore: number =  4;
 
 		function preload(this: Phaser.Scene): void {
 	
@@ -129,6 +135,12 @@ export const PhaserGame = ({ setScore } : { setScore: React.Dispatch<React.SetSt
 			gameSocket.off('ball').on('ball', (msg) => {
 				console.log(msg);
 			} );
+
+			if (player1Score >= endingScore || player2Score >= endingScore) {
+				setGameActive(false);
+				sleep(1000).then(() => {game.destroy(true);});
+			}
+
 		}
 
 	function HandleCollision(this: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody) : void {
@@ -170,6 +182,7 @@ export const PhaserGame = ({ setScore } : { setScore: React.Dispatch<React.SetSt
 		this.physics.add.collider(ball, player2, HandleCollision, () => (console.log("COLLIDED WITH PLAYER 2")), player2);
 		this.physics.add.collider(ball, rightGoal, increaseP1Score, () => (console.log("COLLIDED WITH RIGHT GOAL")), rightGoal);
 		this.physics.add.collider(ball, leftGoal, increaseP2Score, () => (console.log("COLLIDED WITH LEFT GOAL")), leftGoal);
+		
 	}
 
 	}, [])

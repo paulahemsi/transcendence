@@ -65,7 +65,7 @@ const player2Score = {
 	
 }
 
-const GameScreen = () => {
+const GameScreen = ({ setGameActive } : { setGameActive: booleanSetState}) => {
 	const[ score, setScore ] = useState<number[]>([0, 0]);
 	return (
 		<Box position={'relative'}>
@@ -91,7 +91,7 @@ const GameScreen = () => {
 				</Typography>
 			</Box>
 			<Box zIndex={9}>
-				<PhaserGame setScore={setScore}/>
+				<PhaserGame setScore={setScore} setGameActive={setGameActive}/>
 			</Box>
 		</Box>
 	);
@@ -138,7 +138,7 @@ export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 			{ gameActive ? null : <Header setOpenDrawer={setOpenDrawer} setOpenCard={setOpenCard} numberOfFriends={friendsData.length}/> }
 			{ openCard && <ProfileCard setOpenCard={setOpenCard}  userId={tokenData.id}/> }
 			{ openDrawer && <ChatDrawer friendsData={friendsData} setOpenDrawer={setOpenDrawer} setFriendsData={setFriendsData} /> }
-			{ gameActive ? <GameScreen/> : <Background setGameActive={setGameActive} /> }
+			{ gameActive ? <GameScreen setGameActive={setGameActive}/> : <Background setGameActive={setGameActive} /> }
 			{ gameActive ? null : <Footer setLoggedIn={setLoggedIn}/> }
 		</>
 	);
