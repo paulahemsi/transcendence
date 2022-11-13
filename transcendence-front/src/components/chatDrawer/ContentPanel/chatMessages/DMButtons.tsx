@@ -27,6 +27,8 @@ const buttonTypographyCss = {
 	color: '#311B92',
 }
 
+type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+
 const InviteToGame = () => {
 	
 	const handleClick = () => {
@@ -67,10 +69,10 @@ const BlockUser = () => {
 	)
 }
 
-const GoToProfile = () => {
+const GoToProfile = ({ setOpenCard } : { setOpenCard: booleanSetState }) => {
 	
 	const handleClick = () => {
-		
+		setOpenCard(true);
 	}
 	
 	return (
@@ -88,19 +90,19 @@ const GoToProfile = () => {
 }
 
 export const DMButtons = () => {
-	const [openCard, setOpenCard] = useState(false)
+	const [openProfile, setOpenProfile] = useState(false)
 
 	return (
 		<>
 			<Box display="flex" justifyContent="space-around" minWidth="50vw" marginTop="1vh">
 				<InviteToGame/>
 				<BlockUser/>
-				<GoToProfile/>
+				<GoToProfile setOpenCard={setOpenProfile}/>
 			</Box>
-			{/* {
-				openCard && 
-				<ProfileCard setOpenCard={setOpenCard}/>
-			} */}
+			{
+				openProfile && 
+				<ProfileCard setOpenCard={setOpenProfile} userId="28f6f9cc-fecf-4911-bd84-17eccdd0c970"/>
+			}
 		</>
 	)
 }
