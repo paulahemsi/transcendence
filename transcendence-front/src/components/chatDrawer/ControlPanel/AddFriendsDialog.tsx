@@ -46,26 +46,28 @@ export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 	}
 
 	const requestUsersData = async () => {
+		const bloquedFriends: {[key: string]: any} = await axios.get(`http://localhost:3000/users/${tokenData.id}/block`, { headers: authToken });
+
 		await axios.get("http://localhost:3000/users/", { headers: authToken }).then((response: {[key: string]: any}) => {
 			var usersName: Array<string> = [];
 			response.data.forEach((userData: {[key: string]: any}) => {
 				if (userData.id !== tokenData.id) {
-					usersName.push(userData.username)
+					if (bloquedFriends.data.find((e: {[key: string]: any} ) => e.id == userData.id)){} else {
+						usersName.push(userData.username)
+					}
 				}
 			});
 			setState({ usersName: usersName, loading: false });
-		}).catch( () => {
-			setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
-		});
+		}).catch( () => {});
 	}
 
 	const requestFriendsData = async () => {
 		await axios.get(`http://localhost:3000/users/${tokenData.id}/friends`, { headers: authToken }).then((response) => {
-			setFriendsData(response.data);
-	}).catch( () => {
-		setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
-	});
-	}
+		setFriendsData(response.data);
+		}).catch( () => {
+			setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
+		});
+		}
 	
 	const handleSave = () => {
 		const selectedUser = state.usersName.filter((u: {[key: string]: any}) => u === state.searchQuery);
