@@ -1,8 +1,10 @@
-import React, { FunctionComponent, useState } from "react";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, } from "@mui/material"
+import React, { FunctionComponent, useReducer } from "react";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
-import { ImageUpload } from './ImageUpload';
+import { Box } from "@mui/system";
+import ErrorToast from "../../utils/ErrorToast";
+import { DEFAULT_TOAST_MSG } from "../../utils/constants";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -17,20 +19,55 @@ interface Props {
 	setUserData: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>;
 }
 
-export const UpdateImageDialog : FunctionComponent<Props> = ({ open, setOpen, userData ,setUserData }) => {
-	const [imageUrl, setImageUrl] = useState("");
+const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
+	return {...state, ...newState};
+}
 
-	const handleSave = () => {
+const ImageUpload = ({ setState } : { setState: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>> }) => {
+
+	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
+		const filesList = event.target.files;
+		if (filesList === null) return;
+		setState({ selectedFile: filesList[0]});
+	}
+
+	return(
+		<Box paddingTop='1vh'>
+			<input type='file' name='file' onChange={handleChange}  />
+		</Box>
+	)
+}
+
+export const UpdateImageDialog : FunctionComponent<Props> = ({ open, setOpen, userData ,setUserData }) => {
+	const [state, setState] = useReducer(reducer, {
+		selectedFile: null,
+		toastError: false,
+		toastMessage: DEFAULT_TOAST_MSG,
+	});
+	
+	const handleSave = async () => {
+		const formData = new FormData();
+		const authToken: AxiosRequestHeaders = {
+			'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 		const tokenData: tokenData = jwt(document.cookie);
-		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+	
+		if (state.selectedFile === null) return;
+		formData.append('image', state.selectedFile);
+		axios.post('http://localhost:3000/images', formData, {headers: authToken})
+		.then((response) => {
+			if (response.data.url != "") {
+				const imageUrl = response.data.url;
+				axios.patch(`http://localhost:3000/users/${tokenData.id}`, { "image_url": imageUrl }, { headers: authToken }).then( () => {
+					userData.image_url = imageUrl;
+					setUserData(userData);
+					setOpen(false);
+				})
+			}
 		
-		if (imageUrl != "") {
-			axios.patch(`http://localhost:3000/users/${tokenData.id}`, { "image_url": imageUrl }, { headers: authToken }).then( () => {
-				userData.image_url = imageUrl;
-				setUserData(userData);
-				setOpen(false);
-			})
-		}
+		})
+		.catch((response) => {
+			setState({ toastError: true });
+		});
 	}
 	
 	const handleClose = () => {
@@ -44,7 +81,7 @@ export const UpdateImageDialog : FunctionComponent<Props> = ({ open, setOpen, us
 					Edit Image
 				</DialogTitle>
 				<DialogContent>
-				<ImageUpload setImageUrl={setImageUrl}/>
+				<ImageUpload setState={setState}/>
 				</DialogContent>
 				<DialogActions>
 				<Button
@@ -62,6 +99,7 @@ export const UpdateImageDialog : FunctionComponent<Props> = ({ open, setOpen, us
 				</Button>
 				</DialogActions>
 			</Dialog>
+			<ErrorToast state={state} setState={setState}/>
 		</>
 	)
 }

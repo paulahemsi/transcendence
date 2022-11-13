@@ -1,8 +1,10 @@
 import React, { FunctionComponent, useEffect, useReducer } from "react"
-import { Alert, Button, DialogActions, DialogContent, DialogTitle, Snackbar, TextField } from "@mui/material"
+import { Button, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import SearchGroupsList from "./SearchGroupsList";
+import ErrorToast from "../../utils/ErrorToast";
+import { DEFAULT_TOAST_MSG } from "../../utils/constants";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
@@ -15,7 +17,6 @@ const JOIN_LABEL = 'Group name'
 const PASSWORD_LABEL = 'Password'
 const JOIN_BUTTON = 'Add'
 const PASSWORD_BUTTON = 'Join'
-const DEFAULT_TOAST_MSG = "ooops, something went wrong"
 
 type groupsData = {
 	name: string;
@@ -75,13 +76,17 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 					groupsList.push(newGroup);
 			});
 			setState({ groupsList: groupsList, loading: false });
-		})
+		}).catch( () => {
+			setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
+		});
 	}
 
 	const setUserGroupsData = async () => {
 		await axios.get(`http://localhost:3000/users/${tokenData.id}/channels`, { headers: authToken }).then((response) => {
 			setGroupsData(response.data);
-	})
+	}).catch( () => {
+		setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
+	});
 	}
 	
 	const handleSave = () => {
@@ -163,16 +168,7 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 			{state.button}
 		</Button>
 		</DialogActions>
-		<Snackbar
-			open={state.toastError}
-			autoHideDuration={6000}
-			onClose={() => setState({ toastError: false })}
-			anchorOrigin={{vertical: 'top', horizontal: 'right'}}
-		>
-			<Alert variant="filled" onClose={() => setState({ toastError: false })} severity="error" sx={{ width: '100%' }}>
-				{state.toastMessage}
-			</Alert>
-		</Snackbar>
+		<ErrorToast state={state} setState={setState}/>
 	</>
 	)
 }

@@ -4,14 +4,14 @@ import { Box } from "@mui/system";
 
 export const CodeTextField = ({
 	code,
-	setCode,
+	setState,
 } : {
 	code: string,
-	setCode: React.Dispatch<React.SetStateAction<string>>,
+	setState: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>,
 }) => {
 
 	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
-		setCode(event.target.value);
+		setState({ code: event.target.value});
 	}
 	
 	const handleKeyDown= ( event :  React.KeyboardEvent<HTMLInputElement>) => {

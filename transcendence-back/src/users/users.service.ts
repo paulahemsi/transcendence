@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateUserDto } from 'src/dto/users.dtos';
 import { ChannelMember, User } from 'src/entity';
@@ -8,6 +8,7 @@ import { Intra42UserData } from 'src/auth/strategies/intra42.strategy';
 import { channelType } from 'src/entity/channel-type.entity';
 import { ChannelTypeService } from 'src/channels/channel-type.service';
 import { status } from 'src/entity/user.entity';
+import { use } from 'passport';
 
 export class matchInfos {
   opponent: string;
@@ -105,8 +106,27 @@ export class UsersService {
     return this.userRepository.save(newUser);
   }
 
+  async isNotUnique(username: string) {
+    if (!username) {
+      return false;
+    }
+    const name = await this.userRepository.findOne({
+      where: {
+        username: username
+      }});
+    console.log(name)
+    if (name) {
+      return true;
+    }
+    return false;
+  }
+  
   async update(id: string, userDto: UpdateUserDto) {
     const user = await this.checkUser(id);
+    const repeatedName = await this.isNotUnique(userDto.username);
+    if (repeatedName) {
+      throw new UnprocessableEntityException();
+    }
     user.update(userDto);
     this.userRepository.save(user);
   }

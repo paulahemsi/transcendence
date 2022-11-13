@@ -1,8 +1,10 @@
-import React, { useState, FunctionComponent, useEffect, useReducer } from "react"
-import { Alert, Button, DialogActions, DialogContent, DialogTitle, Snackbar, TextField } from "@mui/material"
+import React, { FunctionComponent, useEffect, useReducer } from "react"
+import { Button, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import UsersList from "../ControlPanel/UsersList";
+import ErrorToast from "../../utils/ErrorToast";
+import { DEFAULT_TOAST_MSG } from "../../utils/constants";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
@@ -16,8 +18,6 @@ interface Props {
 	setOpenDialog: booleanSetState;
 	setMembersMockData: objectSetState;
 }
-
-const DEFAULT_TOAST_MSG = "ooops, something went wrong";
 
 const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) => {
 	return { ...state, ...newState};
@@ -86,7 +86,7 @@ export const AddAdminDialog : FunctionComponent<Props> = ({ setOpenDialog, setMe
 	useEffect(() => {requestUsersData()}, []);
 
 	return (
-		<>
+	<>
 		<DialogTitle sx={{fontFamily: 'Orbitron'}}>
 			Add administrator
 		</DialogTitle>
@@ -122,16 +122,7 @@ export const AddAdminDialog : FunctionComponent<Props> = ({ setOpenDialog, setMe
 			Add
 		</Button>
 		</DialogActions>
-		<Snackbar
-			open={state.toastError}
-			autoHideDuration={6000}
-			onClose={() => setState({ toastError: false })}
-			anchorOrigin={{vertical: 'top', horizontal: 'right'}}
-		>
-			<Alert variant="filled" onClose={() => setState({ toastError: false })} severity="error" sx={{ width: '100%' }}>
-				{state.toastMessage}
-			</Alert>
-		</Snackbar>
+		<ErrorToast state={state} setState={setState}/>
 	</>
 	)
 }

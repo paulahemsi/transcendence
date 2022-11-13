@@ -1,9 +1,11 @@
 import React, { FunctionComponent, useEffect, useReducer } from "react"
-import { Alert, Button, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, Radio, RadioGroup, Snackbar, TextField } from "@mui/material"
+import { Button, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, Radio, RadioGroup, TextField } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import UsersList from "../ControlPanel/UsersList";
 import io from 'socket.io-client';
+import ErrorToast from "../../utils/ErrorToast";
+import { DEFAULT_TOAST_MSG } from "../../utils/constants";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
@@ -22,8 +24,6 @@ const TIME2MIN = 120000;
 const TIME5MIN = 300000;
 
 const chatSocket = io('/chat');
-
-const DEFAULT_TOAST_MSG = "ooops, something went wrong";
 
 const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) => {
 	return { ...state, ...newState };
@@ -117,7 +117,9 @@ export const MuteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, ch
 			});
 
 			setState({ usersName: membersName, loading: false });
-		})
+		}).catch( () => {
+			setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
+		});
 	}
 
 	const handleSave = () => {
@@ -175,16 +177,7 @@ export const MuteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, ch
 				Mute
 			</Button>
 		</DialogActions>
-		<Snackbar
-			open={state.toastError}
-			autoHideDuration={6000}
-			onClose={() => setState({ toastError: false })}
-			anchorOrigin={{vertical: 'top', horizontal: 'right'}}
-		>
-			<Alert variant="filled" onClose={() => setState({ toastError: false })} severity="error" sx={{ width: '100%' }}>
-				{state.toastMessage}
-			</Alert>
-		</Snackbar>
+		<ErrorToast state={state} setState={setState}/>
 	</>
 	)
 }

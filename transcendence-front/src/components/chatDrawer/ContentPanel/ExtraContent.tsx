@@ -91,7 +91,7 @@ const requestMessagesFromChannel = async ( activeChannel : number , setMessagesD
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 	await axios.get(`http://localhost:4444/channels/${activeChannel}/messages`, { headers: authToken }).then((response) => {
 		setMessagesData(response.data);
-})
+	}).catch( () => {});
 }
 
 const requestMembersFromChannel = async ( activeChannel : number , setState : objectSetState ) =>  {
@@ -101,7 +101,7 @@ const requestMembersFromChannel = async ( activeChannel : number , setState : ob
 		if (user.length) {
 			setState({muted: user[0].muted});
 		}
-	})
+	}).catch( () => {});
 }
 
 const getUserId = () => {

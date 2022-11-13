@@ -1,7 +1,9 @@
-import React, { useState, FunctionComponent, useReducer } from "react"
-import { Alert, Button, Checkbox, DialogActions, DialogContent, DialogTitle, FormControlLabel, Snackbar, TextField } from "@mui/material"
+import React, { FunctionComponent, useReducer } from "react"
+import { Button, Checkbox, DialogActions, DialogContent, DialogTitle, FormControlLabel, TextField } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
+import ErrorToast from "../../utils/ErrorToast";
+import { DEFAULT_TOAST_MSG } from "../../utils/constants";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
@@ -19,7 +21,6 @@ interface Props {
 const PUBLIC = "PUBLIC";
 const PRIVATE = "PRIVATE";
 const PROTECTED = "PROTECTED";
-const DEFAULT_TOAST_MSG = "ooops, something went wrong";
 
 const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
 	return {...state, ...newState};
@@ -135,16 +136,7 @@ export const CreateChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 			Create
 		</Button>
 		</DialogActions>
-		<Snackbar
-			open={state.toastError}
-			autoHideDuration={6000}
-			onClose={() => setState({ toastError: false })}
-			anchorOrigin={{vertical: 'top', horizontal: 'right'}}
-		>
-			<Alert variant="filled" onClose={() => setState({ toastError: false })} severity="error" sx={{ width: '100%' }}>
-				{state.toastMessage}
-			</Alert>
-		</Snackbar>
+		<ErrorToast state={state} setState={setState}/>
 	</>
 	)
 }

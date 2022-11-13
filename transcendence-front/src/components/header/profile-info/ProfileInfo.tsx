@@ -26,7 +26,7 @@ const requestUserData = async ({ setUserData } : { setUserData: React.Dispatch<R
 		image_url: response.data.image_url,
 		external_id: response.data.external_id,
 		hasTwoFactorAuth: response.data.hasTwoFactorAuth,
-})})
+})}).catch(()=>{})
 }
 
 export const ProfileInfo = ({ setOpenCard } : { setOpenCard : booleanSetState }) => {

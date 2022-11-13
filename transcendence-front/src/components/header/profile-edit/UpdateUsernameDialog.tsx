@@ -1,7 +1,8 @@
-import React, { FunctionComponent, useState } from "react";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, } from "@mui/material"
+import React, { FunctionComponent, useReducer } from "react";
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, TextField, } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
+import { DEFAULT_TOAST_MSG } from "../../utils/constants";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -16,24 +17,40 @@ interface Props {
 	setUserData: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>;
 }
 
+const REPEATED_NAME = "oops! It seem's there's already an user with this name. Please try another one"
+const EMPTY_NAME = "You must choose a name (:"
+
+const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
+	return {...state, ...newState};
+}
+
 export const UpdateUsernameDialog : FunctionComponent<Props> = ({ open, setOpen, userData ,setUserData }) => {
-	const [username, setUsername] = useState("");
+	const [state, setState] = useReducer(reducer, {
+		username: "",
+		toastError: false,
+		toastMessage: DEFAULT_TOAST_MSG,
+	});
 
 	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
-		setUsername(event.target.value);
+		setState({ username: event.target.value });
 	}
 
 	const handleSave = () => {
 		const tokenData: tokenData = jwt(document.cookie);
 		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 		
-		if (username != "") {
-			axios.patch(`http://localhost:3000/users/${tokenData.id}`, { "username": username }, { headers: authToken }).then( () => {
-				userData.username = username;
-				setUserData(userData);
-				setOpen(false);
-			})
+		if (state.username.trim() == "") {
+			setState({ toastError: true, toastMessage: EMPTY_NAME })
+			return ;
 		}
+		
+		axios.patch(`http://localhost:3000/users/${tokenData.id}`, { "username": state.username }, { headers: authToken }).then( () => {
+			userData.username = state.username;
+			setUserData(userData);
+			setOpen(false);
+		}).catch( (error) => {
+			setState({ toastError: true, toastMessage: error.response.data.statusCode == 422 ? REPEATED_NAME : DEFAULT_TOAST_MSG })
+		})
 	}
 
 	const keyDownHandler = ( event :  React.KeyboardEvent<HTMLInputElement>) => {
@@ -62,7 +79,7 @@ export const UpdateUsernameDialog : FunctionComponent<Props> = ({ open, setOpen,
 					type="email"
 					fullWidth
 					variant="standard"
-					value={username}
+					value={state.username}
 					onKeyDown={keyDownHandler}
 					onChange={handleChange}
 				/>
@@ -83,6 +100,16 @@ export const UpdateUsernameDialog : FunctionComponent<Props> = ({ open, setOpen,
 				</Button>
 				</DialogActions>
 			</Dialog>
+			<Snackbar
+				open={state.toastError}
+				autoHideDuration={6000}
+				onClose={() => setState({ toastError: false })}
+				anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+			>
+				<Alert variant="filled" onClose={() => setState({ toastError: false })} severity="error" sx={{ width: '100%' }}>
+					{state.toastMessage}
+				</Alert>
+			</Snackbar>
 		</>
 	)
 }
