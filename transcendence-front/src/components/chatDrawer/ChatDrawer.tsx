@@ -38,6 +38,16 @@ export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDraw
 		setOpenDrawer(false);
 	}
 	
+	const getFriendId = () => {
+		if (!isDM) {
+			return ;
+		}
+		const friend = friendsData.find((element: {[key: string]: any}) => element.channel == activeChannel);
+		if (friend) {
+			return friend.id;
+		}
+	}
+	
 	useEffect(() => {requestChannelInfos()}, [activeChannel]);
 	
 	return (
@@ -55,7 +65,7 @@ export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDraw
 				<Box>
 					{
 						extraContent &&
-						<ChatMessages activeChannel={activeChannel} isDM={isDM}/>
+						<ChatMessages activeChannel={activeChannel} isDM={isDM} friendId={getFriendId()}/>
 					}
 					{
 						channelsAdminPanel && (activeChannel > 0) && !isDM && 

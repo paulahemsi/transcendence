@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Typography, Button } from "@mui/material";
+import ProfileCard from "../../../profileDrawer/ProfileDrawer";
 
 const PROFILE = "Go to profile";
 const BLOCK = "Block";
@@ -25,6 +26,8 @@ const buttonTypographyCss = {
 	fontSize: '2.5vh',
 	color: '#311B92',
 }
+
+type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
 const InviteToGame = () => {
 	
@@ -66,10 +69,10 @@ const BlockUser = () => {
 	)
 }
 
-const GoToProfile = () => {
+const GoToProfile = ({ setOpenCard } : { setOpenCard: booleanSetState }) => {
 	
 	const handleClick = () => {
-		
+		setOpenCard(true);
 	}
 	
 	return (
@@ -86,13 +89,21 @@ const GoToProfile = () => {
 	)
 }
 
-export const DMButtons = () => {
+export const DMButtons = ({ friendId } : { friendId: string }) => {
+	const [openProfile, setOpenProfile] = useState(false)
+
 	return (
-		<Box display="flex" justifyContent="space-around" minWidth="50vw" marginTop="1vh">
-			<InviteToGame/>
-			<BlockUser/>
-			<GoToProfile/>
-		</Box>
+		<>
+			<Box display="flex" justifyContent="space-around" minWidth="50vw" marginTop="1vh">
+				<InviteToGame/>
+				<BlockUser/>
+				<GoToProfile setOpenCard={setOpenProfile}/>
+			</Box>
+			{
+				openProfile && 
+				<ProfileCard setOpenCard={setOpenProfile} userId={friendId}/>
+			}
+		</>
 	)
 }
 
