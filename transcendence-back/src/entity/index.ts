@@ -7,11 +7,13 @@ import { ChannelType } from './channel-type.entity';
 import { ChannelMember } from './channel-member.entity';
 import { ChannelAdmin } from './channel-admin.entity';
 import { ConnectedUser } from './connected-user.entity';
+import { Blocked } from './blocked.entity';
 
 const entities = [
   User,
   MatchHistory,
   Friendship,
+  Blocked,
   Channel,
   Message,
   ChannelType,
@@ -24,6 +26,7 @@ export {
   User,
   MatchHistory,
   Friendship,
+  Blocked,
   Channel,
   Message,
   ChannelType,

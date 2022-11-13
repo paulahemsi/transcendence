@@ -2,12 +2,13 @@ import { Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Channel, ChannelAdmin, ChannelMember, ChannelType, Friendship, Message, User } from 'src/entity';
+import { Blocked, Channel, ChannelAdmin, ChannelMember, ChannelType, Friendship, Message, User } from 'src/entity';
 import { MatchHistory } from 'src/entity';
 import { FriendshipService } from '../friendship/friendship.service';
 import { MatchHistoryService } from 'src/match-history/match-history.service';
 import { ChannelTypeService } from 'src/channels/channel-type.service';
 import { ChannelsService } from 'src/channels/channels.service';
+import { BlockedService } from 'src/friendship/blocked.service';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ChannelsService } from 'src/channels/channels.service';
       User,
       MatchHistory,
       Friendship,
+      Blocked,
       ChannelMember,
       ChannelType,
       Channel,
@@ -25,6 +27,7 @@ import { ChannelsService } from 'src/channels/channels.service';
   controllers: [UsersController],
   providers: [
     UsersService,
+    BlockedService,
     FriendshipService,
     MatchHistoryService,
     ChannelTypeService,
