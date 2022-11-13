@@ -1,5 +1,5 @@
-import React, { useState, FunctionComponent } from "react"
-import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, TextField } from "@mui/material"
+import React, { useState, FunctionComponent, useReducer } from "react"
+import { Alert, Button, Checkbox, DialogActions, DialogContent, DialogTitle, FormControlLabel, Snackbar, TextField } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 
@@ -18,41 +18,55 @@ interface Props {
 
 const PUBLIC = "PUBLIC";
 const PRIVATE = "PRIVATE";
-const PROTECTED = "PROTECTED"
+const PROTECTED = "PROTECTED";
+const DEFAULT_TOAST_MSG = "ooops, something went wrong";
+
+const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
+	return {...state, ...newState};
+}
 
 export const CreateChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, setGroupsData, groupsData }) => {
-
-	const [channelName, setChannelName] = useState("");
-	const [password, setPassword] = useState("");
-	const [isPrivate, setIsPrivate] = useState(false);
+	const [state, setState] = useReducer(reducer, {
+		channelName: "",
+		password: "",
+		isPrivate: false,
+		toastError: false,
+		toastMessage: DEFAULT_TOAST_MSG,
+	});
 
 	const handleChannelNameChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
-		setChannelName(event.target.value);
+		setState({ channelName: event.target.value });
 	}
 	
 	const handlePasswordChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
-		setPassword(event.target.value);
+		setState({ password: event.target.value });
 	}
 
 	const handleSave = () => {
 		const tokenData: tokenData = jwt(document.cookie);
 		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 
-		const type = isPrivate ? PRIVATE : PUBLIC;
+		const type = state.isPrivate ? PRIVATE : PUBLIC;
+		
+		if (!state.channelName) {
+			setState({ toastError: true, toastMessage: "?!? you must choose a name" });
+			return;
+		}
 		
 		axios.post(`http://localhost:3000/channels`, {
-			"name": channelName,
-			"type": password ? PROTECTED : type,
+			"name": state.channelName,
+			"type": state.password ? PROTECTED : type,
 			"owner": tokenData.id,
-			"password": password,
+			"password": state.password,
 		}, { headers: authToken }).then( (response) => {
 			const newGroupsData
 			 = groupsData.map((element : {[key: string]: any}) => element);
 			newGroupsData.push(response.data);
 			setGroupsData(newGroupsData)
 			setOpenDialog(false);
-		}
-		)
+		}).catch( (error) => {
+			setState({ toastError: true, toastMessage: error.response.data.message === 'Channel name alredy exists' ? "Ooops there's already a group with this name :/" : DEFAULT_TOAST_MSG })
+		})
 	}
 	
 	const keyDownHandler = ( event :  React.KeyboardEvent<HTMLInputElement>) => {
@@ -63,8 +77,7 @@ export const CreateChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 	}
 	
 	const handleCheckBox = () => {
-		setIsPrivate(!isPrivate);
-		setPassword("");
+		setState({ isPrivate: !state.isPrivate, password: "" });
 	}
 	
 	return (
@@ -81,21 +94,21 @@ export const CreateChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 				type="email"
 				fullWidth
 				variant="standard"
-				value={channelName}
+				value={state.channelName}
 				onKeyDown={keyDownHandler}
 				onChange={handleChannelNameChange}
 			/>
 		</DialogContent>
 		<DialogContent>
 			<TextField
-				disabled={isPrivate}
+				disabled={state.isPrivate}
 				margin="dense"
 				id="name"
 				label="Channel Password"
 				type="email"
 				fullWidth
 				variant="standard"
-				value={password}
+				value={state.password}
 				onKeyDown={keyDownHandler}
 				onChange={handlePasswordChange}
 			/>
@@ -122,6 +135,16 @@ export const CreateChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 			Create
 		</Button>
 		</DialogActions>
+		<Snackbar
+			open={state.toastError}
+			autoHideDuration={6000}
+			onClose={() => setState({ toastError: false })}
+			anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+		>
+			<Alert variant="filled" onClose={() => setState({ toastError: false })} severity="error" sx={{ width: '100%' }}>
+				{state.toastMessage}
+			</Alert>
+		</Snackbar>
 	</>
 	)
 }

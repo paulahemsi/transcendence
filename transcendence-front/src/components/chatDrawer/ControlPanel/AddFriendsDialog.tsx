@@ -1,5 +1,5 @@
-import React, { useState, FunctionComponent, useEffect } from "react"
-import { Button, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
+import React, { useState, FunctionComponent, useEffect, useReducer } from "react"
+import { Alert, Button, DialogActions, DialogContent, DialogTitle, Snackbar, TextField } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import UsersList from "./UsersList";
@@ -16,15 +16,26 @@ interface Props {
 	setFriendsData: objectSetState;
 }
 
+const DEFAULT_TOAST_MSG = "ooops, something went wrong";
+
+const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
+	return {...state, ...newState};
+}
+
 export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, setFriendsData }) => {
-	const [usersName, setUsersName] = useState<string[]>([]);
-	const [loading, setLoading] = useState<boolean>(true);
-	const [searchQuery, setSearchQuery] = useState("");
+	const [state, setState] = useReducer(reducer, {
+		usersName: [],
+		loading: true,
+		searchQuery: "",
+		toastError: false,
+		toastMessage: DEFAULT_TOAST_MSG,
+	});
+	
 	const tokenData: tokenData = jwt(document.cookie);
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 
 	const handleQuery = (event :  React.ChangeEvent<HTMLInputElement>) => {
-		setSearchQuery(event.target.value);
+		setState({ searchQuery: event.target.value });
 	}
 
 	const keyDownHandler = ( event :  React.KeyboardEvent<HTMLInputElement>) => {
@@ -42,8 +53,7 @@ export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 					usersName.push(userData.username)
 				}
 			});
-			setUsersName(usersName);
-			setLoading(false);
+			setState({ usersName: usersName, loading: false });
 		})
 	}
 
@@ -54,12 +64,21 @@ export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 	}
 	
 	const handleSave = () => {
+		const selectedUser = state.usersName.filter((u: {[key: string]: any}) => u === state.searchQuery);
+		if (!selectedUser.length) {
+			setState({ toastError: true, toastMessage: "there's no user with this name :s" });
+			return;
+		}
+
 		axios.post(`http://localhost:3000/users/${tokenData.id}/friends/by_name`, {
-			"name": searchQuery
+			"name": selectedUser[0]
 		}, { headers: authToken }).then( () => {
 			requestFriendsData();
 			setOpenDialog(false);
-		})
+		}).catch( () => {
+			setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
+			return ;
+		});
 	}
 	
 	useEffect(() => {requestUsersData()}, []);
@@ -77,14 +96,14 @@ export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 				type="email"
 				fullWidth
 				variant="standard"
-				value={searchQuery}
+				value={state.searchQuery}
 				onKeyDown={keyDownHandler}
 				onChange={handleQuery}
 			/>
 		</DialogContent>
 		{
-			!loading && 
-			<UsersList usersName={usersName} searchQuery={searchQuery} />
+			!state.loading && 
+			<UsersList usersName={state.usersName} searchQuery={state.searchQuery} />
 		}
 		<DialogActions>
 		<Button
@@ -101,6 +120,16 @@ export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 			Add
 		</Button>
 		</DialogActions>
+		<Snackbar
+			open={state.toastError}
+			autoHideDuration={6000}
+			onClose={() => setState({ toastError: false })}
+			anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+		>
+			<Alert variant="filled" onClose={() => setState({ toastError: false })} severity="error" sx={{ width: '100%' }}>
+				{state.toastMessage}
+			</Alert>
+		</Snackbar>
 	</>
 	)
 }

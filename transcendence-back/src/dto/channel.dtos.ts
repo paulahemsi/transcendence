@@ -9,7 +9,6 @@ import { channelType } from 'src/entity/channel-type.entity';
 
 export class CreateChannelDto {
   @IsNotEmpty()
-  @MinLength(3)
   name: string;
 
   @IsNotEmpty()
