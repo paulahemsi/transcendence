@@ -41,6 +41,7 @@ export class AppModule implements NestModule {
         { path: '/auth/login', method: RequestMethod.GET },
         { path: '/auth/redirect', method: RequestMethod.GET },
         { path: '/auth/logout', method: RequestMethod.GET },
+        { path: '/two-factor-auth/login', method: RequestMethod.POST },
         { path: '/images/:id/:path', method: RequestMethod.GET },
       )
       .forRoutes('');
