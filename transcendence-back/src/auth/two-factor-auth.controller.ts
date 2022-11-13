@@ -1,11 +1,24 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
-import { Request } from 'express';
+import {
+  Body,
+  Controller,
+  Get,
+  ParseUUIDPipe,
+  Post,
+  Query,
+  Req,
+  Res,
+} from '@nestjs/common';
+import { Request, Response } from 'express';
 import { TwoFactorAuthCodeDto } from 'src/dto/two-factor-auth-code.dto';
 import { TwoFactorAuthService } from './two-factor-auth.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('two-factor-auth')
 export class TwoFactorAuthController {
-  constructor(private twoFactorAuthService: TwoFactorAuthService) {}
+  constructor(
+    private twoFactorAuthService: TwoFactorAuthService,
+    private jwtService: JwtService,
+  ) {}
 
   @Get('generate')
   async generate(@Req() request: Request) {
@@ -23,5 +36,19 @@ export class TwoFactorAuthController {
   async disable(@Req() request: Request, @Body() body: TwoFactorAuthCodeDto) {
     const userId = request.user;
     return this.twoFactorAuthService.disable(`${userId}`, body.code);
+  }
+
+  @Post('login')
+  async login(
+    @Query('user', ParseUUIDPipe) userId: string,
+    @Body() body: TwoFactorAuthCodeDto,
+    @Res() response: Response,
+  ) {
+    this.twoFactorAuthService.login(`${userId}`, body.code);
+    const payload = { id: userId };
+    response.cookie('accessToken', this.jwtService.sign(payload), {
+      sameSite: 'lax',
+    });
+    return response.redirect('http://localhost:3000');
   }
 }
