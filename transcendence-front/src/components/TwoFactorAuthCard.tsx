@@ -1,46 +1,32 @@
-import React, { useState } from "react";
+import React, { useReducer, useState } from "react";
 import { Button, Card, CardActions, CardContent, Typography, Box } from '@mui/material';
 import { CodeTextField } from "./header/profile-edit/config-two-factor-auth/CodeTextField";
 import axios, { AxiosRequestHeaders } from "axios";
 import { Navigate, useSearchParams } from "react-router-dom";
-
-const authenticate = async (userId: string, code: string) => {
-	const authToken: AxiosRequestHeaders = {
-		'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-	
-	try {
-		const response = await axios.post(
-			`http://localhost:3000/two-factor-auth/login?user=${userId}`,
-			{ code: code },
-			{ headers: authToken });
-	} catch {
-		return false;
-	}
-	return true;
-}
+import { DEFAULT_TOAST_MSG } from "./utils/constants";
+import ErrorToast from "./utils/ErrorToast";
 
 
 const TwoFactorAuthButton = ({
 	userId,
 	code,
-	setCode, 
-	setVerified, 
+	setState, 
 } : {
 	userId: string,
 	code: string,
-	setCode: React.Dispatch<React.SetStateAction<string>>,
-	setVerified: React.Dispatch<React.SetStateAction<boolean>>,
+	setState: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>,
 }) => {
-	
+
 	const handleAuthentication = () => {
-		console.log('try auth')
-		authenticate(userId, code).then((success) => {
-			if (success) {
-				setVerified(true);
-				console.log('auth')
-			}
-			setCode('');
-		})
+		const authToken: AxiosRequestHeaders = {
+			'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+		
+		axios.post(`http://localhost:3000/two-factor-auth/login?user=${userId}`,{ code: code }, { headers: authToken })
+			.then(() => {
+				setState({verified: true});
+			}).catch(() => {
+				setState({code: '', toastError: true});
+			});
 	}
 	
 	return (
@@ -65,18 +51,16 @@ const TwoFactorAuthButton = ({
 const TwoFactorAuthActions = ({
 	userId,
 	code,
-	setCode, 
-	setVerified, 
+	setState, 
 } : {
 	userId: string,
 	code: string,
-	setCode: React.Dispatch<React.SetStateAction<string>>,
-	setVerified: React.Dispatch<React.SetStateAction<boolean>>,
+	setState: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>,
 }) => {
 	return (
 		<>
 			<CardActions sx={{ justifyContent: 'center', paddingTop: 8 }}>
-				<TwoFactorAuthButton userId={userId} code={code} setCode={setCode} setVerified={setVerified} />
+				<TwoFactorAuthButton userId={userId} code={code} setState={setState} />
 			</CardActions>
 		</>
 	)
@@ -86,10 +70,10 @@ const enterCodeMessage = 'Enter two-factor authentication code below '
 
 const TwoFactorAuthContent = ({
 	code,
-	setCode, 
+	setState, 
 } : {
 	code: string,
-	setCode: React.Dispatch<React.SetStateAction<string>>,
+	setState: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>,
 }) => {
 	return (
 		<>
@@ -103,17 +87,26 @@ const TwoFactorAuthContent = ({
 				>
 					{enterCodeMessage}
 				</Typography>
-				<CodeTextField code={code} setCode={setCode}/>
+				<CodeTextField code={code} setState={setState}/>
 			</CardContent>
 		</>
 	)
 }
 
+const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
+	return {...state, ...newState};
+}
+
 
 export const TwoFactorAuthCard = () => {
+	
+	const [state, setState] = useReducer(reducer, {
+		code: "",
+		verified: false,
+		toastError: false,
+		toastMessage: DEFAULT_TOAST_MSG,
+	});
 
-	const [code, setCode] = useState('');
-	const[verified, setVerified] = useState(false);
 	const [searchParams, setSearchParams] = useSearchParams();
 
 	const userId = searchParams.get('user');
@@ -122,7 +115,7 @@ export const TwoFactorAuthCard = () => {
 		return (<Navigate to='/'/>)
 	}
 	
-	if (verified) {
+	if (state.verified) {
 		return (<Navigate to='/'/>)
 	}
 
@@ -139,10 +132,11 @@ export const TwoFactorAuthCard = () => {
 					borderRadius: 3,
 					boxShadow: 5
 					}}>
-				<TwoFactorAuthContent code={code} setCode={setCode} />
-				<TwoFactorAuthActions userId={userId} code={code} setCode={setCode} setVerified={setVerified}  />
+				<TwoFactorAuthContent code={state.code} setState={setState} />
+				<TwoFactorAuthActions userId={userId} code={state.code} setState={setState}   />
 			</Card>
 		</Box>
+		<ErrorToast state={state} setState={setState} />
 	</>
 	);
 }
