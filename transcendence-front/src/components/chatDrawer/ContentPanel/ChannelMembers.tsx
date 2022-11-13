@@ -10,7 +10,7 @@ const onHoverFriend = {
 	borderRadius: '0'
 }
 
-const listCss = { 
+const LIST_CSS = { 
 	height: '55vh',
 	position: 'relative',
 	margin: 0,
@@ -46,7 +46,7 @@ export const ChannelMembers = ({ channelMembers } : { channelMembers: {[key: str
 	return (
 	<List 
 		disablePadding 
-		sx=	{listCss}
+		sx=	{LIST_CSS}
 	>
 		{members}
 	</List>

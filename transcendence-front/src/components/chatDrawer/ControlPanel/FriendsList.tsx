@@ -1,45 +1,31 @@
 import React, { FunctionComponent } from "react";
 import { Box, Button, List, ListItem, Typography } from "@mui/material";
 import FriendsInfo from "./FriendsInfo";
+import { LIST_CSS, typographyCSS } from "../../utils/constants";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type numberSetState = React.Dispatch<React.SetStateAction<number>>
-
-const listCss = { 
-	width: '100%',  height: '64vh', position: 'relative', overflow: 'auto',   overflowY: "auto",
-	margin: 0,
-	padding: 0,
-	listStyle: "none",
-	'&::-webkit-scrollbar': {
-	width: '0.4em',
-	borderRadius: 5,
-	},
-	'&::-webkit-scrollbar-track': {
-		boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
-		webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
-		borderRadius: 5,
-	},
-	'&::-webkit-scrollbar-thumb': {
-		backgroundColor: '#212980',
-		outline: 'none',
-		borderRadius: 5,
-	}
-}
 
 interface Props {
     friendsData: {[key: string]: any};
 	setChannelsAdminPanel: booleanSetState;
     setExtraContent: booleanSetState;
 	setActiveChannel: numberSetState;
+	activeChannel: number;
 }
 
-const typographyCSS = {
-	color: '#212980',
-	fontFamily: 'Orbitron',
-	fontWeight: 600,
-	fontSize: '5vh',
-	paddingLeft: '1.7vh',
-	whiteSpace: 'pre-wrap', overflowWrap: 'break-word', width: '24vw'
+const friendsCSS = ( isActiveGroup : boolean ) => {
+	const bgColor = isActiveGroup ? '#B998FF' : '#F5F5F5';
+
+	return {
+		'&:hover': {
+			backgroundColor: '#B998FF',
+		},
+		width: '100%',
+		textTransform: 'lowercase',
+		borderRadius: '0',
+		backgroundColor: bgColor ,
+	}
 }
 
 const noFriends = "you dont have any friends yet \r\n\r\n :("
@@ -63,20 +49,12 @@ const NoFriends = () => {
 	)
 }
 
-const onHoverFriend = {
-	'&:hover': {
-		backgroundColor: '#B998FF',
-	},
-	width: '100%',
-	textTransform: 'lowercase',
-	borderRadius: '0'
-}
-
-export const FriendsList : FunctionComponent<Props> = ({ friendsData, setExtraContent, setActiveChannel, setChannelsAdminPanel }) => {
+export const FriendsList : FunctionComponent<Props> = ({ friendsData, setExtraContent, setActiveChannel, activeChannel, setChannelsAdminPanel }) => {
 	
 	const friends = [] as JSX.Element[];
 	friendsData.forEach((element : {[key: string]: any}) => {
-		
+		const isActiveGroup = element.channel === activeChannel;
+
 		const handleClick = () => {
 			setActiveChannel(element.channel);
 			setExtraContent(true);
@@ -85,7 +63,7 @@ export const FriendsList : FunctionComponent<Props> = ({ friendsData, setExtraCo
 
 		friends.push(
 		<ListItem disablePadding key={element.username} sx={{marginBottom: '1vh'}}> 
-			<Button sx={onHoverFriend} onClick={handleClick}>
+			<Button sx={friendsCSS(isActiveGroup)} onClick={handleClick}>
 				<FriendsInfo userData={element}/>
 			</Button>
 		</ListItem>);
@@ -98,7 +76,7 @@ export const FriendsList : FunctionComponent<Props> = ({ friendsData, setExtraCo
 			?
 			<List 
 				disablePadding 
-				sx=	{listCss}
+				sx=	{LIST_CSS}
 			>
 				{friends}
 			</List>

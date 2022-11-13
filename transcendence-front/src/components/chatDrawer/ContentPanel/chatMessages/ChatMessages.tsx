@@ -1,9 +1,13 @@
 import React, { useEffect, useReducer, useState } from "react";
-import { TextField, Box, Typography } from "@mui/material";
+import { TextField, Box } from "@mui/material";
 import io from 'socket.io-client';
 import axios, { AxiosRequestHeaders } from 'axios';
 import MessagesList from "./MessagesList";
 import jwt from 'jwt-decode';
+import { messagesBorderCSS } from "../../../utils/constants";
+import DMButtons from "./DMButtons";
+import Muted from "./Muted";
+import NoMessages from "./NoMessages";
 
 type tokenData = {
 	id: string;
@@ -14,77 +18,8 @@ type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
 
 const chatSocket = io('/chat');
 
-const messagesBorderCSS = {
-	minWidth: '50vw',
-	height: '64vh',
-	background: '#F5F5F5',
-	border: 4,
-	borderColor: '#212980',
-	borderRadius: 3,
-	boxShadow: 5
-}
-
-const typographyCSS = {
-	color: '#212980',
-	fontFamily: 'Orbitron',
-	fontWeight: 600,
-	fontSize: '5vh',
-	paddingLeft: '1.7vh',
-	whiteSpace: 'pre-wrap', overflowWrap: 'break-word', width: '24vw'
-}
-
-const noMessages = "it's so quiet in here ......"
-const muted = "ooops! You're muted... Wait for a while..."
-
 const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) => {
 	return { ...state, ...newState };
-}
-
-const NoMessages = () => {
-	return (
-		<Box 
-			display="flex"
-			alignItems="center"
-			flexDirection="column"
-			flexWrap="wrap"
-			justifyContent="center"
-			sx={{width: '100%',  height: '50vh'}}
-		>
-			<Typography
-				sx={typographyCSS}
-			>
-				{noMessages}
-			</Typography>
-		</Box>
-	)
-}
-
-const Muted = () => {
-	return (
-		<Box
-			display="flex" 
-			flexDirection="column"
-			justifyContent="space-between"
-			bgcolor="blue"
-			padding="3vh"
-			sx={{minWidth: '50vw', height: '80vh', background: '#F5F5F5',}}
-		>
-			<Box sx={messagesBorderCSS}>
-				<Box 
-					display="flex"
-					alignItems="center"
-					flexDirection="column"
-					flexWrap="wrap"
-					justifyContent="center"
-					sx={{width: '100%',  height: '50vh'}}
-				>
-					<Typography sx={typographyCSS}>
-						{muted}
-					</Typography>
-				</Box>
-			</Box>
-		</Box>
-	)
 }
 
 const requestMessagesFromChannel = async ( activeChannel : number , setMessagesData : arraySetState ) =>  {
@@ -149,7 +84,7 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 			justifyContent="space-between"
 			bgcolor="blue"
 			padding="3vh"
-			sx={{minWidth: '50vw', height: '80vh', background: '#F5F5F5',}}>
+			sx={{minWidth: '50vw', height: '74vh', background: '#F5F5F5',}}>
 				<Box sx={messagesBorderCSS}>
 					{
 						messagesData[0] 
@@ -176,7 +111,7 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 	)
 }
 
-export const ExtraContent = ( { activeChannel } : { activeChannel : number }) => {
+export const ChatMessages = ( { activeChannel, isDM } : { activeChannel : number, isDM: boolean }) => {
 	const [state, setState] = useReducer(reducer, {
 		joined: false,
 		muted: false,
@@ -211,6 +146,10 @@ export const ExtraContent = ( { activeChannel } : { activeChannel : number }) =>
 	return (
 		<>
 			{
+				state.joined && isDM &&
+				<DMButtons />
+			}
+			{
 				state.joined && 
 				<ChannelMessage activeChannel={activeChannel} />
 			}
@@ -218,4 +157,4 @@ export const ExtraContent = ( { activeChannel } : { activeChannel : number }) =>
 	)
 }
 
-export default ExtraContent
+export default ChatMessages

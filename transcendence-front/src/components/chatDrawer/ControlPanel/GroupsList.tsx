@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { Box, Button, List, ListItem, Typography } from "@mui/material";
+import { LIST_CSS, typographyCSS } from "../../utils/constants";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type numberSetState = React.Dispatch<React.SetStateAction<number>>
@@ -14,27 +15,6 @@ interface Props {
 
 const noGroup = "you are not part of any group chats :( \r\n\r\n start or join one!"
 
-const listCss = { 
-	width: '100%',  height: '64vh', position: 'relative', overflow: 'auto',   overflowY: "auto",
-	margin: 0,
-	padding: 0,
-	listStyle: "none",
-	'&::-webkit-scrollbar': {
-	width: '0.4em',
-	borderRadius: 5,
-	},
-	'&::-webkit-scrollbar-track': {
-		boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
-		webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
-		borderRadius: 5,
-	},
-	'&::-webkit-scrollbar-thumb': {
-		backgroundColor: '#212980',
-		outline: 'none',
-		borderRadius: 5,
-	}
-}
-
 const groupCSS = ( isActiveGroup : boolean ) => {
 	const bgColor = isActiveGroup ? '#B998FF' : '#F5F5F5';
 
@@ -47,15 +27,6 @@ const groupCSS = ( isActiveGroup : boolean ) => {
 		borderRadius: '0',
 		backgroundColor: bgColor ,
 	}
-}
-
-const typographyCSS = {
-	color: '#212980',
-	fontFamily: 'Orbitron',
-	fontWeight: 600,
-	fontSize: '5vh',
-	paddingLeft: '1.7vh',
-	whiteSpace: 'pre-wrap', overflowWrap: 'break-word', width: '24vw'
 }
 
 const NoGroups = () => {
@@ -115,7 +86,7 @@ export const GroupsList : FunctionComponent<Props> = ({ groupsData, setChannelsA
 				?
 				<List
 					disablePadding
-					sx={listCss}
+					sx={LIST_CSS}
 				>
 					{groups}
 				</List>
