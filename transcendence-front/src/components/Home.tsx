@@ -40,6 +40,62 @@ const transcendenceText = {
 	margin: '2vh'
 }
 
+const player1Score = {
+	fontSize: '14vh',
+	fontFamily: 'Orbitron',
+	fontWeight: 500,
+	color: '#FFFFFF',
+	textShadow: '0px 0px 6px #FFFFFF',
+	margin: '2vh',
+	bottom: '2%',
+	left: '35%',
+	position: 'fixed'
+}
+
+const player2Score = {
+	fontSize: '14vh',
+	fontFamily: 'Orbitron',
+	fontWeight: 500,
+	color: '#FFFFFF',
+	textShadow: '0px 0px 6px #FFFFFF',
+	margin: '2vh',
+	bottom: '2%',
+	right: '35%',
+	position: 'fixed'
+	
+}
+
+const GameScreen = ({ setGameActive } : { setGameActive: booleanSetState}) => {
+	const[ score, setScore ] = useState<number[]>([0, 0]);
+	return (
+		<Box position={'relative'}>
+			<Box position={'absolute'}>
+				<Typography textAlign={'right'} sx={player1Score}>
+				{score[0]}
+				</Typography>
+			</Box>
+			<Box display="flex" flexDirection="column" justifyContent="center" position="absolute" alignItems="center" height="90vh" width="100vw">
+			<Box position={'absolute'} sx={{
+				backgroundColor: 'rgba(255,255,255,0.8)',
+				height: '80vh',
+				width: '0.5vw',
+				boxShadow: '0px 0px 6px #FFFFFF',
+				borderRadius: 5,
+				alignSelf: 'center'
+			}}>
+			</Box>
+			</Box>
+			<Box position={'absolute'}>
+				<Typography textAlign={'left'} sx={player2Score}>
+				{score[1]}
+				</Typography>
+			</Box>
+			<Box zIndex={9}>
+				<PhaserGame setScore={setScore} setGameActive={setGameActive}/>
+			</Box>
+		</Box>
+	);
+}
 
 const Background = ({ setGameActive } : { setGameActive: booleanSetState}) => {
 	return (
@@ -79,11 +135,11 @@ export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 
 	return (
 		<>
-			<Header setOpenDrawer={setOpenDrawer} setOpenCard={setOpenCard} numberOfFriends={friendsData.length}/>
-			{ openCard && <ProfileCard setOpenCard={setOpenCard} userId={tokenData.id}/> }
-			{ openDrawer && <ChatDrawer friendsData={friendsData} setOpenDrawer={setOpenDrawer} setFriendsData={setFriendsData} />}
-			{ gameActive ? <PhaserGame/> : <Background setGameActive={setGameActive} />}
-			<Footer setLoggedIn={setLoggedIn}/>
+			{ gameActive ? null : <Header setOpenDrawer={setOpenDrawer} setOpenCard={setOpenCard} numberOfFriends={friendsData.length}/> }
+			{ openCard && <ProfileCard setOpenCard={setOpenCard}  userId={tokenData.id}/> }
+			{ openDrawer && <ChatDrawer friendsData={friendsData} setOpenDrawer={setOpenDrawer} setFriendsData={setFriendsData} /> }
+			{ gameActive ? <GameScreen setGameActive={setGameActive}/> : <Background setGameActive={setGameActive} /> }
+			{ gameActive ? null : <Footer setLoggedIn={setLoggedIn}/> }
 		</>
 	);
 }
