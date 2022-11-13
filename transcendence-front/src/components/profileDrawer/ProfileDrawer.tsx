@@ -7,10 +7,6 @@ import { Loading } from "./Loading";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
-type tokenData = {
-	id: string;
-}
-
 const requestUserProfile = async ({ setUserProfile, userId } : { setUserProfile: React.Dispatch<React.SetStateAction<{[key: string]: any}>>, userId: string }) => {
 
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
