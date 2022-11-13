@@ -111,7 +111,7 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 	)
 }
 
-export const ChatMessages = ( { activeChannel, isDM } : { activeChannel : number, isDM: boolean }) => {
+export const ChatMessages = ( { activeChannel, isDM, friendId } : { activeChannel : number, isDM: boolean, friendId: string }) => {
 	const [state, setState] = useReducer(reducer, {
 		joined: false,
 		muted: false,
@@ -147,7 +147,7 @@ export const ChatMessages = ( { activeChannel, isDM } : { activeChannel : number
 		<>
 			{
 				state.joined && isDM &&
-				<DMButtons />
+				<DMButtons friendId={friendId}/>
 			}
 			{
 				state.joined && 

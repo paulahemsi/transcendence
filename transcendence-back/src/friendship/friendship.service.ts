@@ -12,6 +12,7 @@ import { UsersService } from '../users/users.service';
 
 type friendInfo = {
   username: string;
+  id: string;
   status: string;
   rating: number;
   image_url: string;
@@ -144,6 +145,7 @@ export class FriendshipService {
       const friend = {} as friendInfo;
 
       friend.username = friendship.friend.username;
+      friend.id = friendship.friend.id;
       friend.status = friendship.friend.status;
       friend.rating = friendship.friend.rating;
       friend.image_url = friendship.friend.image_url;

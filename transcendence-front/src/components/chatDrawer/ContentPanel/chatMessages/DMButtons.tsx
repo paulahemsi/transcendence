@@ -89,7 +89,7 @@ const GoToProfile = ({ setOpenCard } : { setOpenCard: booleanSetState }) => {
 	)
 }
 
-export const DMButtons = () => {
+export const DMButtons = ({ friendId } : { friendId: string }) => {
 	const [openProfile, setOpenProfile] = useState(false)
 
 	return (
@@ -101,7 +101,7 @@ export const DMButtons = () => {
 			</Box>
 			{
 				openProfile && 
-				<ProfileCard setOpenCard={setOpenProfile} userId="28f6f9cc-fecf-4911-bd84-17eccdd0c970"/>
+				<ProfileCard setOpenCard={setOpenProfile} userId={friendId}/>
 			}
 		</>
 	)
