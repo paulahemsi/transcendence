@@ -57,6 +57,11 @@ export class UsersController {
     return this.blockedService.blockFriend(userId, friend.id);
   }
   
+  @Get(':id/block')
+  getBlockedFriends(@Param('id', ParseUUIDPipe) userId: string) {
+    return this.blockedService.getBlockedFriends(userId);
+  }
+  
   @Post(':id/friends')
   @HttpCode(204)
   addFriend(

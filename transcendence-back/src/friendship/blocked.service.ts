@@ -8,6 +8,11 @@ import {
   import { Repository } from 'typeorm';
 import { FriendshipService } from './friendship.service';
 
+type blockedFriendInfo = {
+	username: string;
+	id: string;
+  };
+
   @Injectable()
   export class BlockedService {
 	constructor(
@@ -59,5 +64,31 @@ import { FriendshipService } from './friendship.service';
 	
 		await this.deleteFriendship(user.id, friend.id);
 		await this.block(user, friend);
+	  }
+	  
+	  private findAllBlockedFriends(userId: string): Promise<Blocked[]> {
+		return this.blockedRepository.find({
+		  relations: {
+			user: true,
+			friend: true,
+		  },
+		  where: [{ user: { id: userId } }],
+		});
+	  }
+	  
+	  async getBlockedFriends(userId: string) {
+		const blockedList: Awaited<Promise<Blocked[]>> =
+		  await this.findAllBlockedFriends(userId);
+		const blockedFriends: Array<blockedFriendInfo> = [];
+	
+		blockedList.map((block) => {
+		  const friend = {} as blockedFriendInfo;
+	
+		  friend.username = block.friend.username;
+		  friend.id = block.friend.id;
+		  blockedFriends.push(friend);
+		});
+	
+		return blockedFriends;
 	  }
   }
