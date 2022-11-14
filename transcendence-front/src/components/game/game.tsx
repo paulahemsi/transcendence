@@ -2,15 +2,17 @@ import Phaser from 'phaser';
 import React, { FunctionComponent } from 'react'
 import io from 'socket.io-client';
 import { useEffect } from 'react';
+import { EndGameData } from '../Home';
 
 const gameSocket = io('/game');
 
 interface Props {
 	setScore: React.Dispatch<React.SetStateAction<number[]>>
-	setGameActive: React.Dispatch<React.SetStateAction<boolean>>
+	setEndGameVisible: React.Dispatch<React.SetStateAction<boolean>>
+	setEndGameDisplay: React.Dispatch<React.SetStateAction<EndGameData>>
 }
 
-export const PhaserGame: FunctionComponent<Props> = ({setScore, setGameActive}) => {
+export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisible, setEndGameDisplay}) => {
 	useEffect(() =>  {
 		const gameConfig: Phaser.Types.Core.GameConfig = {
 			type: Phaser.AUTO,
@@ -55,6 +57,7 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setGameActive}) 
 		let player1Score: number = 0;
 		let player2Score: number = 0;
 		let endingScore: number =  4;
+		let winningPlayer: 1 | 2 | undefined = undefined;
 
 		function preload(this: Phaser.Scene): void {
 	
@@ -137,7 +140,14 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setGameActive}) 
 			} );
 
 			if (player1Score >= endingScore || player2Score >= endingScore) {
-				setGameActive(false);
+				winningPlayer = player1Score > player2Score ? 1 : 2;
+				this.scene.pause();
+				setEndGameDisplay({
+					player1Name: "PLAYER 1",
+					player2Name: "PLAYER 2",
+					winner: winningPlayer
+				})
+				setEndGameVisible(true);
 				sleep(1000).then(() => {game.destroy(true);});
 			}
 
