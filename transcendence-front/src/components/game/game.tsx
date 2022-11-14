@@ -18,6 +18,7 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 			type: Phaser.AUTO,
 			width: window.innerWidth - 4,
 			height: window.innerHeight - 4,
+			backgroundColor: '#110931',
 			physics: {
 				default: 'arcade',
 				arcade: {
