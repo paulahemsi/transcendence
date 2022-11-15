@@ -1,4 +1,6 @@
 import {
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
   UnprocessableEntityException,
@@ -28,7 +30,9 @@ type channelInfo = {
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    @Inject(forwardRef(() => MatchHistoryService))
     private readonly matchHistoryService: MatchHistoryService,
     @InjectRepository(ChannelMember)
     private readonly channelMemberRepository: Repository<ChannelMember>,

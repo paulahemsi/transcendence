@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MatchHistory } from 'src/entity';
+import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 
 export class matchInfos {
@@ -16,6 +17,8 @@ export class MatchHistoryService {
   constructor(
     @InjectRepository(MatchHistory)
     private readonly matchHistoryRepository: Repository<MatchHistory>,
+    @Inject(forwardRef(() => UsersService))
+    private readonly usersService: UsersService,
   ) {}
 
   isPlayer1(id: string, match: MatchHistory): boolean {

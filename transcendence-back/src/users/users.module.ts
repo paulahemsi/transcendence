@@ -3,31 +3,25 @@ import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Blocked, ChannelMember, Friendship, Message, User } from 'src/entity';
-import { MatchHistory } from 'src/entity';
 import { FriendshipService } from '../friendship/friendship.service';
-import { MatchHistoryService } from 'src/match-history/match-history.service';
 import { ChannelsModule } from 'src/channels/channels.module';
 import { BlockedService } from 'src/friendship/blocked.service';
+import { MatchHistoryModule } from 'src/match-history/match-history.module';
 
 @Module({
   imports: [
+    MatchHistoryModule,
+    ChannelsModule,
     TypeOrmModule.forFeature([
       User,
-      MatchHistory,
       Friendship,
-      Blocked,
       Message,
       ChannelMember,
+      Blocked,
     ]),
-    ChannelsModule,
   ],
   controllers: [UsersController],
-  providers: [
-    UsersService,
-    FriendshipService,
-    MatchHistoryService,
-    BlockedService,
-  ],
+  providers: [UsersService, FriendshipService, BlockedService],
   exports: [UsersService],
 })
 export class UsersModule {}
