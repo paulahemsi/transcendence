@@ -117,12 +117,7 @@ export class ChatGateway
   
   @SubscribeMessage('refreshFriends')
   async handleRefreshFriends(client: Socket, blockedEvent: boolean) {
-    console.log(blockedEvent)
-    if (blockedEvent) {
-      client.emit('refreshFriends');
-    } else {
-      this.server.emit('refreshFriends'); 
-    }
+    this.server.emit('refreshFriends'); 
   }
   
   private disconnect(client: Socket) {

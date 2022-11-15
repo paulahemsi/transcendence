@@ -5,9 +5,10 @@ import ControlPanel from "./ControlPanel/ControlPanel";
 import ChannelsAdminPanel from "./ContentPanel/ChannelsAdminPanel";
 import jwt from 'jwt-decode';
 import axios, { AxiosRequestHeaders } from "axios";
+import { io } from "socket.io-client";
 
+const chatSocket = io('/chat');
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
-type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
 
 type tokenData = {
 	id: string;
@@ -36,7 +37,11 @@ export const ChatDrawer : FunctionComponent<Props> = ({ setOpenDrawer }) => {
 
 	useEffect(() => {requestFriendsData({setFriendsData})}, []);
 
-	const requestChannelInfos = async () => {
+	chatSocket.off('refreshFriends').on('refreshFriends', () => {
+		requestFriendsData({setFriendsData})
+	});
+
+	  const requestChannelInfos = async () => {
 		if (activeChannel <= 0) {
 			return ;
 		}

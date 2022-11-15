@@ -36,8 +36,7 @@ export const BlockUserDialog : FunctionComponent<Props> = ({ setOpenDialog, frie
 		axios.post(`http://localhost:3000/users/${tokenData.id}/block`, {
 			"id": friendId
 		}, { headers: authToken }).then( () => {
-			const blockedEvent = true;
-			chatSocket.emit('refreshFriends', blockedEvent);
+			chatSocket.emit('refreshFriends');
 			setOpenDialog(false);
 		}).catch( () => {
 			setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
