@@ -14,6 +14,11 @@ import { User } from 'src/entity';
 import { status } from 'src/entity/user.entity';
 import { UsersService } from 'src/users/users.service';
 
+interface Player {
+  socket: Socket;
+  userId: string;
+}
+
 @WebSocketGateway({ namespace: '/session' })
 export class SessionGateway
   implements
@@ -31,6 +36,7 @@ export class SessionGateway
 
   @WebSocketServer()
   server: Server;
+  gameQueue: Array<Player> = [];
 
   onModuleInit() {
     this.connectedUsersService.deleteAll();
