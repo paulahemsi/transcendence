@@ -61,9 +61,9 @@ export class SessionGateway
     this.logger.log(`Client connected: ${client.id}`);
   }
 
-  handleDisconnect(client: Socket) {
+  async handleDisconnect(client: Socket) {
     this.connectedUsersService.delete(client.id);
-    this.setStatusOffline(client.data.user);
+    this.setStatusOffline(await client.data.user);
     this.logger.log(`Client disconnected: ${client.id}`);
     client.disconnect();
   }
@@ -79,8 +79,13 @@ export class SessionGateway
       socket: client,
       userId: client.data.user.id,
     };
-    this.gameQueue.push(player);
-    console.log(this.gameQueue);
+    if (this.gameQueue.length > 0) {
+      const otherPlayer = this.gameQueue.pop();
+      otherPlayer.socket.emit('joinGameQueue', player.userId);
+      player.socket.emit('joinGameQueue', otherPlayer.userId);
+    } else {
+      this.gameQueue.push(player);
+    }
   }
 
   private disconnect(client: Socket) {
@@ -97,7 +102,7 @@ export class SessionGateway
   }
 
   private async setStatusOffline(user: User) {
-    if (await this.connectedUsersService.hasConnections(await user)) {
+    if (await this.connectedUsersService.hasConnections(user)) {
       return;
     }
     this.usersService.setStatusOffline(user.id);
