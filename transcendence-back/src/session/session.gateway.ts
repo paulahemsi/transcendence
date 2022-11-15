@@ -6,6 +6,7 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   WebSocketServer,
+  ConnectedSocket,
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
@@ -13,6 +14,11 @@ import { ConnnectedUsersService } from 'src/connected-users/connected-users.serv
 import { User } from 'src/entity';
 import { status } from 'src/entity/user.entity';
 import { UsersService } from 'src/users/users.service';
+
+interface Player {
+  socket: Socket;
+  userId: string;
+}
 
 @WebSocketGateway({ namespace: '/session' })
 export class SessionGateway
@@ -31,6 +37,7 @@ export class SessionGateway
 
   @WebSocketServer()
   server: Server;
+  gameQueue: Array<Player> = [];
 
   onModuleInit() {
     this.connectedUsersService.deleteAll();
@@ -54,9 +61,9 @@ export class SessionGateway
     this.logger.log(`Client connected: ${client.id}`);
   }
 
-  handleDisconnect(client: Socket) {
+  async handleDisconnect(client: Socket) {
     this.connectedUsersService.delete(client.id);
-    this.setStatusOffline(client.data.user);
+    this.setStatusOffline(await client.data.user);
     this.logger.log(`Client disconnected: ${client.id}`);
     client.disconnect();
   }
@@ -64,6 +71,21 @@ export class SessionGateway
   @SubscribeMessage('status')
   handleStatus(client: Socket, message: string) {
     client.emit('status', message);
+  }
+
+  @SubscribeMessage('joinGameQueue')
+  handleJoinGameQueue(@ConnectedSocket() client: Socket) {
+    const player: Player = {
+      socket: client,
+      userId: client.data.user.id,
+    };
+    if (this.gameQueue.length > 0) {
+      const otherPlayer = this.gameQueue.pop();
+      otherPlayer.socket.emit('joinGameQueue', player.userId);
+      player.socket.emit('joinGameQueue', otherPlayer.userId);
+    } else {
+      this.gameQueue.push(player);
+    }
   }
 
   private disconnect(client: Socket) {
@@ -80,6 +102,9 @@ export class SessionGateway
   }
 
   private async setStatusOffline(user: User) {
+    if (!user) {
+      return;
+    }
     if (await this.connectedUsersService.hasConnections(user)) {
       return;
     }

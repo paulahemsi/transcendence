@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { Typography, Box, Button, Card, CardContent, CardActions } from '@mui/material';
+import { Typography, Box, Button, DialogTitle, DialogActions, Dialog, Card, CardContent, CardActions  } from '@mui/material';
 import Header from "./header/Header";
 import { Footer } from "./footer/Footer";
 import ChatDrawer from "./chatDrawer/ChatDrawer";
@@ -7,6 +7,7 @@ import jwt from 'jwt-decode';
 import io from 'socket.io-client';
 import ProfileCard from "./profileDrawer/ProfileDrawer";
 import { PhaserGame } from "./game/game"
+import ErrorToast from "./utils/ErrorToast";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -150,17 +151,63 @@ const GameScreen = ({ setGameActive } : { setGameActive: React.Dispatch<React.Se
 	);
 }
 
-const Background = ({ setGameActive } : { setGameActive: booleanSetState}) => {
+const Matchmaker = ({ setGameActive, setOpenDialog, userId } : { setGameActive: booleanSetState,  setOpenDialog: booleanSetState, userId: string }) => {
+
+	const joinGameQueue = () => {
+		sessionSocket.on('joinGameQueue', (opponentId) => {
+			console.log(`Uha! user ${opponentId} will play with me`)
+		} )
+		sessionSocket.emit('joinGameQueue');
+		console.log(`User ${userId} wanna play`)
+	}
+	
 	return (
-		<Box display="flex" flexDirection="column" justifyContent="center" position="fixed" alignItems="center" height="86vh" width="100vw" sx={{backgroundImage: 'linear-gradient(to right, #212980 , #6f0162)'}}>
-			<Typography sx={transcendenceText}>
-				ft_transcendence
-			</Typography>
-			<Button variant="outlined" size="medium" onClick={() => setGameActive(true)}
-				sx={startGameButton}>
-				Start Game
-			</Button>
-		</Box>
+		<>
+		<DialogTitle sx={{fontFamily: 'Orbitron'}}>
+			How do you wanna play?
+		</DialogTitle>
+		<DialogActions>
+		<Button
+			onClick={joinGameQueue}
+			sx={{fontFamily: 'Orbitron'}}
+		>
+			With someone
+		</Button>
+		<Button
+			variant="contained"
+			onClick={() => setGameActive(true)}
+			sx={{fontFamily: 'Orbitron'}}
+		>
+			Alone with myself
+		</Button>
+		</DialogActions>
+		{/* <ErrorToast state={state} setState={setState}/> */}
+	</>
+	)
+}
+
+const Background = ({ setGameActive, userId } : { setGameActive: booleanSetState, userId: string }) => {
+	const [ openDialog, setOpenDialog ] = useState(false);
+
+	const handleClose = () => {
+		setOpenDialog(false);
+	}
+
+	return (
+		<>
+			<Box display="flex" flexDirection="column" justifyContent="center" position="fixed" alignItems="center" height="86vh" width="100vw" sx={{backgroundImage: 'linear-gradient(to right, #212980 , #6f0162)'}}>
+				<Typography sx={transcendenceText}>
+					ft_transcendence
+				</Typography>
+				<Button variant="outlined" size="medium" onClick={() => setOpenDialog(true)}
+					sx={startGameButton}>
+					Start Game
+				</Button>
+			</Box>
+			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
+				<Matchmaker setOpenDialog={setOpenDialog} setGameActive={setGameActive} userId={userId}/>
+			</Dialog>
+		</>
 	);
 }
 
@@ -179,7 +226,7 @@ export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 			{ gameActive ? null : <Header setOpenDrawer={setOpenDrawer} setOpenCard={setOpenCard} /> }
 			{ openCard && <ProfileCard setOpenCard={setOpenCard}  userId={tokenData.id}/> }
 			{ openDrawer && <ChatDrawer setOpenDrawer={setOpenDrawer} /> }
-			{ gameActive ? <GameScreen setGameActive={setGameActive}/> : <Background setGameActive={setGameActive} /> }
+			{ gameActive ? <GameScreen setGameActive={setGameActive}/> : <Background setGameActive={setGameActive} userId={tokenData.id} /> }
 			{ gameActive ? null : <Footer setLoggedIn={setLoggedIn}/> }
 		</>
 	);
