@@ -5,9 +5,8 @@ import ControlPanel from "./ControlPanel/ControlPanel";
 import ChannelsAdminPanel from "./ContentPanel/ChannelsAdminPanel";
 import jwt from 'jwt-decode';
 import axios, { AxiosRequestHeaders } from "axios";
-import { io } from "socket.io-client";
+import { chatSocket } from "../context/socket";
 
-const chatSocket = io('/chat');
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
 type tokenData = {

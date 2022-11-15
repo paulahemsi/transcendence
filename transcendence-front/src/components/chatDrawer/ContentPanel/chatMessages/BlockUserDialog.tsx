@@ -4,9 +4,7 @@ import ErrorToast from "../../../utils/ErrorToast";
 import axios, { AxiosRequestHeaders } from 'axios';
 import { DEFAULT_TOAST_MSG } from "../../../utils/constants";
 import jwt from 'jwt-decode';
-import { io } from "socket.io-client";
-
-const chatSocket = io('/chat');
+import { chatSocket } from "../../../context/socket";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 

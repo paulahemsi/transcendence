@@ -5,9 +5,8 @@ import jwt from 'jwt-decode';
 import UsersList from "./UsersList";
 import ErrorToast from "../../utils/ErrorToast";
 import { DEFAULT_TOAST_MSG } from "../../utils/constants";
-import { io } from "socket.io-client";
+import { chatSocket } from "../../context/socket";
 
-const chatSocket = io('/chat');
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
