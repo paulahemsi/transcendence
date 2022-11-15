@@ -80,7 +80,7 @@ export class SessionGateway
   }
 
   private async setStatusOffline(user: User) {
-    if (await this.connectedUsersService.hasConnections(user)) {
+    if (await this.connectedUsersService.hasConnections(await user)) {
       return;
     }
     this.usersService.setStatusOffline(user.id);
