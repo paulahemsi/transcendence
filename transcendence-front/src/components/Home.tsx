@@ -98,13 +98,13 @@ const GameScreen = ({ setGameActive } : { setGameActive: booleanSetState}) => {
 	);
 }
 
-const Matchmacker = ({ setGameActive, setOpenDialog, userId } : { setGameActive: booleanSetState,  setOpenDialog: booleanSetState, userId: string }) => {
+const Matchmaker = ({ setGameActive, setOpenDialog, userId } : { setGameActive: booleanSetState,  setOpenDialog: booleanSetState, userId: string }) => {
 
 	const joinGameQueue = () => {
 		sessionSocket.on('joinGameQueue', (opponentId) => {
 			console.log(`Uha! user ${opponentId} will play with me`)
 		} )
-		sessionSocket.emit('joinChannel', userId);
+		sessionSocket.emit('joinGameQueue', userId);
 		console.log(`User ${userId} wanna play`)
 	}
 	
@@ -152,7 +152,7 @@ const Background = ({ setGameActive, userId } : { setGameActive: booleanSetState
 				</Button>
 			</Box>
 			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
-				<Matchmacker setOpenDialog={setOpenDialog} setGameActive={setGameActive} userId={userId}/>
+				<Matchmaker setOpenDialog={setOpenDialog} setGameActive={setGameActive} userId={userId}/>
 			</Dialog>
 		</>
 	);
