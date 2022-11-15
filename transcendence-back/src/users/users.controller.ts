@@ -9,8 +9,10 @@ import {
   Post,
   Delete,
 } from '@nestjs/common';
+import { BlockedDto } from 'src/dto/blocked.dtos';
 import { FriendDto, FriendNameDto } from 'src/dto/friend.dtos';
 import { UpdateUserDto } from 'src/dto/users.dtos';
+import { BlockedService } from 'src/friendship/blocked.service';
 import { FriendshipService } from '../friendship/friendship.service';
 import { UsersService } from './users.service';
 
@@ -19,6 +21,7 @@ export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly friedshipService: FriendshipService,
+    private readonly blockedService: BlockedService,
   ) {}
 
   @Get()
@@ -44,7 +47,21 @@ export class UsersController {
   getUserProfile(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.getUserProfile(id);
   }
-
+  
+  @Post(':id/block')
+  @HttpCode(204)
+  blockFriend(
+    @Param('id', ParseUUIDPipe) userId: string,
+    @Body() friend: BlockedDto,
+  ) {
+    return this.blockedService.blockFriend(userId, friend.id);
+  }
+  
+  @Get(':id/block')
+  getBlockedFriends(@Param('id', ParseUUIDPipe) userId: string) {
+    return this.blockedService.getBlockedFriends(userId);
+  }
+  
   @Post(':id/friends')
   @HttpCode(204)
   addFriend(

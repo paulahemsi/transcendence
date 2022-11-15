@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChannelsService } from 'src/channels/channels.service';
-import { Channel, Friendship, User } from 'src/entity';
+import { Channel, Friendship, Blocked, User } from 'src/entity';
 import { DataSource, Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
 
@@ -29,7 +29,7 @@ export class FriendshipService {
     private dataSource: DataSource,
   ) {}
 
-  private findOneFriendship(userId: string, friendId: string) {
+  findOneFriendship(userId: string, friendId: string) {
     return this.friedshipRepository.findOne({
       relations: {
         user: true,
@@ -59,7 +59,7 @@ export class FriendshipService {
     return friendship.channel;
   }
 
-  private async checkUserAndFriend(userId: string, friendId: string) {
+  async checkUserAndFriend(userId: string, friendId: string) {
     const user = await this.usersService.findUser(userId);
     const friend = await this.usersService.findUser(friendId);
     if (!friend || !user) {
@@ -96,7 +96,7 @@ export class FriendshipService {
     return friendship;
   }
 
-  private async createTransaction() {
+  async createTransaction() {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();

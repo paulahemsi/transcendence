@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, Dialog } from "@mui/material";
 import ProfileCard from "../../../profileDrawer/ProfileDrawer";
+import BlockUserDialog from "./BlockUserDialog";
 
 const PROFILE = "Go to profile";
 const BLOCK = "Block";
@@ -49,10 +50,10 @@ const InviteToGame = () => {
 	)
 }
 
-const BlockUser = () => {
+const BlockUser = ({ setOpenDialog } : { setOpenDialog: booleanSetState }) => {
 	
 	const handleClick = () => {
-		
+		setOpenDialog(true);
 	}
 	
 	return (
@@ -90,19 +91,27 @@ const GoToProfile = ({ setOpenCard } : { setOpenCard: booleanSetState }) => {
 }
 
 export const DMButtons = ({ friendId } : { friendId: string }) => {
-	const [openProfile, setOpenProfile] = useState(false)
+	const [openProfile, setOpenProfile] = useState(false);
+	const [openDialog, setOpenDialog] = useState(false)
+
+	const handleClose = () => {
+		setOpenDialog(false);
+	};
 
 	return (
 		<>
 			<Box display="flex" justifyContent="space-around" minWidth="50vw" marginTop="1vh">
 				<InviteToGame/>
-				<BlockUser/>
+				<BlockUser setOpenDialog={setOpenDialog}/>
 				<GoToProfile setOpenCard={setOpenProfile}/>
 			</Box>
 			{
 				openProfile && 
 				<ProfileCard setOpenCard={setOpenProfile} userId={friendId}/>
 			}
+			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
+				<BlockUserDialog setOpenDialog={setOpenDialog} friendId={friendId}/>
+			</Dialog>
 		</>
 	)
 }

@@ -3,24 +3,44 @@ import { Drawer, Box } from '@mui/material';
 import ChatMessages from "./ContentPanel/chatMessages/ChatMessages";
 import ControlPanel from "./ControlPanel/ControlPanel";
 import ChannelsAdminPanel from "./ContentPanel/ChannelsAdminPanel";
+import jwt from 'jwt-decode';
 import axios, { AxiosRequestHeaders } from "axios";
+import { chatSocket } from "../context/socket";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
-type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
 
-interface Props {
-    friendsData: {[key: string]: any};
-    setOpenDrawer: booleanSetState;
-	setFriendsData: objectSetState;
+type tokenData = {
+	id: string;
 }
 
-export const ChatDrawer : FunctionComponent<Props> = ({ friendsData, setOpenDrawer, setFriendsData }) => {
+interface Props {
+    setOpenDrawer: booleanSetState;
+}
+
+const requestFriendsData = async ({ setFriendsData } : { setFriendsData: React.Dispatch<React.SetStateAction<{[key: string]: any}>>}) => {
+
+	const tokenData: tokenData = jwt(document.cookie);
+	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+	
+	await axios.get(`http://localhost:3000/users/${tokenData.id}/friends`, { headers: authToken }).then((response) => {
+		setFriendsData(response.data);
+})
+}
+
+export const ChatDrawer : FunctionComponent<Props> = ({ setOpenDrawer }) => {
+	const [friendsData, setFriendsData] = useState<{[key: string]: any}>({});
 	const [extraContent, setExtraContent] = useState(false);
 	const [channelsAdminPanel, setChannelsAdminPanel] = useState(false);
 	const [activeChannel, setActiveChannel] = useState(-1)
 	const [isDM, setIsDM] = useState(false);
 
-	const requestChannelInfos = async () => {
+	useEffect(() => {requestFriendsData({setFriendsData})}, []);
+
+	chatSocket.off('refreshFriends').on('refreshFriends', () => {
+		requestFriendsData({setFriendsData})
+	});
+
+	  const requestChannelInfos = async () => {
 		if (activeChannel <= 0) {
 			return ;
 		}

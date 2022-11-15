@@ -102,6 +102,9 @@ export class SessionGateway
   }
 
   private async setStatusOffline(user: User) {
+    if (!user) {
+      return;
+    }
     if (await this.connectedUsersService.hasConnections(user)) {
       return;
     }

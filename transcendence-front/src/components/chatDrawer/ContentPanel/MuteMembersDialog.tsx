@@ -3,9 +3,9 @@ import { Button, DialogActions, DialogContent, DialogTitle, FormControl, FormCon
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import UsersList from "../ControlPanel/UsersList";
-import io from 'socket.io-client';
 import ErrorToast from "../../utils/ErrorToast";
 import { DEFAULT_TOAST_MSG } from "../../utils/constants";
+import { chatSocket } from "../../context/socket";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
@@ -23,7 +23,6 @@ const TIME30SEC = 30000;
 const TIME2MIN = 120000;
 const TIME5MIN = 300000;
 
-const chatSocket = io('/chat');
 
 const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) => {
 	return { ...state, ...newState };
@@ -79,7 +78,7 @@ export const MuteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, ch
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 	
 	useEffect(() => {
-		chatSocket.on('muteUser', (mutedSuccefully) => {
+		chatSocket.on('muteUser', (mutedSuccefully: boolean) => {
 			if (!mutedSuccefully) {
 				setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
 			} else {

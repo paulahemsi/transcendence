@@ -3,7 +3,6 @@ import { Typography, Box, Button, DialogTitle, DialogActions, Dialog, Card, Card
 import Header from "./header/Header";
 import { Footer } from "./footer/Footer";
 import ChatDrawer from "./chatDrawer/ChatDrawer";
-import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import io from 'socket.io-client';
 import ProfileCard from "./profileDrawer/ProfileDrawer";
@@ -212,33 +211,21 @@ const Background = ({ setGameActive, userId } : { setGameActive: booleanSetState
 	);
 }
 
-const requestFriendsData = async ({ setFriendsData } : { setFriendsData: React.Dispatch<React.SetStateAction<{[key: string]: any}>>}) => {
-
-	const tokenData: tokenData = jwt(document.cookie);
-	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-	
-	await axios.get(`http://localhost:3000/users/${tokenData.id}/friends`, { headers: authToken }).then((response) => {
-		setFriendsData(response.data);
-})
-}
-
 export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 	const tokenData: tokenData = jwt(document.cookie);
 
 	const [openDrawer, setOpenDrawer] = useState(false)
 	const [openCard, setOpenCard] = useState(false)
-	const [friendsData, setFriendsData] = useState<{[key: string]: any}>({});
 	const [gameActive, setGameActive] = useState(false);
 	
-	useEffect(() => {requestFriendsData({setFriendsData})}, []);
 
 	sessionSocket.connect()
 
 	return (
 		<>
-			{ gameActive ? null : <Header setOpenDrawer={setOpenDrawer} setOpenCard={setOpenCard} numberOfFriends={friendsData.length}/> }
+			{ gameActive ? null : <Header setOpenDrawer={setOpenDrawer} setOpenCard={setOpenCard} /> }
 			{ openCard && <ProfileCard setOpenCard={setOpenCard}  userId={tokenData.id}/> }
-			{ openDrawer && <ChatDrawer friendsData={friendsData} setOpenDrawer={setOpenDrawer} setFriendsData={setFriendsData} /> }
+			{ openDrawer && <ChatDrawer setOpenDrawer={setOpenDrawer} /> }
 			{ gameActive ? <GameScreen setGameActive={setGameActive}/> : <Background setGameActive={setGameActive} userId={tokenData.id} /> }
 			{ gameActive ? null : <Footer setLoggedIn={setLoggedIn}/> }
 		</>

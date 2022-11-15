@@ -8,15 +8,14 @@ type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 interface Props {
     setOpenDrawer: booleanSetState;
     setOpenCard: booleanSetState;
-	numberOfFriends: number;
 }
 
-export const Header : FunctionComponent<Props> = ({ setOpenDrawer, setOpenCard, numberOfFriends }) => {
+export const Header : FunctionComponent<Props> = ({ setOpenDrawer, setOpenCard }) => {
 	return (
 	<AppBar position='relative' sx={{ height: '7vh', width: '100vw', background: '#F5F5F5', zIndex: 1280}}>
 		<Stack display='flex' flexDirection='row' alignItems="center" justifyContent="space-between" sx={{ paddingTop: '0.5vh', paddingLeft: '1.5vh' }}>
 			<ProfileInfo setOpenCard={setOpenCard} />
-			<FriendshipInfo setOpenDrawer={setOpenDrawer} numberOfFriends={numberOfFriends} />
+			<FriendshipInfo setOpenDrawer={setOpenDrawer}/>
 		</Stack>
 	</AppBar>
 	)
