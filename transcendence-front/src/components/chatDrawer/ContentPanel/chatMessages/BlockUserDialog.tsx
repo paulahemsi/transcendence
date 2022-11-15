@@ -4,6 +4,9 @@ import ErrorToast from "../../../utils/ErrorToast";
 import axios, { AxiosRequestHeaders } from 'axios';
 import { DEFAULT_TOAST_MSG } from "../../../utils/constants";
 import jwt from 'jwt-decode';
+import { io } from "socket.io-client";
+
+const chatSocket = io('/chat');
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -33,6 +36,8 @@ export const BlockUserDialog : FunctionComponent<Props> = ({ setOpenDialog, frie
 		axios.post(`http://localhost:3000/users/${tokenData.id}/block`, {
 			"id": friendId
 		}, { headers: authToken }).then( () => {
+			const blockedEvent = true;
+			chatSocket.emit('refreshFriends', blockedEvent);
 			setOpenDialog(false);
 		}).catch( () => {
 			setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
