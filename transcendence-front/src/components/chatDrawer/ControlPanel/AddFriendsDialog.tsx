@@ -5,6 +5,9 @@ import jwt from 'jwt-decode';
 import UsersList from "./UsersList";
 import ErrorToast from "../../utils/ErrorToast";
 import { DEFAULT_TOAST_MSG } from "../../utils/constants";
+import { io } from "socket.io-client";
+
+const chatSocket = io('/chat');
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
@@ -80,6 +83,7 @@ export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 			"name": selectedUser[0]
 		}, { headers: authToken }).then( () => {
 			requestFriendsData();
+			chatSocket.emit('refreshFriends');
 			setOpenDialog(false);
 		}).catch( () => {
 			setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
