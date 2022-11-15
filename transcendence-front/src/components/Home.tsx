@@ -154,8 +154,8 @@ const GameScreen = ({ setGameActive } : { setGameActive: React.Dispatch<React.Se
 const Matchmaker = ({ setGameActive, setOpenDialog, userId } : { setGameActive: booleanSetState,  setOpenDialog: booleanSetState, userId: string }) => {
 
 	const joinGameQueue = () => {
-		sessionSocket.on('joinGameQueue', (opponentId) => {
-			console.log(`Uha! user ${opponentId} will play with me`)
+		sessionSocket.on('joinGameQueue', (matchId) => {
+			console.log(`Uha! Your match room is ${matchId}`)
 		} )
 		sessionSocket.emit('joinGameQueue');
 		console.log(`User ${userId} wanna play`)

@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { User } from './user.entity';
 
 @Entity()
@@ -31,8 +37,6 @@ export class MatchHistory {
   })
   player2Score: number;
 
-  @Column({
-    nullable: false,
-  })
+  @CreateDateColumn()
   date: string;
 }

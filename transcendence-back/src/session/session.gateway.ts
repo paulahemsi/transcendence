@@ -13,6 +13,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { ConnnectedUsersService } from 'src/connected-users/connected-users.service';
 import { User } from 'src/entity';
 import { status } from 'src/entity/user.entity';
+import { MatchHistoryService } from 'src/match-history/match-history.service';
 import { UsersService } from 'src/users/users.service';
 
 interface Player {
@@ -32,6 +33,7 @@ export class SessionGateway
     private readonly authService: AuthService,
     private readonly connectedUsersService: ConnnectedUsersService,
     private readonly usersService: UsersService,
+    private readonly matchHistoryService: MatchHistoryService,
   ) {}
   private logger: Logger = new Logger('SessionGateway');
 
@@ -74,15 +76,19 @@ export class SessionGateway
   }
 
   @SubscribeMessage('joinGameQueue')
-  handleJoinGameQueue(@ConnectedSocket() client: Socket) {
+  async handleJoinGameQueue(@ConnectedSocket() client: Socket) {
     const player: Player = {
       socket: client,
       userId: client.data.user.id,
     };
     if (this.gameQueue.length > 0) {
       const otherPlayer = this.gameQueue.pop();
-      otherPlayer.socket.emit('joinGameQueue', player.userId);
-      player.socket.emit('joinGameQueue', otherPlayer.userId);
+      const match = await this.matchHistoryService.createMatch(
+        player.userId,
+        otherPlayer.userId,
+      );
+      otherPlayer.socket.emit('joinGameQueue', match.id);
+      player.socket.emit('joinGameQueue', match.id);
     } else {
       this.gameQueue.push(player);
     }
