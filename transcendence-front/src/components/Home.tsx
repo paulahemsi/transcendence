@@ -104,7 +104,7 @@ const Matchmaker = ({ setGameActive, setOpenDialog, userId } : { setGameActive: 
 		sessionSocket.on('joinGameQueue', (opponentId) => {
 			console.log(`Uha! user ${opponentId} will play with me`)
 		} )
-		sessionSocket.emit('joinGameQueue', userId);
+		sessionSocket.emit('joinGameQueue');
 		console.log(`User ${userId} wanna play`)
 	}
 	

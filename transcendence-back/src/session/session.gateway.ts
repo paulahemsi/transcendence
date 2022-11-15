@@ -6,6 +6,7 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   WebSocketServer,
+  ConnectedSocket,
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
@@ -70,6 +71,16 @@ export class SessionGateway
   @SubscribeMessage('status')
   handleStatus(client: Socket, message: string) {
     client.emit('status', message);
+  }
+
+  @SubscribeMessage('joinGameQueue')
+  handleJoinGameQueue(@ConnectedSocket() client: Socket) {
+    const player: Player = {
+      socket: client,
+      userId: client.data.user.id,
+    };
+    this.gameQueue.push(player);
+    console.log(this.gameQueue);
   }
 
   private disconnect(client: Socket) {
