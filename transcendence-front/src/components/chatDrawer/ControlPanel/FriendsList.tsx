@@ -52,22 +52,24 @@ const NoFriends = () => {
 export const FriendsList : FunctionComponent<Props> = ({ friendsData, setExtraContent, setActiveChannel, activeChannel, setChannelsAdminPanel }) => {
 	
 	const friends = [] as JSX.Element[];
-	friendsData.forEach((element : {[key: string]: any}) => {
-		const isActiveGroup = element.channel === activeChannel;
-
-		const handleClick = () => {
-			setActiveChannel(element.channel);
-			setExtraContent(true);
-			setChannelsAdminPanel(false);
-		}
-
-		friends.push(
-		<ListItem disablePadding key={element.username} sx={{marginBottom: '1vh'}}> 
-			<Button sx={friendsCSS(isActiveGroup)} onClick={handleClick}>
-				<FriendsInfo userData={element}/>
-			</Button>
-		</ListItem>);
-	})
+	if (friendsData.length) {
+		friendsData.forEach((element : {[key: string]: any}) => {
+			const isActiveGroup = element.channel === activeChannel;
+	
+			const handleClick = () => {
+				setActiveChannel(element.channel);
+				setExtraContent(true);
+				setChannelsAdminPanel(false);
+			}
+	
+			friends.push(
+			<ListItem disablePadding key={element.username} sx={{marginBottom: '1vh'}}> 
+				<Button sx={friendsCSS(isActiveGroup)} onClick={handleClick}>
+					<FriendsInfo userData={element}/>
+				</Button>
+			</ListItem>);
+		})
+	}
 
 	return (
 		<>

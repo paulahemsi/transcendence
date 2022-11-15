@@ -1,6 +1,5 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { TextField, Box } from "@mui/material";
-import io from 'socket.io-client';
 import axios, { AxiosRequestHeaders } from 'axios';
 import MessagesList from "./MessagesList";
 import jwt from 'jwt-decode';
@@ -8,6 +7,7 @@ import { messagesBorderCSS } from "../../../utils/constants";
 import DMButtons from "./DMButtons";
 import Muted from "./Muted";
 import NoMessages from "./NoMessages";
+import { chatSocket } from "../../../context/socket";
 
 type tokenData = {
 	id: string;
@@ -16,7 +16,6 @@ type tokenData = {
 type arraySetState = React.Dispatch<React.SetStateAction<string[]>>
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
 
-const chatSocket = io('/chat');
 
 const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) => {
 	return { ...state, ...newState };

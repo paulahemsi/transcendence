@@ -115,6 +115,11 @@ export class ChatGateway
     }, muteEvent.duration);
   }
   
+  @SubscribeMessage('refreshFriends')
+  async handleRefreshFriends(client: Socket, blockedEvent: boolean) {
+    this.server.emit('refreshFriends'); 
+  }
+  
   private disconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
     client.emit('error', new UnauthorizedException());
