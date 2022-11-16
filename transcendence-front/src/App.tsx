@@ -6,6 +6,7 @@ import LoginCard from './components/LoginCard'
 import Home from './components/Home'
 import jwt from 'jwt-decode';
 import TwoFactorAuthCard from './components/TwoFactorAuthCard';
+import GamePage from './components/GamePage';
 
 type tokenData = {
 	id: string;
@@ -48,6 +49,7 @@ function App() {
         <Route path='/' element={<PreHome/>} />
         <Route path='/login' element={<LoginCard/>} />
         <Route path='/2fa' element={<TwoFactorAuthCard/>} />
+        <Route path='/game' element={<GamePage/>} />
       </Routes>
     </BrowserRouter>
   );
