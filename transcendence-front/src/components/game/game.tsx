@@ -92,16 +92,48 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 			keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
 			cursors = this.input.keyboard.createCursorKeys();
 
+			updatePlayer1Position();
+			updatePlayer2Position();
+			updateBallPosition();
+
+			updatePlayer1Velocit(keyW, keyS);
+			updatePlayer2Velocit(cursors);
+		
+			checkEndGame(this.scene);
+		}
+
+		function updatePlayer1Position() {
 			if (player1.y != player1PosY) {
 				gameSocket.emit('player1', "PLAYER 1 Y POSITION: " + player1.y);
 				player1PosY = player1.y;
 			}
-
+			gameSocket.off('player1').on('player1', (msg) => {
+				console.log(msg);
+			} );
+		}
+		
+		function updatePlayer2Position() {
 			if (player2.y != player2PosY) {
 				gameSocket.emit('player2', "PLAYER 2 Y POSITION: " + player2.y);
 				player2PosY = player2.y;
 			}
+			gameSocket.off('player2').on('player2', (msg) => {
+				console.log(msg);
+			} );
+		}
 
+		function updateBallPosition() {
+			if (ball.x != ballPosX || ball.y != ballPosY) {
+				gameSocket.emit('ball', "BALL POSITION X: " + ball.x + " Y: " + ball.y);
+				ballPosX = ball.x;
+				ballPosY = ball.y;
+			}
+			gameSocket.off('ball').on('ball', (msg) => {
+				console.log(msg);
+			} );
+		}
+		
+		function updatePlayer1Velocit(keyW: any, keyS: any) {
 			if (keyW.isDown) {
 				player1.setVelocityY(-500);
 			}
@@ -111,7 +143,9 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 			else {
 				player1.setVelocityY(0);
 			}
-
+		}
+		
+		function updatePlayer2Velocit(cursors: any) {
 			if (cursors.up.isDown) {
 				player2.setVelocityY(-500);
 			}
@@ -121,28 +155,12 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 			else {
 				player2.setVelocityY(0);
 			}
-
-			if (ball.x != ballPosX || ball.y != ballPosY) {
-				gameSocket.emit('ball', "BALL POSITION X: " + ball.x + " Y: " + ball.y);
-				ballPosX = ball.x;
-				ballPosY = ball.y;
-			}
-
-			gameSocket.off('player1').on('player1', (msg) => {
-				console.log(msg);
-			} );
-
-			gameSocket.off('player2').on('player2', (msg) => {
-				console.log(msg);
-			} );
-
-			gameSocket.off('ball').on('ball', (msg) => {
-				console.log(msg);
-			} );
-
+		}
+		
+		function checkEndGame(phaserScene: any) {
 			if (player1Score >= endingScore || player2Score >= endingScore) {
 				winningPlayer = player1Score > player2Score ? 1 : 2;
-				this.scene.pause();
+				phaserScene.pause();
 				setEndGameDisplay({
 					player1Name: "PLAYER 1",
 					player2Name: "PLAYER 2",
@@ -151,17 +169,14 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 				setEndGameVisible(true);
 				sleep(1000).then(() => {game.destroy(true);});
 			}
-
 		}
 
 	function HandleCollision(this: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody) : void {
-		if (this.y < ball.y)
-		{
-		ball.setVelocityY(-10 * (this.y - ball.y));
+		if (this.y < ball.y) {
+			ball.setVelocityY(-10 * (this.y - ball.y));
 		}
-		else if (this.y > ball.y)
-		{
-		ball.setVelocityY(10 * (ball.y - this.y));
+		else if (this.y > ball.y) {
+			ball.setVelocityY(10 * (ball.y - this.y));
 		}
 	}
 
