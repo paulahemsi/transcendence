@@ -8,6 +8,8 @@ import jwt from 'jwt-decode';
 import TwoFactorAuthCard from './components/TwoFactorAuthCard';
 import GamePage from './components/GamePage';
 
+type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+
 type tokenData = {
 	id: string;
 	exp: number;
@@ -30,26 +32,28 @@ function isLoggedIn() {
   return validateToken(cookie);
 }
 
-const PreHome = () => {
+const PreHome = ({setIsHost} : {setIsHost: booleanSetState}) => {
   const[ loggedIn, setLoggedIn ] = useState(isLoggedIn());
 
 	return (
     <main>
       {loggedIn
-      ? <Home setLoggedIn={setLoggedIn}/>
+      ? <Home setLoggedIn={setLoggedIn} setIsHost={setIsHost}/>
       : <LoginCard/> }
     </main>
 	);
 }
 
 function App() {
+  const [isHost, setIsHost] = useState(false);
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<PreHome/>} />
+        <Route path='/' element={<PreHome setIsHost={setIsHost}/>} />
         <Route path='/login' element={<LoginCard/>} />
         <Route path='/2fa' element={<TwoFactorAuthCard/>} />
-        <Route path='/game' element={<GamePage/>} />
+        <Route path='/game' element={<GamePage isHost={isHost}/>} />
       </Routes>
     </BrowserRouter>
   );

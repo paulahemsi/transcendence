@@ -46,7 +46,7 @@ export interface EndGameData {
 	winner: 1 | 2 | undefined
 }
 
-const Matchmaker = ({ setGameActive, setOpenDialog, userId } : { setGameActive: booleanSetState,  setOpenDialog: booleanSetState, userId: string }) => {
+const Matchmaker = ({ setGameActive, setOpenDialog, userId, setIsHost } : { setGameActive: booleanSetState,  setOpenDialog: booleanSetState, userId: string, setIsHost: booleanSetState }) => {
 	
 	const [goGame, setGoGame] = useState(false);
 	const [loading, setLoading] = useState(false);
@@ -106,7 +106,7 @@ const Matchmaker = ({ setGameActive, setOpenDialog, userId } : { setGameActive: 
 	)
 }
 
-const Background = ({ setGameActive, userId } : { setGameActive: booleanSetState, userId: string }) => {
+const Background = ({ setGameActive, userId, setIsHost } : { setGameActive: booleanSetState, userId: string, setIsHost: booleanSetState }) => {
 	const [ openDialog, setOpenDialog ] = useState(false);
 
 	const handleClose = () => {
@@ -125,19 +125,19 @@ const Background = ({ setGameActive, userId } : { setGameActive: booleanSetState
 				</Button>
 			</Box>
 			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
-				<Matchmaker setOpenDialog={setOpenDialog} setGameActive={setGameActive} userId={userId}/>
+				<Matchmaker setOpenDialog={setOpenDialog} setGameActive={setGameActive} userId={userId}  setIsHost={setIsHost}/>
 			</Dialog>
 		</>
 	);
 }
 
-export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
+export const Home = ({ setLoggedIn, setIsHost } : { setLoggedIn: booleanSetState, setIsHost: booleanSetState}) => {
 	const tokenData: tokenData = jwt(document.cookie);
 
 	const [openDrawer, setOpenDrawer] = useState(false)
 	const [openCard, setOpenCard] = useState(false)
 	const [gameActive, setGameActive] = useState(false);
-	
+
 	sessionSocket.connect()
 
 	if (gameActive) {
@@ -149,7 +149,7 @@ export const Home = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 			{ <Header setOpenDrawer={setOpenDrawer} setOpenCard={setOpenCard} /> }
 			{ openCard && <ProfileCard setOpenCard={setOpenCard}  userId={tokenData.id}/> }
 			{ openDrawer && <ChatDrawer setOpenDrawer={setOpenDrawer} /> }
-			{ <Background setGameActive={setGameActive} userId={tokenData.id} /> }
+			{ <Background setGameActive={setGameActive} userId={tokenData.id} setIsHost={setIsHost}/> }
 			{ <Footer setLoggedIn={setLoggedIn}/> }
 		</>
 	);
