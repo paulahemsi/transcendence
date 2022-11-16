@@ -46,15 +46,23 @@ export interface EndGameData {
 }
 
 const Matchmaker = ({ setGameActive, setOpenDialog, userId } : { setGameActive: booleanSetState,  setOpenDialog: booleanSetState, userId: string }) => {
+	
+	const [goGame, setGoGame] = useState(false);
 
 	const joinGameQueue = () => {
-		sessionSocket.on('joinGameQueue', (matchId) => {
-			console.log(`Uha! Your match room is ${matchId}`)
-		} )
 		sessionSocket.emit('joinGameQueue');
 		console.log(`User ${userId} wanna play`)
 	}
 	
+	sessionSocket.on('joinGameQueue', (matchId) => {
+		console.log(`Uha! Your match room is ${matchId}`)
+		setGoGame(true)
+	} )
+
+	if (goGame) {
+		return (<Navigate to='/game'/>)
+	}
+
 	return (
 		<>
 		<DialogTitle sx={{fontFamily: 'Orbitron'}}>
