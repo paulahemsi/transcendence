@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Typography, Box, Button, DialogTitle, DialogActions, Dialog, Card, CardContent, CardActions, CircularProgress  } from '@mui/material';
+import { Typography, Box, Button, DialogTitle, DialogActions, Dialog, CircularProgress  } from '@mui/material';
 import Header from "./header/Header";
 import { Footer } from "./footer/Footer";
 import ChatDrawer from "./chatDrawer/ChatDrawer";
 import jwt from 'jwt-decode';
-import io from 'socket.io-client';
 import ProfileCard from "./profileDrawer/ProfileDrawer";
 import { Navigate } from "react-router-dom";
+import { sessionSocket } from "./context/socket";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -14,7 +14,6 @@ type tokenData = {
 	id: string;
 }
 
-const sessionSocket = io('/session');
 
 const startGameButton = {
 	borderRadius: 3,
