@@ -10,6 +10,7 @@ interface Props {
 	setScore: React.Dispatch<React.SetStateAction<number[]>>
 	setEndGameVisible: React.Dispatch<React.SetStateAction<boolean>>
 	setEndGameDisplay: React.Dispatch<React.SetStateAction<EndGameData>>
+	isHost: boolean
 }
 
 interface Ball {
@@ -17,7 +18,7 @@ interface Ball {
   y: number;
 }
 
-export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisible, setEndGameDisplay}) => {
+export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisible, setEndGameDisplay, isHost}) => {
 	useEffect(() =>  {
 		const gameConfig: Phaser.Types.Core.GameConfig = {
 			type: Phaser.AUTO,
@@ -90,7 +91,6 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 
 		function update(this: Phaser.Scene): void {
 			cursors = this.input.keyboard.createCursorKeys();
-			const isHost = true;
 
 			if (isHost) {
 				updatePlayer1Velocit(cursors);
@@ -111,7 +111,6 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 			if (player1.y != player1PosY) {
 				player1PosY = player1.y;
 				gameSocket.emit('player1', player1PosY);
-				//gameSocket.emit('player2', player1PosY);
 			}
 		}
 

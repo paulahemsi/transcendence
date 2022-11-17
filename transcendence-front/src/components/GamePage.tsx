@@ -114,7 +114,12 @@ const GamePage = ({isHost} : {isHost: boolean}) => {
 				</Typography>
 			</Box>
 			<Box zIndex={9} position={'absolute'}>
-				<PhaserGame setScore={setScore} setEndGameVisible={setEndGameVisible} setEndGameDisplay={setEndGameDisplay} />
+				<PhaserGame
+					setScore={setScore}
+					setEndGameVisible={setEndGameVisible}
+					setEndGameDisplay={setEndGameDisplay}
+					isHost={isHost}
+				/>
 			</Box>
 			{ endGameVisible ? <EndGameCard endGameDisplay={endGameDisplay} setEndGameVisible={setEndGameVisible} setGameActive={setGameActive} /> : null }
 		</Box>
