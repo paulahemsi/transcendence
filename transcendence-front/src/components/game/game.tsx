@@ -144,6 +144,8 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 		function updateBallPositionFromSocket() {
 			gameSocket.off('ball').on('ball', (ballPosFromSocket: Ball) => {
 				ballPos = ballPosFromSocket
+				ball.x = ballPos.x;
+				ball.y = ballPos.y;
 			} );
 		}
 
@@ -198,31 +200,45 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
         return new Promise(resolve => setTimeout(resolve, milliseconds))
     }
 
-	function increaseP1Score(this: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody) {
+	function increaseP1Score() {
 		setScore([player1Score += 1, player2Score]);
-		ball.x = screenWidth / 2;
-		ball.y = screenHeight / 2;
-		ball.body.velocity.setTo(0);
-		sleep(700).then(() => {ball.body.velocity.setTo(ballVelocity[Math.floor(Math.random() * 2)], ballVelocity[Math.floor(Math.random() * 2)]);});
+		initializeBall();
+		startBall()
 	}
 
-	function increaseP2Score(this: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody) {
+	function increaseP2Score() {
 		setScore([player1Score, player2Score += 1]);
+		initializeBall();
+		startBall()
+	}
+
+	function initializeBall() {
 		ball.x = screenWidth / 2;
 		ball.y = screenHeight / 2;
 		ball.body.velocity.setTo(0);
-		sleep(700).then(() => {ball.body.velocity.setTo(ballVelocity[Math.floor(Math.random() * 2)], ballVelocity[Math.floor(Math.random() * 2)]);});
+	}
+
+	function startBall() {
+		sleep(700).then(() => {
+			setBallVelocity();	
+		});
+	}
+
+	function setBallVelocity() {
+		const velocity = Math.floor(Math.random() * 2);
+		ball.body.velocity.setTo(ballVelocity[velocity]);
 	}
 
 	function start(this: Phaser.Scene) : void {
-		(ball.body as Phaser.Physics.Arcade.Body).onWorldBounds = true;
-		ball.body.velocity.setTo(ballVelocity[Math.floor(Math.random() * 2)], ballVelocity[Math.floor(Math.random() * 2)]);
-		ball.setBounce(1);
-		this.physics.add.collider(ball, player1, HandleCollision, () => (console.log("COLLIDED WITH PLAYER 1")), player1);
-		this.physics.add.collider(ball, player2, HandleCollision, () => (console.log("COLLIDED WITH PLAYER 2")), player2);
-		this.physics.add.collider(ball, rightGoal, increaseP1Score, () => (console.log("COLLIDED WITH RIGHT GOAL")), rightGoal);
-		this.physics.add.collider(ball, leftGoal, increaseP2Score, () => (console.log("COLLIDED WITH LEFT GOAL")), leftGoal);
-		
+		if (isHost) {
+			(ball.body as Phaser.Physics.Arcade.Body).onWorldBounds = true;
+			setBallVelocity()
+			ball.setBounce(1);
+			this.physics.add.collider(ball, player1, HandleCollision, () => (console.log("COLLIDED WITH PLAYER 1")), player1);
+			this.physics.add.collider(ball, player2, HandleCollision, () => (console.log("COLLIDED WITH PLAYER 2")), player2);
+			this.physics.add.collider(ball, rightGoal, increaseP1Score, () => (console.log("COLLIDED WITH RIGHT GOAL")), rightGoal);
+			this.physics.add.collider(ball, leftGoal, increaseP2Score, () => (console.log("COLLIDED WITH LEFT GOAL")), leftGoal);
+		}
 	}
 
 	}, [])
