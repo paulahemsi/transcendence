@@ -48,13 +48,13 @@ export class GameGateway
   }
 
   @SubscribeMessage('player1')
-  handlePlayer1(client: Socket, message: string) {
-    this.server.emit('player1', message);
+  handlePlayer1(client: Socket, position: number) {
+    this.server.emit('player1', position);
   }
 
   @SubscribeMessage('player2')
-  handlePlayer2(client: Socket, message: string) {
-    this.server.emit('player2', message);
+  handlePlayer2(client: Socket, position: number) {
+    this.server.emit('player2', position);
   }
 
   @SubscribeMessage('ball')
