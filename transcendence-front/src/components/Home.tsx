@@ -7,7 +7,6 @@ import jwt from 'jwt-decode';
 import io from 'socket.io-client';
 import ProfileCard from "./profileDrawer/ProfileDrawer";
 import { Navigate } from "react-router-dom";
-import Loading from "./chatDrawer/Loading";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -153,7 +152,7 @@ export const Home = ({ setLoggedIn, setIsHost } : { setLoggedIn: booleanSetState
 		<>
 			{ <Header setOpenDrawer={setOpenDrawer} setOpenCard={setOpenCard} /> }
 			{ openCard && <ProfileCard setOpenCard={setOpenCard}  userId={tokenData.id}/> }
-			{ openDrawer && <ChatDrawer setOpenDrawer={setOpenDrawer} /> }
+			{ openDrawer && <ChatDrawer setOpenDrawer={setOpenDrawer} setIsHost={setIsHost}/> }
 			{ <Background setGameActive={setGameActive} userId={tokenData.id} setIsHost={setIsHost}/> }
 			{ <Footer setLoggedIn={setLoggedIn}/> }
 		</>

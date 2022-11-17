@@ -15,7 +15,7 @@ type tokenData = {
 
 type arraySetState = React.Dispatch<React.SetStateAction<string[]>>
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
-
+type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
 const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) => {
 	return { ...state, ...newState };
@@ -110,7 +110,7 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 	)
 }
 
-export const ChatMessages = ( { activeChannel, isDM, friendId } : { activeChannel : number, isDM: boolean, friendId: string }) => {
+export const ChatMessages = ( { activeChannel, isDM, friendId, setIsHost} : { activeChannel : number, isDM: boolean, friendId: string, setIsHost: booleanSetState }) => {
 	const [state, setState] = useReducer(reducer, {
 		joined: false,
 		muted: false,
@@ -146,7 +146,7 @@ export const ChatMessages = ( { activeChannel, isDM, friendId } : { activeChanne
 		<>
 			{
 				state.joined && isDM &&
-				<DMButtons friendId={friendId}/>
+				<DMButtons friendId={friendId} setIsHost={setIsHost}/>
 			}
 			{
 				state.joined && 

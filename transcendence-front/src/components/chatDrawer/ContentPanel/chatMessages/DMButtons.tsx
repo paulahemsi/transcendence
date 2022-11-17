@@ -30,7 +30,7 @@ const buttonTypographyCss = {
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
-const InviteToGame = () => {
+const InviteToGame = ({ setIsHost } : { setIsHost: booleanSetState }) => {
 	
 	const handleClick = () => {
 		
@@ -90,7 +90,7 @@ const GoToProfile = ({ setOpenCard } : { setOpenCard: booleanSetState }) => {
 	)
 }
 
-export const DMButtons = ({ friendId } : { friendId: string }) => {
+export const DMButtons = ({ friendId, setIsHost } : { friendId: string, setIsHost: booleanSetState }) => {
 	const [openProfile, setOpenProfile] = useState(false);
 	const [openDialog, setOpenDialog] = useState(false)
 
@@ -101,7 +101,7 @@ export const DMButtons = ({ friendId } : { friendId: string }) => {
 	return (
 		<>
 			<Box display="flex" justifyContent="space-around" minWidth="50vw" marginTop="1vh">
-				<InviteToGame/>
+				<InviteToGame setIsHost={setIsHost}/>
 				<BlockUser setOpenDialog={setOpenDialog}/>
 				<GoToProfile setOpenCard={setOpenProfile}/>
 			</Box>
