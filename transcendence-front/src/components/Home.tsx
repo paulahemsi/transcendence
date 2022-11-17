@@ -47,6 +47,7 @@ export interface EndGameData {
 }
 
 const Matchmaker = ({ setGameActive, setOpenDialog, userId, setIsHost } : { setGameActive: booleanSetState,  setOpenDialog: booleanSetState, userId: string, setIsHost: booleanSetState }) => {
+	const tokenData: tokenData = jwt(document.cookie);
 	
 	const [goGame, setGoGame] = useState(false);
 	const [loading, setLoading] = useState(false);
@@ -57,9 +58,13 @@ const Matchmaker = ({ setGameActive, setOpenDialog, userId, setIsHost } : { setG
 		console.log(`User ${userId} wanna play`)
 	}
 	
-	sessionSocket.on('joinGameQueue', (matchId) => {
+	sessionSocket.on('joinGameQueue', (match) => {
+		if (match.player1 == tokenData.id) {
+			setIsHost(true);
+		} else {
+			setIsHost(false);
+		}
 		setLoading(false);
-		console.log(`Uha! Your match room is ${matchId}`)
 		setGoGame(true)
 	} )
 
