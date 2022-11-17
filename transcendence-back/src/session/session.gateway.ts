@@ -21,6 +21,12 @@ interface Player {
   userId: string;
 }
 
+interface MatchInfos {
+  id: number;
+  player1: string;
+  player2: string;
+}
+
 @WebSocketGateway({ namespace: '/session' })
 export class SessionGateway
   implements
@@ -87,8 +93,15 @@ export class SessionGateway
         player.userId,
         otherPlayer.userId,
       );
-      otherPlayer.socket.emit('joinGameQueue', match.id);
-      player.socket.emit('joinGameQueue', match.id);
+      
+      const matchInfos: MatchInfos = {
+        id: match.id,
+        player1: match.player1.id,
+        player2: match.player2.id,
+      }
+      
+      otherPlayer.socket.emit('joinGameQueue', matchInfos);
+      player.socket.emit('joinGameQueue', matchInfos);
     } else {
       this.gameQueue.push(player);
     }
