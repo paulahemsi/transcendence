@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { FunctionComponent, useEffect, useReducer, useState } from "react";
 import { TextField, Box } from "@mui/material";
 import axios, { AxiosRequestHeaders } from 'axios';
 import MessagesList from "./MessagesList";
@@ -16,6 +16,14 @@ type tokenData = {
 type arraySetState = React.Dispatch<React.SetStateAction<string[]>>
 type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+
+interface ChatMessageProps {
+	activeChannel : number;
+	isDM: boolean;
+	friendId: string;
+	setIsHost: booleanSetState;
+	setGameActive: booleanSetState;
+}
 
 const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) => {
 	return { ...state, ...newState };
@@ -110,7 +118,7 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 	)
 }
 
-export const ChatMessages = ( { activeChannel, isDM, friendId, setIsHost} : { activeChannel : number, isDM: boolean, friendId: string, setIsHost: booleanSetState }) => {
+export const ChatMessages: FunctionComponent<ChatMessageProps> = ({ activeChannel, isDM, friendId, setIsHost, setGameActive }) => {
 	const [state, setState] = useReducer(reducer, {
 		joined: false,
 		muted: false,
@@ -146,7 +154,7 @@ export const ChatMessages = ( { activeChannel, isDM, friendId, setIsHost} : { ac
 		<>
 			{
 				state.joined && isDM &&
-				<DMButtons friendId={friendId} setIsHost={setIsHost}/>
+				<DMButtons friendId={friendId} setIsHost={setIsHost} setGameActive={setGameActive}/>
 			}
 			{
 				state.joined && 

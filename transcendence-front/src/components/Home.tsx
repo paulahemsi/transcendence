@@ -151,7 +151,7 @@ export const Home = ({ setLoggedIn, setIsHost } : { setLoggedIn: booleanSetState
 		<>
 			{ <Header setOpenDrawer={setOpenDrawer} setOpenCard={setOpenCard} /> }
 			{ openCard && <ProfileCard setOpenCard={setOpenCard}  userId={tokenData.id}/> }
-			{ openDrawer && <ChatDrawer setOpenDrawer={setOpenDrawer} setIsHost={setIsHost}/> }
+			{ openDrawer && <ChatDrawer setOpenDrawer={setOpenDrawer} setIsHost={setIsHost} setGameActive={setGameActive}/> }
 			{ <Background setGameActive={setGameActive} userId={tokenData.id} setIsHost={setIsHost}/> }
 			{ <Footer setLoggedIn={setLoggedIn}/> }
 		</>

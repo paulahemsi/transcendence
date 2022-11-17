@@ -16,6 +16,7 @@ type tokenData = {
 interface Props {
     setOpenDrawer: booleanSetState;
 	setIsHost: booleanSetState;
+	setGameActive: booleanSetState;
 }
 
 const requestFriendsData = async ({ setFriendsData } : { setFriendsData: React.Dispatch<React.SetStateAction<{[key: string]: any}>>}) => {
@@ -28,7 +29,7 @@ const requestFriendsData = async ({ setFriendsData } : { setFriendsData: React.D
 })
 }
 
-export const ChatDrawer : FunctionComponent<Props> = ({ setOpenDrawer, setIsHost }) => {
+export const ChatDrawer : FunctionComponent<Props> = ({ setOpenDrawer, setIsHost, setGameActive }) => {
 	const [friendsData, setFriendsData] = useState<{[key: string]: any}>({});
 	const [extraContent, setExtraContent] = useState(false);
 	const [channelsAdminPanel, setChannelsAdminPanel] = useState(false);
@@ -86,7 +87,7 @@ export const ChatDrawer : FunctionComponent<Props> = ({ setOpenDrawer, setIsHost
 				<Box>
 					{
 						extraContent &&
-						<ChatMessages activeChannel={activeChannel} isDM={isDM} friendId={getFriendId()} setIsHost={setIsHost}/>
+						<ChatMessages activeChannel={activeChannel} isDM={isDM} friendId={getFriendId()} setIsHost={setIsHost} setGameActive={setGameActive}/>
 					}
 					{
 						channelsAdminPanel && (activeChannel > 0) && !isDM && 
