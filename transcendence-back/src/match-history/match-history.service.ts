@@ -1,6 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MatchHistory } from 'src/entity';
+import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 
 export class matchInfos {
@@ -16,7 +22,24 @@ export class MatchHistoryService {
   constructor(
     @InjectRepository(MatchHistory)
     private readonly matchHistoryRepository: Repository<MatchHistory>,
+    @Inject(forwardRef(() => UsersService))
+    private readonly usersService: UsersService,
   ) {}
+
+  async createMatch(player1Id: string, player2Id: string) {
+    const player1 = await this.usersService.findUser(player1Id);
+    const player2 = await this.usersService.findUser(player2Id);
+    if (!player1 || !player2) {
+      throw new NotFoundException();
+    }
+
+    const match = this.matchHistoryRepository.create({
+      player1: player1,
+      player2: player2,
+    });
+
+    return this.matchHistoryRepository.save(match);
+  }
 
   isPlayer1(id: string, match: MatchHistory): boolean {
     return match.player1.id === id;

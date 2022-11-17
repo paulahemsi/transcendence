@@ -15,6 +15,7 @@ import { AuthMiddleware } from './auth/auth.midlleware';
 import { SessionModule } from './session/session.module';
 import { ImagesModule } from './images/images.module';
 import { GameModule } from './game/game.module';
+import { MatchHistoryModule } from './match-history/match-history.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { GameModule } from './game/game.module';
     DatabaseModule,
     UsersModule,
     ChannelsModule,
+    MatchHistoryModule,
     AuthModule,
     ChatModule,
     SessionModule,
