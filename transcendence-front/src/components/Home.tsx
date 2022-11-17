@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Typography, Box, Button, DialogTitle, DialogActions, Dialog, Card, CardContent, CardActions  } from '@mui/material';
+import { Typography, Box, Button, DialogTitle, DialogActions, Dialog, Card, CardContent, CardActions, CircularProgress  } from '@mui/material';
 import Header from "./header/Header";
 import { Footer } from "./footer/Footer";
 import ChatDrawer from "./chatDrawer/ChatDrawer";
@@ -7,6 +7,7 @@ import jwt from 'jwt-decode';
 import io from 'socket.io-client';
 import ProfileCard from "./profileDrawer/ProfileDrawer";
 import { Navigate } from "react-router-dom";
+import Loading from "./chatDrawer/Loading";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -48,13 +49,16 @@ export interface EndGameData {
 const Matchmaker = ({ setGameActive, setOpenDialog, userId } : { setGameActive: booleanSetState,  setOpenDialog: booleanSetState, userId: string }) => {
 	
 	const [goGame, setGoGame] = useState(false);
+	const [loading, setLoading] = useState(false);
 
 	const joinGameQueue = () => {
 		sessionSocket.emit('joinGameQueue');
+		setLoading(true);
 		console.log(`User ${userId} wanna play`)
 	}
 	
 	sessionSocket.on('joinGameQueue', (matchId) => {
+		setLoading(false);
 		console.log(`Uha! Your match room is ${matchId}`)
 		setGoGame(true)
 	} )
@@ -63,6 +67,20 @@ const Matchmaker = ({ setGameActive, setOpenDialog, userId } : { setGameActive: 
 		return (<Navigate to='/game'/>)
 	}
 
+	if (loading) {
+		return (
+			<>
+				<DialogTitle sx={{fontFamily: 'Orbitron'}}>
+					Searching for an opponent...
+				</DialogTitle>
+				<DialogActions sx={{justifyContent: "center", margin: '2vh'}}>
+					<Box display="flex" justifyContent="center" alignItems="center">
+						<CircularProgress />
+					</Box>
+				</DialogActions>
+			</>
+		)
+	}
 	return (
 		<>
 		<DialogTitle sx={{fontFamily: 'Orbitron'}}>
