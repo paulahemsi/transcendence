@@ -12,6 +12,11 @@ interface Props {
 	setEndGameDisplay: React.Dispatch<React.SetStateAction<EndGameData>>
 }
 
+interface Ball {
+  x: number;
+  y: number;
+}
+
 export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisible, setEndGameDisplay}) => {
 	useEffect(() =>  {
 		const gameConfig: Phaser.Types.Core.GameConfig = {
@@ -50,8 +55,7 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 
 		let player1PosY: number = 0;
 		let player2PosY: number = 0;
-		let ballPosX: number = 0;
-		let ballPosY: number = 0;
+		let ballPos: Ball = {x: 0, y: 0}
 
 		let player1Score: number = 0;
 		let player2Score: number = 0;
@@ -107,7 +111,7 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 			if (player1.y != player1PosY) {
 				player1PosY = player1.y;
 				gameSocket.emit('player1', player1PosY);
-				gameSocket.emit('player2', player1PosY);
+				//gameSocket.emit('player2', player1PosY);
 			}
 		}
 
@@ -131,24 +135,16 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 		}
 		
 		function updateBallPosition() {
-			if (ball.x != ballPosX || ball.y != ballPosY) {
-				gameSocket.emit('ball', "BALL POSITION X: " + ball.x + " Y: " + ball.y);
-				ballPosX = ball.x;
-				ballPosY = ball.y;
+			if (ball.x != ballPos.x || ball.y != ballPos.y) {
+				ballPos.x = ball.x;
+				ballPos.y = ball.y;
+				gameSocket.emit('ball', ballPos);
 			}
-			gameSocket.off('ball').on('ball', (msg) => {
-				//console.log(msg);
-			} );
 		}
 
 		function updateBallPositionFromSocket() {
-			if (ball.x != ballPosX || ball.y != ballPosY) {
-				gameSocket.emit('ball', "BALL POSITION X: " + ball.x + " Y: " + ball.y);
-				ballPosX = ball.x;
-				ballPosY = ball.y;
-			}
-			gameSocket.off('ball').on('ball', (msg) => {
-				console.log(msg);
+			gameSocket.off('ball').on('ball', (ballPosFromSocket: Ball) => {
+				ballPos = ballPosFromSocket
 			} );
 		}
 

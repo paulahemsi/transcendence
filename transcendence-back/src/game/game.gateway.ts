@@ -10,6 +10,11 @@ import {
 import { Socket, Server } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
 
+interface Ball {
+  x: number;
+  y: number;
+}
+
 @WebSocketGateway({ namespace: '/game' })
 export class GameGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
@@ -58,7 +63,7 @@ export class GameGateway
   }
 
   @SubscribeMessage('ball')
-  handleBall(client: Socket, message: string) {
-    this.server.emit('ball', message);
+  handleBall(client: Socket, ball: Ball) {
+    this.server.emit('ball', ball);
   }
 }
