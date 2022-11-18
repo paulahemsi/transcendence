@@ -3,7 +3,7 @@ import { Box, Typography, Button, Dialog, DialogTitle, DialogActions, CircularPr
 import ProfileCard from "../../../profileDrawer/ProfileDrawer";
 import BlockUserDialog from "./BlockUserDialog";
 import jwt from 'jwt-decode';
-import { sessionSocket } from "../../../context/socket";
+import { chatSocket, sessionSocket } from "../../../context/socket";
 import { Navigate } from "react-router-dom";
 
 type tokenData = {
@@ -40,43 +40,42 @@ type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 interface askFriendProps {
     setGameActive: booleanSetState;
     setIsHost: booleanSetState;
+	setOpenDialog: booleanSetState;
 	userId: string;
 	friendId: string;
 }
 
-interface inviteProps {
+interface Props {
     setGameActive: booleanSetState;
     setIsHost: booleanSetState;
 	friendId: string;
+	activeChannel: number;
 }
 
-const AskFriend: FunctionComponent<askFriendProps> = ({ setGameActive, userId, friendId, setIsHost }) => {
-	const tokenData: tokenData = jwt(document.cookie);
-	
-	const [goGame, setGoGame] = useState(false);
+interface Game {
+	room: number;
+	player1: string;
+	player2: string;
+}
 
-	const joinGameQueue = () => {
-		sessionSocket.emit('joinGameQueue');
-		console.log(`User ${userId} wanna play`)
-	}
-	
-	sessionSocket.on('joinGameQueue', (match) => {
-		if (match.player1 == tokenData.id) {
-			setIsHost(true);
-		} else {
-			setIsHost(false);
-		}
-		setGoGame(true)
-	} )
+const AskFriend: FunctionComponent<askFriendProps> = ({ setGameActive, userId, friendId, setIsHost, setOpenDialog }) => {
+	const tokenData: tokenData = jwt(document.cookie);
+	const [goGame, setGoGame] = useState(false);
 
 	if (goGame) {
 		return (<Navigate to='/game'/>)
 	}
+	
+	setTimeout(() =>{
+		if (!goGame) {
+			setOpenDialog(false);
+		}
+	}, 30000);
 
 	return (
 		<>
 			<DialogTitle sx={{fontFamily: 'Orbitron'}}>
-				Searching for an opponent...
+				Waiting for you opponent..
 			</DialogTitle>
 			<DialogActions sx={{justifyContent: "center", margin: '2vh'}}>
 				<Box display="flex" justifyContent="center" alignItems="center">
@@ -88,11 +87,17 @@ const AskFriend: FunctionComponent<askFriendProps> = ({ setGameActive, userId, f
 
 }
 
-const InviteToGame: FunctionComponent<inviteProps> = ({ setIsHost, setGameActive, friendId }) => {
+const InviteToGame: FunctionComponent<Props> = ({ setIsHost, setGameActive, friendId, activeChannel }) => {
 	const [ openDialog, setOpenDialog ] = useState(false);
 	const tokenData: tokenData = jwt(document.cookie);
 	
 	const handleClick = () => {
+		const players: Game = {
+			room: activeChannel,
+			player1: tokenData.id,
+			player2: friendId,
+		}
+		chatSocket.emit('playWithFriend', players);
 		setOpenDialog(true);
 	}
 	const handleClose = () => {
@@ -117,6 +122,7 @@ const InviteToGame: FunctionComponent<inviteProps> = ({ setIsHost, setGameActive
 					userId={tokenData.id}
 					setIsHost={setIsHost}
 					friendId={friendId}
+					setOpenDialog={setOpenDialog}
 				/>
 			</Dialog>
 		</>
@@ -163,7 +169,7 @@ const GoToProfile = ({ setOpenCard } : { setOpenCard: booleanSetState }) => {
 	)
 }
 
-export const DMButtons = ({ friendId, setIsHost, setGameActive } : { friendId: string, setIsHost: booleanSetState, setGameActive: booleanSetState }) => {
+export const DMButtons: FunctionComponent<Props> = ({ friendId, setIsHost, setGameActive, activeChannel }) => {
 	const [openProfile, setOpenProfile] = useState(false);
 	const [openDialog, setOpenDialog] = useState(false)
 
@@ -174,7 +180,7 @@ export const DMButtons = ({ friendId, setIsHost, setGameActive } : { friendId: s
 	return (
 		<>
 			<Box display="flex" justifyContent="space-around" minWidth="50vw" marginTop="1vh">
-				<InviteToGame setIsHost={setIsHost} setGameActive={setGameActive} friendId={friendId}/>
+				<InviteToGame setIsHost={setIsHost} setGameActive={setGameActive} friendId={friendId} activeChannel={activeChannel}/>
 				<BlockUser setOpenDialog={setOpenDialog}/>
 				<GoToProfile setOpenCard={setOpenProfile}/>
 			</Box>
