@@ -62,7 +62,7 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 		newMessagesData.push(msg);
 		setMessagesData(newMessagesData);
 	} )
-
+	
 	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
 		setNewMessage(event.target.value);
 	}
@@ -154,7 +154,7 @@ export const ChatMessages: FunctionComponent<ChatMessageProps> = ({ activeChanne
 		<>
 			{
 				state.joined && isDM &&
-				<DMButtons friendId={friendId} setIsHost={setIsHost} setGameActive={setGameActive}/>
+				<DMButtons friendId={friendId} setIsHost={setIsHost} setGameActive={setGameActive} activeChannel={activeChannel}/>
 			}
 			{
 				state.joined && 
