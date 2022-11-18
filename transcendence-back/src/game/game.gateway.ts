@@ -57,6 +57,18 @@ export class GameGateway
     client.disconnect();
   }
 
+  @SubscribeMessage('joinGameRoom')
+  handleJoinGameRoom(client: Socket, gameRoom: string) {
+    client.join(gameRoom);
+    client.emit('joinGameRoom', gameRoom);
+  }
+
+  @SubscribeMessage('leaveGameRoom')
+  handleLeaveGameRoom(client: Socket, gameRoom: string) {
+    client.leave(gameRoom);
+    client.emit('leaveGameRoom', gameRoom);
+  }
+
   @SubscribeMessage('player1')
   handlePlayer1(client: Socket, position: number) {
     this.server.emit('player1', position);
