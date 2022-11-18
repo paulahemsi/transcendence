@@ -54,7 +54,6 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 		let rightGoal: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 		let leftGoal: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 		let ball: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-		let cursors: Phaser.Types.Input.Keyboard.CursorKeys;
 		let ballVelocity : number[] = [1000, -1000];
 		let screenWidth : number = window.innerWidth;
 		let screenHeight : number = window.innerHeight;
@@ -97,15 +96,13 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 		}
 
 		function update(this: Phaser.Scene): void {
-			cursors = this.input.keyboard.createCursorKeys();
-
 			if (isHost) {
-				updatePlayer1Velocit(cursors);
+				updatePlayerVelocit(player1, this.input);
 				updatePlayer1Position();
 				updatePlayer2PositionFromSocket();
 				updateBallPosition();
 			} else {
-				updatePlayer2Velocit(cursors);
+				updatePlayerVelocit(player2, this.input);
 				updatePlayer1PositionFromSocket();
 				updatePlayer2Position();
 				updateBallPositionFromSocket();
@@ -156,27 +153,16 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 			} );
 		}
 
-		function updatePlayer1Velocit(cursors: any) {
+		function updatePlayerVelocit(player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody, input: Phaser.Input.InputPlugin) {
+			const cursors = input.keyboard.createCursorKeys();
 			if (cursors.up.isDown) {
-				player1.setVelocityY(-500);
+				player.setVelocityY(-500);
 			}
 			else if (cursors.down.isDown) {
-				player1.setVelocityY(500);
+				player.setVelocityY(500);
 			}
 			else {
-				player1.setVelocityY(0);
-			}
-		}
-		
-		function updatePlayer2Velocit(cursors: any) {
-			if (cursors.up.isDown) {
-				player2.setVelocityY(-500);
-			}
-			else if (cursors.down.isDown) {
-				player2.setVelocityY(500);
-			}
-			else {
-				player2.setVelocityY(0);
+				player.setVelocityY(0);
 			}
 		}
 		
