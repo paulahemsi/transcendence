@@ -80,6 +80,7 @@ export const PhaserGame: FunctionComponent<Props> = ({
 
 		function create(this: Phaser.Scene): void {
 			gameSocket.connect();
+			gameSocket.emit('joinGameRoom', matchRoom);
 			player1 = this.physics.add.sprite(screenWidth * 0.1, screenHeight * 0.5, 'pad');
 			player2 = this.physics.add.sprite(screenWidth * 0.9, screenHeight * 0.5, 'pad');
 			ball = this.physics.add.sprite(this.sys.canvas.width / 2, this.sys.canvas.height / 2, 'ball').setSize(30, 30);
@@ -183,6 +184,7 @@ export const PhaserGame: FunctionComponent<Props> = ({
 					winner: winningPlayer
 				})
 				setEndGameVisible(true);
+				gameSocket.emit('leaveGameRoom', matchRoom);
 				sleep(1000).then(() => {game.destroy(true);});
 			}
 		}
