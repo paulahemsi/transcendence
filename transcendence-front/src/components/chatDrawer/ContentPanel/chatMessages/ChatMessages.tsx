@@ -63,6 +63,12 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 		setMessagesData(newMessagesData);
 	} )
 	
+	chatSocket.on('playWithFriend', (match) => {
+		console.log('recebi')
+		//setIsHost(true);
+		//setGoGame(true);
+	} )
+
 	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
 		setNewMessage(event.target.value);
 	}
@@ -133,6 +139,12 @@ export const ChatMessages: FunctionComponent<ChatMessageProps> = ({ activeChanne
 		if ( room == activeChannel) {
 			setState({ joined: true });
 		}
+	} )
+	
+	chatSocket.on('playWithFriend', (match) => {
+		console.log('recebi')
+		//setIsHost(true);
+		//setGoGame(true);
 	} )
 
 	chatSocket.off('muteUser').on('muteUser', () => {

@@ -66,6 +66,12 @@ const AskFriend: FunctionComponent<askFriendProps> = ({ setGameActive, userId, f
 		return (<Navigate to='/game'/>)
 	}
 	
+	chatSocket.on('playWithFriend', (match) => {
+		console.log('recebi')
+		//setIsHost(true);
+		//setGoGame(true);
+	} )
+	
 	setTimeout(() =>{
 		if (!goGame) {
 			setOpenDialog(false);
