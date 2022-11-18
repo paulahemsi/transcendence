@@ -18,6 +18,11 @@ interface Ball {
   y: number;
 }
 
+interface Score {
+  player1: number;
+  player2: number;
+}
+
 export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisible, setEndGameDisplay, isHost}) => {
 	useEffect(() =>  {
 		const gameConfig: Phaser.Types.Core.GameConfig = {
@@ -58,13 +63,11 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 		let player2PosY: number = 0;
 		let ballPos: Ball = {x: 0, y: 0}
 
-		let player1Score: number = 0;
-		let player2Score: number = 0;
+		let score: Score = {player1: 0, player2: 0}
 		let endingScore: number =  4;
 		let winningPlayer: 1 | 2 | undefined = undefined;
 
 		function preload(this: Phaser.Scene): void {
-	
 			this.load.image('pad', require('./assets/pad.png'));
 			this.load.image('ball', require('./assets/ball.png'));
 		}
@@ -85,8 +88,12 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 			player2.body.setImmovable(true);
 			ball.setCollideWorldBounds(true);
 			ball.setAcceleration(0);
-			this.time.delayedCall(1000, start, [], this);
 
+			if (isHost) {
+				this.time.delayedCall(1000, start, [], this);
+			} else {
+				updateScore();
+			}
 		}
 
 		function update(this: Phaser.Scene): void {
@@ -173,9 +180,9 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 			}
 		}
 		
-		function checkEndGame(phaserScene: any) {
-			if (player1Score >= endingScore || player2Score >= endingScore) {
-				winningPlayer = player1Score > player2Score ? 1 : 2;
+		function checkEndGame(phaserScene: Phaser.Scenes.ScenePlugin) {
+			if (score.player1 >= endingScore || score.player2 >= endingScore) {
+				winningPlayer = score.player1 > score.player2 ? 1 : 2;
 				phaserScene.pause();
 				setEndGameDisplay({
 					player1Name: "PLAYER 1",
@@ -201,13 +208,15 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
     }
 
 	function increaseP1Score() {
-		setScore([player1Score += 1, player2Score]);
+		setScore([score.player1 += 1, score.player2]);
+		gameSocket.emit('score', {player1: score.player1, player2: score.player2} );
 		initializeBall();
 		startBall()
 	}
 
 	function increaseP2Score() {
-		setScore([player1Score, player2Score += 1]);
+		setScore([score.player1, score.player2 += 1]);
+		gameSocket.emit('score', {player1: score.player1, player2: score.player2} );
 		initializeBall();
 		startBall()
 	}
@@ -230,15 +239,20 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 	}
 
 	function start(this: Phaser.Scene) : void {
-		if (isHost) {
-			(ball.body as Phaser.Physics.Arcade.Body).onWorldBounds = true;
-			setBallVelocity()
-			ball.setBounce(1);
-			this.physics.add.collider(ball, player1, HandleCollision, () => (console.log("COLLIDED WITH PLAYER 1")), player1);
-			this.physics.add.collider(ball, player2, HandleCollision, () => (console.log("COLLIDED WITH PLAYER 2")), player2);
-			this.physics.add.collider(ball, rightGoal, increaseP1Score, () => (console.log("COLLIDED WITH RIGHT GOAL")), rightGoal);
-			this.physics.add.collider(ball, leftGoal, increaseP2Score, () => (console.log("COLLIDED WITH LEFT GOAL")), leftGoal);
-		}
+		(ball.body as Phaser.Physics.Arcade.Body).onWorldBounds = true;
+		setBallVelocity()
+		ball.setBounce(1);
+		this.physics.add.collider(ball, player1, HandleCollision, () => (console.log("COLLIDED WITH PLAYER 1")), player1);
+		this.physics.add.collider(ball, player2, HandleCollision, () => (console.log("COLLIDED WITH PLAYER 2")), player2);
+		this.physics.add.collider(ball, rightGoal, increaseP1Score, () => (console.log("COLLIDED WITH RIGHT GOAL")), rightGoal);
+		this.physics.add.collider(ball, leftGoal, increaseP2Score, () => (console.log("COLLIDED WITH LEFT GOAL")), leftGoal);
+	}
+
+	function updateScore() {
+		gameSocket.off('score').on('score', (scoreFromSocket: Score) => {
+			score = scoreFromSocket;	
+			setScore([score.player1, score.player2]);
+		} );
 	}
 
 	}, [])

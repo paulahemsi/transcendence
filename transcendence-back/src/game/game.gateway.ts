@@ -15,6 +15,11 @@ interface Ball {
   y: number;
 }
 
+interface Score {
+  player1: number;
+  player2: number;
+}
+
 @WebSocketGateway({ namespace: '/game' })
 export class GameGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
@@ -65,5 +70,10 @@ export class GameGateway
   @SubscribeMessage('ball')
   handleBall(client: Socket, ball: Ball) {
     this.server.emit('ball', ball);
+  }
+
+  @SubscribeMessage('score')
+  handleScore(client: Socket, score: Score) {
+    this.server.emit('score', score);
   }
 }
