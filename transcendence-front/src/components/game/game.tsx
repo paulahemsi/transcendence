@@ -11,6 +11,7 @@ interface Props {
 	setEndGameVisible: React.Dispatch<React.SetStateAction<boolean>>
 	setEndGameDisplay: React.Dispatch<React.SetStateAction<EndGameData>>
 	isHost: boolean
+	matchRoom: string
 }
 
 interface Ball {
@@ -23,7 +24,13 @@ interface Score {
   player2: number;
 }
 
-export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisible, setEndGameDisplay, isHost}) => {
+export const PhaserGame: FunctionComponent<Props> = ({
+	setScore,
+	setEndGameVisible,
+	setEndGameDisplay,
+	isHost,
+	matchRoom,
+}) => {
 	useEffect(() =>  {
 		const gameConfig: Phaser.Types.Core.GameConfig = {
 			type: Phaser.AUTO,

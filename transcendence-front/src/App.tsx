@@ -7,7 +7,7 @@ import Home from './components/Home'
 import jwt from 'jwt-decode';
 import TwoFactorAuthCard from './components/TwoFactorAuthCard';
 import GamePage from './components/GamePage';
-import { booleanSetState } from './components/utils/constants';
+import { booleanSetState, stringSetState } from './components/utils/constants';
 
 type tokenData = {
 	id: string;
@@ -31,13 +31,16 @@ function isLoggedIn() {
   return validateToken(cookie);
 }
 
-const PreHome = ({setIsHost} : {setIsHost: booleanSetState}) => {
+const PreHome = ({setIsHost, setMatchRoom} : {
+  setIsHost: booleanSetState
+  setMatchRoom: stringSetState
+}) => {
   const[ loggedIn, setLoggedIn ] = useState(isLoggedIn());
 
 	return (
     <main>
       {loggedIn
-      ? <Home setLoggedIn={setLoggedIn} setIsHost={setIsHost}/>
+      ? <Home setLoggedIn={setLoggedIn} setIsHost={setIsHost} setMatchRoom={setMatchRoom}/>
       : <LoginCard/> }
     </main>
 	);
@@ -45,14 +48,15 @@ const PreHome = ({setIsHost} : {setIsHost: booleanSetState}) => {
 
 function App() {
   const [isHost, setIsHost] = useState(false);
+  const [matchRoom, setMatchRoom] = useState('');
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<PreHome setIsHost={setIsHost}/>} />
+        <Route path='/' element={<PreHome setIsHost={setIsHost} setMatchRoom={setMatchRoom}/>} />
         <Route path='/login' element={<LoginCard/>} />
         <Route path='/2fa' element={<TwoFactorAuthCard/>} />
-        <Route path='/game' element={<GamePage isHost={isHost}/>} />
+        <Route path='/game' element={<GamePage isHost={isHost} matchRoom={matchRoom}/>} />
       </Routes>
     </BrowserRouter>
   );
