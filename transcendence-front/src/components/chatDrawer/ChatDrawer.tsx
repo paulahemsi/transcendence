@@ -3,14 +3,9 @@ import { Drawer, Box } from '@mui/material';
 import ChatMessages from "./ContentPanel/chatMessages/ChatMessages";
 import ControlPanel from "./ControlPanel/ControlPanel";
 import ChannelsAdminPanel from "./ContentPanel/ChannelsAdminPanel";
-import jwt from 'jwt-decode';
 import axios, { AxiosRequestHeaders } from "axios";
 import { chatSocket } from "../context/socket";
-import { booleanSetState } from "../utils/constants";
-
-type tokenData = {
-	id: string;
-}
+import { authToken, booleanSetState, tokenData } from "../utils/constants";
 
 interface Props {
     setOpenDrawer: booleanSetState;
@@ -20,9 +15,6 @@ interface Props {
 
 const requestFriendsData = async ({ setFriendsData } : { setFriendsData: React.Dispatch<React.SetStateAction<{[key: string]: any}>>}) => {
 
-	const tokenData: tokenData = jwt(document.cookie);
-	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-	
 	await axios.get(`http://localhost:3000/users/${tokenData.id}/friends`, { headers: authToken }).then((response) => {
 		setFriendsData(response.data);
 })

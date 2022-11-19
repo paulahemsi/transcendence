@@ -4,12 +4,8 @@ import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import UsersList from "./UsersList";
 import ErrorToast from "../../utils/ErrorToast";
-import { booleanSetState, DEFAULT_TOAST_MSG, objectSetState } from "../../utils/constants";
+import { authToken, booleanSetState, DEFAULT_TOAST_MSG, objectSetState, tokenData } from "../../utils/constants";
 import { chatSocket } from "../../context/socket";
-
-type tokenData = {
-	id: string;
-}
 
 interface Props {
 	setOpenDialog: booleanSetState;
@@ -28,9 +24,6 @@ export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 		toastError: false,
 		toastMessage: DEFAULT_TOAST_MSG,
 	});
-	
-	const tokenData: tokenData = jwt(document.cookie);
-	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 
 	const handleQuery = (event :  React.ChangeEvent<HTMLInputElement>) => {
 		setState({ searchQuery: event.target.value });

@@ -8,11 +8,7 @@ import DeleteMembersDialog from "./DeleteMembersDialog"
 import LeaveChannelDialog from "./LeaveChannelDialog"
 import jwt from 'jwt-decode';
 import MuteMembersDialog from "./MuteMembersDialog"
-import { booleanSetState, numberSetState, objectSetState } from "../../utils/constants"
-
-type tokenData = {
-	id: string;
-}
+import { booleanSetState, numberSetState, objectSetState, tokenData } from "../../utils/constants"
 
 interface Props {
 	setMembersMockData: objectSetState;
@@ -184,7 +180,6 @@ export const AdminControlPannel: FunctionComponent<Props> = ({ setMembersMockDat
 	const [openMuteDialog, setOpenMuteDialog] = useState(false);
 	const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
 	const [openPasswordDialog, setOpenPasswordDialog] = useState(false);
-	const tokenData: tokenData = jwt(document.cookie);
 
 	let isOwner = false;
 	let isAdmin = false;

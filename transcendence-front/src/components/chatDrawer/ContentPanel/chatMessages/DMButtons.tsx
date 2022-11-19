@@ -5,11 +5,7 @@ import BlockUserDialog from "./BlockUserDialog";
 import jwt from 'jwt-decode';
 import { chatSocket } from "../../../context/socket";
 import { Navigate } from "react-router-dom";
-import { booleanSetState, DEFAULT_TOAST_MSG, objectSetState } from "../../../utils/constants";
-
-type tokenData = {
-	id: string;
-}
+import { booleanSetState, DEFAULT_TOAST_MSG, objectSetState, tokenData } from "../../../utils/constants";
 
 const PROFILE = "Go to profile";
 const BLOCK = "Block";
@@ -86,7 +82,6 @@ const ErrorToast = ({state, setState, setOpenDialog} : {state: {[key: string]: a
 }
 
 const AskFriend: FunctionComponent<askFriendProps> = ({ setGameActive, setIsHost, setOpenDialog, activeChannel }) => {
-	const tokenData: tokenData = jwt(document.cookie);
 	const [goGame, setGoGame] = useState(false);
 	const [stateToast, setStateToast] = useReducer(reducer, {
 		toastError: false,
@@ -139,7 +134,6 @@ const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) =
 
 const InviteToGame: FunctionComponent<inviteProps> = ({ setIsHost, setGameActive, friendId, activeChannel}) => {
 	const [ openDialog, setOpenDialog] = useState(false);
-	const tokenData: tokenData = jwt(document.cookie);
 	
 	const handleClick = () => {
 		const players: Game = {

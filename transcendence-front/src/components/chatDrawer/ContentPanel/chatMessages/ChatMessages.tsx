@@ -3,15 +3,11 @@ import { TextField, Box } from "@mui/material";
 import axios, { AxiosRequestHeaders } from 'axios';
 import MessagesList from "./MessagesList";
 import jwt from 'jwt-decode';
-import { arraySetState, booleanSetState, messagesBorderCSS, objectSetState } from "../../../utils/constants";
+import { arraySetState, authToken, booleanSetState, messagesBorderCSS, objectSetState, tokenData } from "../../../utils/constants";
 import DMButtons from "./DMButtons";
 import Muted from "./Muted";
 import NoMessages from "./NoMessages";
 import { chatSocket } from "../../../context/socket";
-
-type tokenData = {
-	id: string;
-}
 
 interface ChatMessageProps {
 	activeChannel : number;
@@ -26,25 +22,20 @@ const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) =
 }
 
 const requestMessagesFromChannel = async ( activeChannel : number , setMessagesData : arraySetState ) =>  {
-	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+
 	await axios.get(`http://localhost:4444/channels/${activeChannel}/messages`, { headers: authToken }).then((response) => {
 		setMessagesData(response.data);
 	}).catch( () => {});
 }
 
 const requestMembersFromChannel = async ( activeChannel : number , setState : objectSetState ) =>  {
-	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+
 	await axios.get(`http://localhost:4444/channels/${activeChannel}/members`, { headers: authToken }).then((response) => {
-		const user = response.data.filter((member: {[key: string]: any}) => member.id === getUserId())
+		const user = response.data.filter((member: {[key: string]: any}) => member.id === tokenData.id)
 		if (user.length) {
 			setState({muted: user[0].muted});
 		}
 	}).catch( () => {});
-}
-
-const getUserId = () => {
-	const tokenData: tokenData = jwt(document.cookie);
-	return tokenData.id;
 }
 
 const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
@@ -71,7 +62,7 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 				return ;
 			}
 			const msgToSend = {
-				user: getUserId(),
+				user: tokenData.id,
 				channel: activeChannel.toString(),
 				message: newMessage,
 			}

@@ -3,11 +3,7 @@ import { Button, Checkbox, DialogActions, DialogContent, DialogTitle, FormContro
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import ErrorToast from "../../utils/ErrorToast";
-import { booleanSetState, DEFAULT_TOAST_MSG, objectSetState } from "../../utils/constants";
-
-type tokenData = {
-	id: string;
-}
+import { authToken, booleanSetState, DEFAULT_TOAST_MSG, objectSetState, tokenData } from "../../utils/constants";
 
 interface Props {
 	setOpenDialog: booleanSetState;
@@ -41,9 +37,6 @@ export const CreateChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 	}
 
 	const handleSave = () => {
-		const tokenData: tokenData = jwt(document.cookie);
-		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-
 		const type = state.isPrivate ? PRIVATE : PUBLIC;
 		
 		if (!state.channelName) {

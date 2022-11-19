@@ -4,11 +4,7 @@ import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import { Box } from "@mui/system";
 import ErrorToast from "../../utils/ErrorToast";
-import { booleanSetState, DEFAULT_TOAST_MSG } from "../../utils/constants";
-
-type tokenData = {
-	id: string;
-}
+import { authToken, booleanSetState, DEFAULT_TOAST_MSG, tokenData } from "../../utils/constants";
 
 interface Props {
     open: boolean;
@@ -45,9 +41,6 @@ export const UpdateImageDialog : FunctionComponent<Props> = ({ open, setOpen, us
 	
 	const handleSave = async () => {
 		const formData = new FormData();
-		const authToken: AxiosRequestHeaders = {
-			'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-		const tokenData: tokenData = jwt(document.cookie);
 	
 		if (state.selectedFile === null) return;
 		formData.append('image', state.selectedFile);

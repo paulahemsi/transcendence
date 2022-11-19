@@ -3,11 +3,7 @@ import { Button, DialogActions, DialogTitle } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import ErrorToast from "../../utils/ErrorToast";
-import { booleanSetState, DEFAULT_TOAST_MSG, numberSetState, objectSetState } from "../../utils/constants";
-
-type tokenData = {
-	id: string;
-}
+import { authToken, booleanSetState, DEFAULT_TOAST_MSG, numberSetState, objectSetState, tokenData } from "../../utils/constants";
 
 interface Props {
 	channelData: {[key: string]: any};
@@ -25,9 +21,6 @@ export const LeaveChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, c
 		toastError: false,
 		toastMessage: DEFAULT_TOAST_MSG,
 	});
-	
-	const tokenData: tokenData = jwt(document.cookie);
-	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 
 	const handleSave = () => {
 		axios.delete(`http://localhost:3000/channels/${channelData.id}/members/${tokenData.id}`, { headers: authToken }).then( () => {

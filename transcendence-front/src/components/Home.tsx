@@ -7,11 +7,7 @@ import jwt from 'jwt-decode';
 import ProfileCard from "./profileDrawer/ProfileDrawer";
 import { Navigate } from "react-router-dom";
 import { chatSocket, sessionSocket } from "./context/socket";
-import { booleanSetState } from "./utils/constants";
-
-type tokenData = {
-	id: string;
-}
+import { booleanSetState, tokenData } from "./utils/constants";
 
 const startGameButton = {
 	borderRadius: 3,
@@ -43,8 +39,6 @@ export interface EndGameData {
 }
 
 const Matchmaker = ({ setGameActive, setOpenDialog, userId, setIsHost } : { setGameActive: booleanSetState,  setOpenDialog: booleanSetState, userId: string, setIsHost: booleanSetState }) => {
-	const tokenData: tokenData = jwt(document.cookie);
-	
 	const [goGame, setGoGame] = useState(false);
 	const [loading, setLoading] = useState(false);
 
@@ -178,8 +172,6 @@ const AcceptGameInvite = ({ setIsHost, setGameActive, setOpenDialog, chatRoom} :
 }
 
 export const Home = ({ setLoggedIn, setIsHost } : { setLoggedIn: booleanSetState, setIsHost: booleanSetState}) => {
-	const tokenData: tokenData = jwt(document.cookie);
-
 	const [openDrawer, setOpenDrawer] = useState(false)
 	const [openCard, setOpenCard] = useState(false)
 	const [gameActive, setGameActive] = useState(false);

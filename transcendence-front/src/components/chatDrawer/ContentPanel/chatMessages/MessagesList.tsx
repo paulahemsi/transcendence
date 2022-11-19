@@ -1,11 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { Chip, List, ListItem } from "@mui/material";
 import jwt from 'jwt-decode';
-import { LIST_CSS } from "../../../utils/constants";
-
-type tokenData = {
-	id: string;
-}
+import { LIST_CSS, tokenData } from "../../../utils/constants";
 
 interface Props {
     messagesData: {[key: string]: any};
@@ -28,11 +24,6 @@ const chipCSS = ( isFromUser : boolean ) => {
 	}
 }
 
-const getUserId = () => {
-	const tokenData: tokenData = jwt(document.cookie);
-	return tokenData.id;
-}
-
 const messageCSS = ( isFromUser : boolean ) => {
 	return {
 		marginBottom: '1vh',
@@ -42,7 +33,7 @@ const messageCSS = ( isFromUser : boolean ) => {
 }
 
 export const MessagesList : FunctionComponent<Props> = ({ messagesData }) => {
-	const userId = getUserId();
+	const userId = tokenData.id;
 	const messages = [] as JSX.Element[];
 
 	messagesData.forEach((element : {[key: string]: any}, index : number) => {

@@ -1,9 +1,18 @@
+import jwt from 'jwt-decode';
+import { AxiosRequestHeaders } from "axios";
 
 export type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 export type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
 export type numberSetState = React.Dispatch<React.SetStateAction<number>>
 export type arraySetState = React.Dispatch<React.SetStateAction<string[]>>
 export type anchorSetState = React.Dispatch<React.SetStateAction<null | HTMLElement>>
+
+export type tokenData = {
+	id: string;
+}
+
+export const tokenData: tokenData = jwt(document.cookie);
+export const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 
 export const DEFAULT_TOAST_MSG = "ooops, something went wrong";
 
