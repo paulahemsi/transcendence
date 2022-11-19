@@ -34,6 +34,11 @@ interface Game {
 	player2: string;
 }
 
+interface GameAnswer {
+	room: number;
+	accepted: boolean;
+}
+
 @WebSocketGateway({ namespace: '/chat' })
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
@@ -129,8 +134,13 @@ export class ChatGateway
   async handlePlayWithFriend(client: Socket, game: Game) {
     if (client.data.user.id == game.player1) {
       console.log("vou emitir")
-      this.server.to(game.room.toString()).emit('playWithFriends', game);
+      this.server.emit('playWithFriend', game); 
     } 
+  }
+  
+  @SubscribeMessage('answerToGameRequest')
+  async handleAnswerGameRequest(client: Socket, gameAnswer: GameAnswer) {
+    this.server.emit('answerToGameRequest', gameAnswer);
   }
   
   private disconnect(client: Socket) {

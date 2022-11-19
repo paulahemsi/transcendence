@@ -65,13 +65,7 @@ const AskFriend: FunctionComponent<askFriendProps> = ({ setGameActive, userId, f
 	if (goGame) {
 		return (<Navigate to='/game'/>)
 	}
-	
-	chatSocket.on('playWithFriend', (match) => {
-		console.log('recebi')
-		//setIsHost(true);
-		//setGoGame(true);
-	} )
-	
+
 	setTimeout(() =>{
 		if (!goGame) {
 			setOpenDialog(false);
@@ -106,6 +100,21 @@ const InviteToGame: FunctionComponent<Props> = ({ setIsHost, setGameActive, frie
 		chatSocket.emit('playWithFriend', players);
 		setOpenDialog(true);
 	}
+	
+	chatSocket.off('answerToGameRequest').on('answerToGameRequest', (answer) => {
+		if (answer.room != activeChannel) {
+			return ;
+		}
+		console.log(answer)
+		if (answer.accepted) {
+			setIsHost(true);
+			setGameActive(true);
+		}
+		else {
+			console.log("opa, não rolou")
+		}
+	} )
+	
 	const handleClose = () => {
 		setOpenDialog(false);
 	}

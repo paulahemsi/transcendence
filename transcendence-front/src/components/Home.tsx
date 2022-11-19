@@ -6,7 +6,7 @@ import ChatDrawer from "./chatDrawer/ChatDrawer";
 import jwt from 'jwt-decode';
 import ProfileCard from "./profileDrawer/ProfileDrawer";
 import { Navigate } from "react-router-dom";
-import { sessionSocket } from "./context/socket";
+import { chatSocket, sessionSocket } from "./context/socket";
 
 type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
@@ -134,18 +134,76 @@ const Background = ({ setGameActive, userId, setIsHost } : { setGameActive: bool
 	);
 }
 
+const AcceptGameInvite = ({ setIsHost, setGameActive, setOpenDialog, chatRoom} : { setIsHost: booleanSetState, setGameActive: booleanSetState, setOpenDialog: booleanSetState, chatRoom: number }) => {
+	
+	const handleAccept = () => {
+		const answer = {
+			room: chatRoom,
+			accepted: true,
+		}
+		chatSocket.emit('answerToGameRequest', answer);
+		setIsHost(false);
+		setGameActive(true);
+	}
+	
+	const handleDecline = () => {
+		const answer = {
+			room: chatRoom,
+			accepted: false,
+		}
+		chatSocket.emit('answerToGameRequest', answer);
+		setOpenDialog(false);
+	}
+	
+	return (
+		<>
+		<DialogTitle sx={{fontFamily: 'Orbitron'}}>
+			Uha! A friend whant to play pong with you!
+		</DialogTitle>
+		<DialogActions>
+		<Button
+			onClick={handleAccept}
+			sx={{fontFamily: 'Orbitron'}}
+		>
+			Accept
+		</Button>
+		<Button
+			variant="contained"
+			onClick={handleDecline}
+			sx={{fontFamily: 'Orbitron'}}
+		>
+			Decline
+		</Button>
+		</DialogActions>
+	</>
+	)
+}
+
 export const Home = ({ setLoggedIn, setIsHost } : { setLoggedIn: booleanSetState, setIsHost: booleanSetState}) => {
 	const tokenData: tokenData = jwt(document.cookie);
 
 	const [openDrawer, setOpenDrawer] = useState(false)
 	const [openCard, setOpenCard] = useState(false)
 	const [gameActive, setGameActive] = useState(false);
+	const [openDialog, setOpenDialog] = useState(false);
+	const [chatRoom, setChatRoom] = useState(0);
 
 	sessionSocket.connect()
+
+	chatSocket.off('playWithFriend').on('playWithFriend', (game) => {
+		if (game.player2 == tokenData.id) {
+			setChatRoom(game.room);
+			setOpenDialog(true);
+		}
+	} )
 
 	if (gameActive) {
 		return (<Navigate to='/game'/>)
 	}
+	
+	const handleClose = () => {
+		setOpenDialog(false);
+	};
 
 	return (
 		<>
@@ -154,6 +212,9 @@ export const Home = ({ setLoggedIn, setIsHost } : { setLoggedIn: booleanSetState
 			{ openDrawer && <ChatDrawer setOpenDrawer={setOpenDrawer} setIsHost={setIsHost} setGameActive={setGameActive}/> }
 			{ <Background setGameActive={setGameActive} userId={tokenData.id} setIsHost={setIsHost}/> }
 			{ <Footer setLoggedIn={setLoggedIn}/> }
+			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
+				<AcceptGameInvite setIsHost={setIsHost} setGameActive={setGameActive} chatRoom={chatRoom} setOpenDialog={setOpenDialog} />
+			</Dialog>
 		</>
 	);
 }
