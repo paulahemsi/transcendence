@@ -40,7 +40,7 @@ export const ControlPanel : FunctionComponent<Props> = ({ setChannelsAdminPanel,
 		}).catch( () => {});
 	}
 	
-	useEffect(() => {requestGroupsData()}, []);
+	useEffect(() => {requestGroupsData()}, [activeChannel]);
 
 	return (
 		<Box boxShadow="20px 20px 50px grey" height="86vh">
