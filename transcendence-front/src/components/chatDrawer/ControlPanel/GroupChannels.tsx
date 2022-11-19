@@ -1,9 +1,7 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
+import { booleanSetState, numberSetState } from "../../utils/constants";
 import Loading from "../Loading";
 import GroupsList from "./GroupsList";
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
-type numberSetState = React.Dispatch<React.SetStateAction<number>>
 
 interface Props {
     setExtraContent : booleanSetState;

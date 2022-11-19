@@ -4,10 +4,7 @@ import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import SearchGroupsList from "./SearchGroupsList";
 import ErrorToast from "../../utils/ErrorToast";
-import { DEFAULT_TOAST_MSG } from "../../utils/constants";
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
-type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
+import { authToken, booleanSetState, DEFAULT_TOAST_MSG, objectSetState, tokenData } from "../../utils/constants";
 
 const PROTECTED = 'PROTECTED';
 const PUBLIC = 'PUBLIC'
@@ -22,10 +19,6 @@ type groupsData = {
 	name: string;
 	id: string;
 	type: string;
-}
-
-type tokenData = {
-	id: string;
 }
 
 interface Props {
@@ -52,9 +45,6 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 		toastMessage: DEFAULT_TOAST_MSG,
 	});
 
-	const tokenData: tokenData = jwt(document.cookie);
-	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-	
 	const handleQuery = (event :  React.ChangeEvent<HTMLInputElement>) => {
 		setState({ searchQuery: event.target.value });
 	}

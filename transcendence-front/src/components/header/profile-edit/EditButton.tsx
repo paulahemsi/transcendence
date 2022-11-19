@@ -1,10 +1,7 @@
 import React, { useState } from "react";
 import EditIcon from '@mui/icons-material/Edit';
 import { IconButton, Menu, MenuItem, Tooltip, Typography, Zoom } from "@mui/material"
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
-type anchorElSetState = React.Dispatch<React.SetStateAction<null | HTMLElement>>
-
+import { anchorSetState, booleanSetState } from "../../utils/constants";
 
 const menuItemsCSS = {
 	color: '#1E1E1E',
@@ -21,7 +18,7 @@ const EditMenu = ({
 	setOpenImageDialog,
 	setOpenTwoFactorAuthDialog,
 } : {
-		setAnchorEl: anchorElSetState,
+		setAnchorEl: anchorSetState,
 		anchorEl: null | HTMLElement ,
 		openEditMenu: boolean,
 		setOpenUsernameDialog: booleanSetState,
@@ -78,7 +75,7 @@ const EditMenu = ({
 }
 
 
-const EditButton = ({ setAnchorEl, openEditMenu } : { setAnchorEl: anchorElSetState, openEditMenu: boolean }) => {
+const EditButton = ({ setAnchorEl, openEditMenu } : { setAnchorEl: anchorSetState, openEditMenu: boolean }) => {
 	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
 		setAnchorEl(event.currentTarget);
 	};

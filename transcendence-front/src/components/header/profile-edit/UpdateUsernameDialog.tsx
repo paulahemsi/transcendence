@@ -2,13 +2,7 @@ import React, { FunctionComponent, useReducer } from "react";
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, TextField, } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
-import { DEFAULT_TOAST_MSG } from "../../utils/constants";
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
-
-type tokenData = {
-	id: string;
-}
+import { authToken, booleanSetState, DEFAULT_TOAST_MSG, tokenData } from "../../utils/constants";
 
 interface Props {
     open: boolean;
@@ -36,9 +30,6 @@ export const UpdateUsernameDialog : FunctionComponent<Props> = ({ open, setOpen,
 	}
 
 	const handleSave = () => {
-		const tokenData: tokenData = jwt(document.cookie);
-		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-		
 		if (state.username.trim() == "") {
 			setState({ toastError: true, toastMessage: EMPTY_NAME })
 			return ;

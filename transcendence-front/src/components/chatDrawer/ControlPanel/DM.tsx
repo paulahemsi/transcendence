@@ -1,9 +1,7 @@
 import React, { FunctionComponent } from "react";
+import { booleanSetState, numberSetState } from "../../utils/constants";
 import Loading from "../Loading";
 import FriendsList from "./FriendsList";
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
-type numberSetState = React.Dispatch<React.SetStateAction<number>>
 
 interface Props {
     friendsData: {[key: string]: any};

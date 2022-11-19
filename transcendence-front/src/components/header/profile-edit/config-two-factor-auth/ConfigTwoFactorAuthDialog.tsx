@@ -1,8 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { EnableTwoFactorAuthDialog } from "./EnableTwoFactorAuth";
 import { DisableTwoFactorAuthDialog } from "./DisableTwoFactorAuth";
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+import { booleanSetState } from "../../../utils/constants";
 
 interface Props {
     open: boolean;

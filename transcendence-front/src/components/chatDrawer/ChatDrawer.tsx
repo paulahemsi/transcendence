@@ -3,31 +3,24 @@ import { Drawer, Box } from '@mui/material';
 import ChatMessages from "./ContentPanel/chatMessages/ChatMessages";
 import ControlPanel from "./ControlPanel/ControlPanel";
 import ChannelsAdminPanel from "./ContentPanel/ChannelsAdminPanel";
-import jwt from 'jwt-decode';
 import axios, { AxiosRequestHeaders } from "axios";
 import { chatSocket } from "../context/socket";
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
-
-type tokenData = {
-	id: string;
-}
+import { authToken, booleanSetState, tokenData } from "../utils/constants";
 
 interface Props {
     setOpenDrawer: booleanSetState;
+	setIsHost: booleanSetState;
+	setGameActive: booleanSetState;
 }
 
 const requestFriendsData = async ({ setFriendsData } : { setFriendsData: React.Dispatch<React.SetStateAction<{[key: string]: any}>>}) => {
 
-	const tokenData: tokenData = jwt(document.cookie);
-	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-	
 	await axios.get(`http://localhost:3000/users/${tokenData.id}/friends`, { headers: authToken }).then((response) => {
 		setFriendsData(response.data);
 })
 }
 
-export const ChatDrawer : FunctionComponent<Props> = ({ setOpenDrawer }) => {
+export const ChatDrawer : FunctionComponent<Props> = ({ setOpenDrawer, setIsHost, setGameActive }) => {
 	const [friendsData, setFriendsData] = useState<{[key: string]: any}>({});
 	const [extraContent, setExtraContent] = useState(false);
 	const [channelsAdminPanel, setChannelsAdminPanel] = useState(false);
@@ -85,7 +78,7 @@ export const ChatDrawer : FunctionComponent<Props> = ({ setOpenDrawer }) => {
 				<Box>
 					{
 						extraContent &&
-						<ChatMessages activeChannel={activeChannel} isDM={isDM} friendId={getFriendId()}/>
+						<ChatMessages activeChannel={activeChannel} isDM={isDM} friendId={getFriendId()} setIsHost={setIsHost} setGameActive={setGameActive}/>
 					}
 					{
 						channelsAdminPanel && (activeChannel > 0) && !isDM && 

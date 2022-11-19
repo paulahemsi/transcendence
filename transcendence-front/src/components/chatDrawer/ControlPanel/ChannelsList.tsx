@@ -1,9 +1,7 @@
 import React, { FunctionComponent } from "react";
+import { booleanSetState, numberSetState } from "../../utils/constants";
 import DM from "./DM";
 import GroupChannels from "./GroupChannels";
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
-type numberSetState = React.Dispatch<React.SetStateAction<number>>
 
 interface Props {
 	direct: boolean;

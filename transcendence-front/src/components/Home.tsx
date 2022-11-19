@@ -1,21 +1,13 @@
 import React, { useState } from "react";
-import { Typography, Box, Button, DialogTitle, DialogActions, Dialog, Card, CardContent, CardActions, CircularProgress  } from '@mui/material';
+import { Typography, Box, Button, DialogTitle, DialogActions, Dialog, CircularProgress  } from '@mui/material';
 import Header from "./header/Header";
 import { Footer } from "./footer/Footer";
 import ChatDrawer from "./chatDrawer/ChatDrawer";
 import jwt from 'jwt-decode';
-import io from 'socket.io-client';
 import ProfileCard from "./profileDrawer/ProfileDrawer";
 import { Navigate } from "react-router-dom";
-import Loading from "./chatDrawer/Loading";
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
-
-type tokenData = {
-	id: string;
-}
-
-const sessionSocket = io('/session');
+import { chatSocket, sessionSocket } from "./context/socket";
+import { booleanSetState, tokenData } from "./utils/constants";
 
 const startGameButton = {
 	borderRadius: 3,
@@ -47,8 +39,6 @@ export interface EndGameData {
 }
 
 const Matchmaker = ({ setGameActive, setOpenDialog, userId, setIsHost } : { setGameActive: booleanSetState,  setOpenDialog: booleanSetState, userId: string, setIsHost: booleanSetState }) => {
-	const tokenData: tokenData = jwt(document.cookie);
-	
 	const [goGame, setGoGame] = useState(false);
 	const [loading, setLoading] = useState(false);
 
@@ -136,26 +126,93 @@ const Background = ({ setGameActive, userId, setIsHost } : { setGameActive: bool
 	);
 }
 
-export const Home = ({ setLoggedIn, setIsHost } : { setLoggedIn: booleanSetState, setIsHost: booleanSetState}) => {
-	const tokenData: tokenData = jwt(document.cookie);
+const AcceptGameInvite = ({ setIsHost, setGameActive, setOpenDialog, chatRoom} : { setIsHost: booleanSetState, setGameActive: booleanSetState, setOpenDialog: booleanSetState, chatRoom: number }) => {
+	
+	const handleAccept = () => {
+		const answer = {
+			room: chatRoom,
+			accepted: true,
+		}
+		chatSocket.emit('answerToGameRequest', answer);
+		setIsHost(false);
+		setGameActive(true);
+	}
+	
+	const handleDecline = () => {
+		const answer = {
+			room: chatRoom,
+			accepted: false,
+		}
+		chatSocket.emit('answerToGameRequest', answer);
+		setOpenDialog(false);
+	}
+	
+	return (
+		<>
+		<DialogTitle sx={{fontFamily: 'Orbitron'}}>
+			Uha! A friend whant to play pong with you!
+		</DialogTitle>
+		<DialogActions>
+		<Button
+			onClick={handleAccept}
+			sx={{fontFamily: 'Orbitron'}}
+		>
+			Accept
+		</Button>
+		<Button
+			variant="contained"
+			onClick={handleDecline}
+			sx={{fontFamily: 'Orbitron'}}
+		>
+			Decline
+		</Button>
+		</DialogActions>
+	</>
+	)
+}
 
+export const Home = ({ setLoggedIn, setIsHost } : { setLoggedIn: booleanSetState, setIsHost: booleanSetState}) => {
 	const [openDrawer, setOpenDrawer] = useState(false)
 	const [openCard, setOpenCard] = useState(false)
 	const [gameActive, setGameActive] = useState(false);
+	const [openDialog, setOpenDialog] = useState(false);
+	const [chatRoom, setChatRoom] = useState(0);
 
 	sessionSocket.connect()
+
+	chatSocket.off('playWithFriend').on('playWithFriend', (game) => {
+		if (game.player2 == tokenData.id) {
+			setChatRoom(game.room);
+			setOpenDialog(true);
+			setTimeout(() =>{
+				const answer = {
+					room: chatRoom,
+					accepted: false,
+				}
+				chatSocket.emit('answerToGameRequest', answer);
+				setOpenDialog(false);
+			}, 20000);
+		}
+	} )
 
 	if (gameActive) {
 		return (<Navigate to='/game'/>)
 	}
+	
+	const handleClose = () => {
+		setOpenDialog(false);
+	};
 
 	return (
 		<>
 			{ <Header setOpenDrawer={setOpenDrawer} setOpenCard={setOpenCard} /> }
 			{ openCard && <ProfileCard setOpenCard={setOpenCard}  userId={tokenData.id}/> }
-			{ openDrawer && <ChatDrawer setOpenDrawer={setOpenDrawer} /> }
+			{ openDrawer && <ChatDrawer setOpenDrawer={setOpenDrawer} setIsHost={setIsHost} setGameActive={setGameActive}/> }
 			{ <Background setGameActive={setGameActive} userId={tokenData.id} setIsHost={setIsHost}/> }
 			{ <Footer setLoggedIn={setLoggedIn}/> }
+			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
+				<AcceptGameInvite setIsHost={setIsHost} setGameActive={setGameActive} chatRoom={chatRoom} setOpenDialog={setOpenDialog} />
+			</Dialog>
 		</>
 	);
 }

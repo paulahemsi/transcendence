@@ -3,9 +3,7 @@ import { Box, Button, Divider, Typography } from "@mui/material";
 import axios, { AxiosRequestHeaders } from "axios";
 import ChannelMembers from "./ChannelMembers";
 import AdminControlPannel from "./AdminControlPannel";
-
-type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
-type numberSetState = React.Dispatch<React.SetStateAction<number>>
+import { numberSetState, objectSetState } from "../../utils/constants";
 
 interface BodyProps {
 	loading: boolean;

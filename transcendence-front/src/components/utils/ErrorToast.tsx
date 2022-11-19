@@ -1,7 +1,6 @@
 import { Alert, Snackbar } from "@mui/material";
 import React from "react";
-
-type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
+import { objectSetState } from "./constants";
 
 export const ErrorToast = ({state, setState} : {state: {[key: string]: any}, setState: objectSetState}) => {
 	return (

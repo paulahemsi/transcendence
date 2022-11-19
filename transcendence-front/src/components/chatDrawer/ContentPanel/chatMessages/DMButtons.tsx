@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { FunctionComponent, useReducer, useState } from "react";
 import { Box, Typography, Button, Dialog } from "@mui/material";
 import ProfileCard from "../../../profileDrawer/ProfileDrawer";
 import BlockUserDialog from "./BlockUserDialog";
+import { chatSocket } from "../../../context/socket";
+import { booleanSetState, tokenData } from "../../../utils/constants";
+import AskFriend from "./AskFriend";
 
 const PROFILE = "Go to profile";
 const BLOCK = "Block";
@@ -28,25 +31,64 @@ const buttonTypographyCss = {
 	color: '#311B92',
 }
 
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+interface Props {
+    setGameActive: booleanSetState;
+    setIsHost: booleanSetState;
+	friendId: string;
+	activeChannel: number;
+}
 
-const InviteToGame = () => {
+interface inviteProps {
+    setGameActive: booleanSetState;
+    setIsHost: booleanSetState;
+	friendId: string;
+	activeChannel: number;
+}
+
+interface Game {
+	room: number;
+	player1: string;
+	player2: string;
+}
+
+const InviteToGame: FunctionComponent<inviteProps> = ({ setIsHost, setGameActive, friendId, activeChannel}) => {
+	const [ openDialog, setOpenDialog] = useState(false);
 	
 	const handleClick = () => {
-		
+		const players: Game = {
+			room: activeChannel,
+			player1: tokenData.id,
+			player2: friendId,
+		}
+		chatSocket.emit('playWithFriend', players);
+		setOpenDialog(true);
 	}
 	
+	const handleClose = () => {
+		setOpenDialog(false);
+	}
+
 	return (
-		<Button
-			variant="outlined"
-			size="large"
-			sx={buttonCss}
-			onClick={handleClick}
-		>
-			<Typography sx={buttonTypographyCss}>
-				{INVITE}
-			</Typography>
-		</Button>
+		<>
+			<Button
+				variant="outlined"
+				size="large"
+				sx={buttonCss}
+				onClick={handleClick}
+			>
+				<Typography sx={buttonTypographyCss}>
+					{INVITE}
+				</Typography>
+			</Button>
+			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
+				<AskFriend
+					setGameActive={setGameActive}
+					setIsHost={setIsHost}
+					setOpenDialog={setOpenDialog}
+					activeChannel={activeChannel}
+				/>
+			</Dialog>
+		</>
 	)
 }
 
@@ -90,7 +132,8 @@ const GoToProfile = ({ setOpenCard } : { setOpenCard: booleanSetState }) => {
 	)
 }
 
-export const DMButtons = ({ friendId } : { friendId: string }) => {
+export const DMButtons: FunctionComponent<Props> = ({ friendId, setIsHost, setGameActive, activeChannel }) => {
+
 	const [openProfile, setOpenProfile] = useState(false);
 	const [openDialog, setOpenDialog] = useState(false)
 
@@ -101,7 +144,7 @@ export const DMButtons = ({ friendId } : { friendId: string }) => {
 	return (
 		<>
 			<Box display="flex" justifyContent="space-around" minWidth="50vw" marginTop="1vh">
-				<InviteToGame/>
+				<InviteToGame setIsHost={setIsHost} setGameActive={setGameActive} friendId={friendId} activeChannel={activeChannel}/>
 				<BlockUser setOpenDialog={setOpenDialog}/>
 				<GoToProfile setOpenCard={setOpenProfile}/>
 			</Box>

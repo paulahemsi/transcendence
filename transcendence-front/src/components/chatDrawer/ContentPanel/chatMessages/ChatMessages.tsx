@@ -1,46 +1,41 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { FunctionComponent, useEffect, useReducer, useState } from "react";
 import { TextField, Box } from "@mui/material";
 import axios, { AxiosRequestHeaders } from 'axios';
 import MessagesList from "./MessagesList";
 import jwt from 'jwt-decode';
-import { messagesBorderCSS } from "../../../utils/constants";
+import { arraySetState, authToken, booleanSetState, messagesBorderCSS, objectSetState, tokenData } from "../../../utils/constants";
 import DMButtons from "./DMButtons";
 import Muted from "./Muted";
 import NoMessages from "./NoMessages";
 import { chatSocket } from "../../../context/socket";
 
-type tokenData = {
-	id: string;
+interface ChatMessageProps {
+	activeChannel : number;
+	isDM: boolean;
+	friendId: string;
+	setIsHost: booleanSetState;
+	setGameActive: booleanSetState;
 }
-
-type arraySetState = React.Dispatch<React.SetStateAction<string[]>>
-type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
-
 
 const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) => {
 	return { ...state, ...newState };
 }
 
 const requestMessagesFromChannel = async ( activeChannel : number , setMessagesData : arraySetState ) =>  {
-	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+
 	await axios.get(`http://localhost:4444/channels/${activeChannel}/messages`, { headers: authToken }).then((response) => {
 		setMessagesData(response.data);
 	}).catch( () => {});
 }
 
 const requestMembersFromChannel = async ( activeChannel : number , setState : objectSetState ) =>  {
-	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+
 	await axios.get(`http://localhost:4444/channels/${activeChannel}/members`, { headers: authToken }).then((response) => {
-		const user = response.data.filter((member: {[key: string]: any}) => member.id === getUserId())
+		const user = response.data.filter((member: {[key: string]: any}) => member.id === tokenData.id)
 		if (user.length) {
 			setState({muted: user[0].muted});
 		}
 	}).catch( () => {});
-}
-
-const getUserId = () => {
-	const tokenData: tokenData = jwt(document.cookie);
-	return tokenData.id;
 }
 
 const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
@@ -55,6 +50,7 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 		setMessagesData(newMessagesData);
 	} )
 
+
 	const handleChange = (event :  React.ChangeEvent<HTMLInputElement>) => {
 		setNewMessage(event.target.value);
 	}
@@ -66,7 +62,7 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 				return ;
 			}
 			const msgToSend = {
-				user: getUserId(),
+				user: tokenData.id,
 				channel: activeChannel.toString(),
 				message: newMessage,
 			}
@@ -110,7 +106,7 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 	)
 }
 
-export const ChatMessages = ( { activeChannel, isDM, friendId } : { activeChannel : number, isDM: boolean, friendId: string }) => {
+export const ChatMessages: FunctionComponent<ChatMessageProps> = ({ activeChannel, isDM, friendId, setIsHost, setGameActive }) => {
 	const [state, setState] = useReducer(reducer, {
 		joined: false,
 		muted: false,
@@ -146,7 +142,7 @@ export const ChatMessages = ( { activeChannel, isDM, friendId } : { activeChanne
 		<>
 			{
 				state.joined && isDM &&
-				<DMButtons friendId={friendId}/>
+				<DMButtons friendId={friendId} setIsHost={setIsHost} setGameActive={setGameActive} activeChannel={activeChannel}/>
 			}
 			{
 				state.joined && 

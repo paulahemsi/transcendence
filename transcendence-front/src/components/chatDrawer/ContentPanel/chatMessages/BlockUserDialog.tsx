@@ -2,15 +2,9 @@ import React, { FunctionComponent, useReducer } from "react"
 import { Button, DialogActions, DialogTitle } from "@mui/material"
 import ErrorToast from "../../../utils/ErrorToast";
 import axios, { AxiosRequestHeaders } from 'axios';
-import { DEFAULT_TOAST_MSG } from "../../../utils/constants";
+import { authToken, booleanSetState, DEFAULT_TOAST_MSG, tokenData } from "../../../utils/constants";
 import jwt from 'jwt-decode';
 import { chatSocket } from "../../../context/socket";
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
-
-type tokenData = {
-	id: string;
-}
 
 interface Props {
 	setOpenDialog: booleanSetState;
@@ -28,8 +22,6 @@ export const BlockUserDialog : FunctionComponent<Props> = ({ setOpenDialog, frie
 	});
 
 	const handleBlock = () => {
-		const tokenData: tokenData = jwt(document.cookie);
-		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 
 		axios.post(`http://localhost:3000/users/${tokenData.id}/block`, {
 			"id": friendId

@@ -2,8 +2,7 @@ import React, { FunctionComponent, useState } from "react";
 import { Typography, Box, Button, Card, CardContent, CardActions  } from '@mui/material';
 import { PhaserGame } from "./game/game"
 import { Navigate } from "react-router-dom";
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+import { booleanSetState } from "./utils/constants";
 
 const player1Score = {
 	fontSize: '14vh',

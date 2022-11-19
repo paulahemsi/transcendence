@@ -7,8 +7,7 @@ import Home from './components/Home'
 import jwt from 'jwt-decode';
 import TwoFactorAuthCard from './components/TwoFactorAuthCard';
 import GamePage from './components/GamePage';
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+import { booleanSetState } from './components/utils/constants';
 
 type tokenData = {
 	id: string;

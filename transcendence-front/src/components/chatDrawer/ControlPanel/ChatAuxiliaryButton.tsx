@@ -3,10 +3,7 @@ import { Box, Button, Dialog } from "@mui/material"
 import CreateChannelDialog from "./CreateChannelDialog";
 import AddFriendsDialog from "./AddFriendsDialog";
 import AddGroupsDialog from "./AddGroupsDialog";
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
-type numberSetState = React.Dispatch<React.SetStateAction<number>>
-type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
+import { booleanSetState, numberSetState, objectSetState } from "../../utils/constants";
 
 interface Props {
 	direct: boolean;

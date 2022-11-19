@@ -1,8 +1,7 @@
 import React, { useState, FunctionComponent } from "react"
 import { Button, Checkbox, DialogActions, DialogContent, DialogTitle, FormControlLabel, TextField } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+import { booleanSetState } from "../../utils/constants";
 
 interface Props {
 	channelData: {[key: string]: any};

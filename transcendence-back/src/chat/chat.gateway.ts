@@ -28,6 +28,16 @@ type muteEvent = {
   duration: number;
 }
 
+interface Game {
+	room: number;
+	player1: string;
+	player2: string;
+}
+
+interface GameAnswer {
+	room: number;
+	accepted: boolean;
+}
 
 @WebSocketGateway({ namespace: '/chat' })
 export class ChatGateway
@@ -118,6 +128,18 @@ export class ChatGateway
   @SubscribeMessage('refreshFriends')
   async handleRefreshFriends(client: Socket, blockedEvent: boolean) {
     this.server.emit('refreshFriends'); 
+  }
+  
+  @SubscribeMessage('playWithFriend')
+  async handlePlayWithFriend(client: Socket, game: Game) {
+    if (client.data.user.id == game.player1) {
+      this.server.emit('playWithFriend', game); 
+    } 
+  }
+  
+  @SubscribeMessage('answerToGameRequest')
+  async handleAnswerGameRequest(client: Socket, gameAnswer: GameAnswer) {
+    this.server.emit('answerToGameRequest', gameAnswer);
   }
   
   private disconnect(client: Socket) {

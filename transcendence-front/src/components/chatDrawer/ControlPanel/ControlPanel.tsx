@@ -5,14 +5,7 @@ import ChatAuxiliaryButton from "./ChatAuxiliaryButton";
 import ChatButton from "./ChatButton";
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
-
-type tokenData = {
-	id: string;
-}
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
-type numberSetState = React.Dispatch<React.SetStateAction<number>>
-type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
+import { authToken, booleanSetState, numberSetState, objectSetState, tokenData } from "../../utils/constants";
 
 interface Props {
 	setChannelsAdminPanel: booleanSetState;
@@ -31,9 +24,6 @@ export const ControlPanel : FunctionComponent<Props> = ({ setChannelsAdminPanel,
 
 	const requestGroupsData = async () => {
 
-		const tokenData: tokenData = jwt(document.cookie);
-		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-		
 		await axios.get(`http://localhost:3000/users/${tokenData.id}/channels`, { headers: authToken }).then((response) => {
 			setGroupsData(response.data);
 			setLoading(false);

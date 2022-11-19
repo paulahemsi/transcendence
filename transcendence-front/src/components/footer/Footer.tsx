@@ -1,8 +1,7 @@
 import { AppBar, Box } from "@mui/material";
 import React from "react";
+import { booleanSetState } from "../utils/constants";
 import LogoutButton from "./LogoutButton";
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
 export const Footer = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 	return (

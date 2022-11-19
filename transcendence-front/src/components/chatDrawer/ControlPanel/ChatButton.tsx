@@ -1,8 +1,6 @@
 import { Box, Button } from "@mui/material"
 import React, { FunctionComponent } from "react"
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
-type numberSetState = React.Dispatch<React.SetStateAction<number>>
+import { booleanSetState, numberSetState } from "../../utils/constants";
 
 interface Props {
 	direct: boolean;
