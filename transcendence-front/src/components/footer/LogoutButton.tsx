@@ -1,8 +1,8 @@
 import React from "react";
 import axios from 'axios';
 import { Button } from "@mui/material";
+import { booleanSetState } from "../utils/constants";
 
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 const logoutUrl = 'http://localhost:3000/auth/logout'
 
 export const LogoutButton = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {

@@ -1,10 +1,7 @@
 import React, { FunctionComponent } from "react";
 import { Box, Button, List, ListItem, Typography } from "@mui/material";
 import FriendsInfo from "./FriendsInfo";
-import { LIST_CSS, typographyCSS } from "../../utils/constants";
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
-type numberSetState = React.Dispatch<React.SetStateAction<number>>
+import { booleanSetState, LIST_CSS, numberSetState, typographyCSS } from "../../utils/constants";
 
 interface Props {
     friendsData: {[key: string]: any};

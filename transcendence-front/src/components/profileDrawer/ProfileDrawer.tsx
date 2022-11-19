@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Drawer } from "@mui/material";
 import axios, { AxiosRequestHeaders } from "axios";
-import jwt from 'jwt-decode';
 import { ProfileInfos } from "./ProfileInfos";
 import { Loading } from "./Loading";
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+import { booleanSetState } from "../utils/constants";
 
 const requestUserProfile = async ({ setUserProfile, userId } : { setUserProfile: React.Dispatch<React.SetStateAction<{[key: string]: any}>>, userId: string }) => {
 

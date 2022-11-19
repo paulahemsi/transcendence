@@ -5,14 +5,11 @@ import ChatAuxiliaryButton from "./ChatAuxiliaryButton";
 import ChatButton from "./ChatButton";
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
+import { booleanSetState, numberSetState, objectSetState } from "../../utils/constants";
 
 type tokenData = {
 	id: string;
 }
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
-type numberSetState = React.Dispatch<React.SetStateAction<number>>
-type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
 
 interface Props {
 	setChannelsAdminPanel: booleanSetState;

@@ -1,7 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { Box, Button, Typography } from "@mui/material";
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+import { booleanSetState } from "../utils/constants";
 
 interface Props {
     setOpenDrawer: booleanSetState;

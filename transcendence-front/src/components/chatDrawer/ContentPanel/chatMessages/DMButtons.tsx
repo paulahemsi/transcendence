@@ -5,7 +5,7 @@ import BlockUserDialog from "./BlockUserDialog";
 import jwt from 'jwt-decode';
 import { chatSocket } from "../../../context/socket";
 import { Navigate } from "react-router-dom";
-import { DEFAULT_TOAST_MSG } from "../../../utils/constants";
+import { booleanSetState, DEFAULT_TOAST_MSG, objectSetState } from "../../../utils/constants";
 
 type tokenData = {
 	id: string;
@@ -36,9 +36,6 @@ const buttonTypographyCss = {
 	fontSize: '2.5vh',
 	color: '#311B92',
 }
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
-type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
 
 interface askFriendProps {
     setGameActive: booleanSetState;

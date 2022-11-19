@@ -3,7 +3,7 @@ import { TextField, Box } from "@mui/material";
 import axios, { AxiosRequestHeaders } from 'axios';
 import MessagesList from "./MessagesList";
 import jwt from 'jwt-decode';
-import { messagesBorderCSS } from "../../../utils/constants";
+import { arraySetState, booleanSetState, messagesBorderCSS, objectSetState } from "../../../utils/constants";
 import DMButtons from "./DMButtons";
 import Muted from "./Muted";
 import NoMessages from "./NoMessages";
@@ -12,10 +12,6 @@ import { chatSocket } from "../../../context/socket";
 type tokenData = {
 	id: string;
 }
-
-type arraySetState = React.Dispatch<React.SetStateAction<string[]>>
-type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
 
 interface ChatMessageProps {
 	activeChannel : number;

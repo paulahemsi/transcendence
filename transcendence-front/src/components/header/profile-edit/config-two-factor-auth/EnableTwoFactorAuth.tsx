@@ -3,9 +3,7 @@ import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, 
 import axios, { AxiosRequestHeaders } from 'axios';
 import { typographyCSS } from './auxiliary'
 import { CodeTextField } from "./CodeTextField";
-import { DEFAULT_TOAST_MSG } from "../../../utils/constants";
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+import { booleanSetState, DEFAULT_TOAST_MSG } from "../../../utils/constants";
 
 interface Props {
     open: boolean;

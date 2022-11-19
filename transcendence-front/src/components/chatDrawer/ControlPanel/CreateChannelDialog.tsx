@@ -3,10 +3,7 @@ import { Button, Checkbox, DialogActions, DialogContent, DialogTitle, FormContro
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
 import ErrorToast from "../../utils/ErrorToast";
-import { DEFAULT_TOAST_MSG } from "../../utils/constants";
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
-type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
+import { booleanSetState, DEFAULT_TOAST_MSG, objectSetState } from "../../utils/constants";
 
 type tokenData = {
 	id: string;

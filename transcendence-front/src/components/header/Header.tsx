@@ -2,8 +2,7 @@ import React, { FunctionComponent } from "react";
 import { AppBar, Stack } from "@mui/material"
 import ProfileInfo from "./profile-info/ProfileInfo";
 import FriendshipInfo from "./FriendshipInfo";
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+import { booleanSetState } from "../utils/constants";
 
 interface Props {
     setOpenDrawer: booleanSetState;

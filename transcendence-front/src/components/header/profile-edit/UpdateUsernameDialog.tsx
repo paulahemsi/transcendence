@@ -2,9 +2,7 @@ import React, { FunctionComponent, useReducer } from "react";
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, TextField, } from "@mui/material"
 import axios, { AxiosRequestHeaders } from 'axios';
 import jwt from 'jwt-decode';
-import { DEFAULT_TOAST_MSG } from "../../utils/constants";
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+import { booleanSetState, DEFAULT_TOAST_MSG } from "../../utils/constants";
 
 type tokenData = {
 	id: string;

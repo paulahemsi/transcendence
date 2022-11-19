@@ -7,13 +7,11 @@ import jwt from 'jwt-decode';
 import ProfileCard from "./profileDrawer/ProfileDrawer";
 import { Navigate } from "react-router-dom";
 import { chatSocket, sessionSocket } from "./context/socket";
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+import { booleanSetState } from "./utils/constants";
 
 type tokenData = {
 	id: string;
 }
-
 
 const startGameButton = {
 	borderRadius: 3,

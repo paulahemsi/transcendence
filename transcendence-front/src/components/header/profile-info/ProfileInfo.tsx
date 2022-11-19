@@ -7,8 +7,7 @@ import EditProfile from "../profile-edit/EditButton";
 import { UpdateUsernameDialog } from "../profile-edit/UpdateUsernameDialog";
 import { UpdateImageDialog } from "../profile-edit/UpdateImageDialog";
 import { ConfigTwoFactorAuthDialog } from "../profile-edit/config-two-factor-auth/ConfigTwoFactorAuthDialog";
-
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
+import { booleanSetState } from "../../utils/constants";
 
 type tokenData = {
 	id: string;

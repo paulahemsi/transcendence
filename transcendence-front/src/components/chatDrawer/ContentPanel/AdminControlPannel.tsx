@@ -8,10 +8,7 @@ import DeleteMembersDialog from "./DeleteMembersDialog"
 import LeaveChannelDialog from "./LeaveChannelDialog"
 import jwt from 'jwt-decode';
 import MuteMembersDialog from "./MuteMembersDialog"
-
-type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]: any}>>
-type booleanSetState = React.Dispatch<React.SetStateAction<boolean>>
-type numberSetState = React.Dispatch<React.SetStateAction<number>>
+import { booleanSetState, numberSetState, objectSetState } from "../../utils/constants"
 
 type tokenData = {
 	id: string;
