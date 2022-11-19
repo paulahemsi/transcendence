@@ -133,7 +133,6 @@ export class ChatGateway
   @SubscribeMessage('playWithFriend')
   async handlePlayWithFriend(client: Socket, game: Game) {
     if (client.data.user.id == game.player1) {
-      console.log("vou emitir")
       this.server.emit('playWithFriend', game); 
     } 
   }
