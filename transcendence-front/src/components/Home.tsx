@@ -184,6 +184,14 @@ export const Home = ({ setLoggedIn, setIsHost } : { setLoggedIn: booleanSetState
 		if (game.player2 == tokenData.id) {
 			setChatRoom(game.room);
 			setOpenDialog(true);
+			setTimeout(() =>{
+				const answer = {
+					room: chatRoom,
+					accepted: false,
+				}
+				chatSocket.emit('answerToGameRequest', answer);
+				setOpenDialog(false);
+			}, 20000);
 		}
 	} )
 
