@@ -185,6 +185,9 @@ export const PhaserGame: FunctionComponent<Props> = ({
 				})
 				setEndGameVisible(true);
 				gameSocket.emit('leaveGameRoom', matchRoom);
+				if (isHost) {
+					gameSocket.emit('computeMatch', { room: matchRoom, score: score } );
+				}
 				sleep(1000).then(() => {game.destroy(true);});
 			}
 		}

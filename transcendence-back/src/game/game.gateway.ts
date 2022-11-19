@@ -9,6 +9,7 @@ import {
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
+import { MatchHistoryService } from 'src/match-history/match-history.service';
 
 interface Ball {
   x: number;
@@ -31,7 +32,7 @@ interface BallDto {
 }
 
 interface ScoreDto {
-  room: string;
+  room: number;
   score: Score;
 }
 
@@ -39,7 +40,10 @@ interface ScoreDto {
 export class GameGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly matchHistoryService: MatchHistoryService,
+  ) {}
   private logger: Logger = new Logger('GameGateway');
 
   @WebSocketServer()
@@ -101,6 +105,15 @@ export class GameGateway
 
   @SubscribeMessage('score')
   handleScore(client: Socket, scoreDto: ScoreDto) {
-    this.server.to(scoreDto.room).emit('score', scoreDto.score);
+    this.server.to(scoreDto.room.toString()).emit('score', scoreDto.score);
+  }
+
+  @SubscribeMessage('computeMatch')
+  handleComputeMatch(client: Socket, scoreDto: ScoreDto) {
+    this.matchHistoryService.setScore(
+      scoreDto.room,
+      scoreDto.score.player1,
+      scoreDto.score.player2,
+    );
   }
 }
