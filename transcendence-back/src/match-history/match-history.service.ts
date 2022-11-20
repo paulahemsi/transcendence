@@ -41,6 +41,15 @@ export class MatchHistoryService {
     return this.matchHistoryRepository.save(match);
   }
 
+  async setScore(matchId: number, player1Score: number, player2Score: number) {
+    const match = await this.matchHistoryRepository.findOneByOrFail({
+      id: matchId,
+    });
+    match.player1Score = player1Score;
+    match.player2Score = player2Score;
+    return this.matchHistoryRepository.save(match);
+  }
+
   isPlayer1(id: string, match: MatchHistory): boolean {
     return match.player1.id === id;
   }
