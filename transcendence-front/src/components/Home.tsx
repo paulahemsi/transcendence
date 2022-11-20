@@ -113,13 +113,11 @@ const Matchmaker = ({
 }
 
 const Background = ({
-	setGameActive,
 	userId,
 	setIsHost,
 	setMatchRoom,
 	setStandardMode,
 } : {
-	setGameActive: booleanSetState,
 	userId: string,
 	setIsHost: booleanSetState,
 	setMatchRoom: stringSetState,
@@ -154,8 +152,8 @@ const Background = ({
 	);
 }
 
-const AcceptGameInvite = ({ setIsHost, setGameActive, setOpenDialog, matchInfos} : {
-	setIsHost: booleanSetState, setGameActive: booleanSetState, setOpenDialog: booleanSetState, matchInfos: MatchInfos
+const AcceptGameInvite = ({ setIsHost, setGameActive, setOpenDialog, matchInfos, setStandardMode} : {
+	setIsHost: booleanSetState, setGameActive: booleanSetState, setOpenDialog: booleanSetState, matchInfos: MatchInfos, setStandardMode: booleanSetState,
 }) => {
 	
 	const userId = getIdFromToken();
@@ -181,21 +179,38 @@ const AcceptGameInvite = ({ setIsHost, setGameActive, setOpenDialog, matchInfos}
 	return (
 		<>
 		<DialogTitle sx={{fontFamily: 'Orbitron'}}>
-			Uha! A friend whant to play pong with you!
+			Uha! A friend wants to pong!
+			Which mode do you wanna play?
 		</DialogTitle>
 		<DialogActions>
 		<Button
-			onClick={handleAccept}
+			variant="contained"
+			onClick={ () => {
+				setStandardMode(true);
+				handleAccept()
+			}
+			}
 			sx={{fontFamily: 'Orbitron'}}
 		>
-			Accept
+			Standard
 		</Button>
 		<Button
 			variant="contained"
+			onClick={ () => {
+				setStandardMode(false);
+				handleAccept()
+			}
+			}
+			sx={{fontFamily: 'Orbitron'}}
+		>
+			Unicorn
+		</Button>
+		<Button
 			onClick={handleDecline}
 			sx={{fontFamily: 'Orbitron'}}
 		>
-			Decline
+			
+			None, decline
 		</Button>
 		</DialogActions>
 	</>
@@ -253,7 +268,6 @@ export const Home = ({
 			{ openCard && <ProfileCard setOpenCard={setOpenCard}  userId={userId}/> }
 	
 			{ <Background
-				setGameActive={setGameActive}
 				userId={userId}
 				setIsHost={setIsHost}
 				setMatchRoom={setMatchRoom}
@@ -268,7 +282,13 @@ export const Home = ({
 					/> }
 			{ <Footer setLoggedIn={setLoggedIn}/> }
 			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
-				<AcceptGameInvite setIsHost={setIsHost} setGameActive={setGameActive} matchInfos={matchInfos} setOpenDialog={setOpenDialog} />
+				<AcceptGameInvite
+					setIsHost={setIsHost}
+					setGameActive={setGameActive}
+					matchInfos={matchInfos}
+					setOpenDialog={setOpenDialog}
+					setStandardMode={setStandardMode}
+					/>
 			</Dialog>
 		</>
 	);
