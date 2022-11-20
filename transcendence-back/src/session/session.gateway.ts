@@ -27,6 +27,17 @@ interface MatchInfos {
   player2: string;
 }
 
+interface Game {
+  room: number;
+  player1: string;
+  player2: string;
+}
+
+interface GameAnswer {
+  room: number;
+  accepted: boolean;
+}
+
 @WebSocketGateway({ namespace: '/session' })
 export class SessionGateway
   implements
@@ -64,6 +75,7 @@ export class SessionGateway
       await this.connectedUsersService.create(client.id, user);
       this.setStatusOnline(user);
     } catch {
+      client.emit('error', new UnauthorizedException());
       this.disconnect(client);
     }
     this.logger.log(`Client connected: ${client.id}`);
@@ -72,8 +84,7 @@ export class SessionGateway
   async handleDisconnect(client: Socket) {
     this.connectedUsersService.delete(client.id);
     this.setStatusOffline(await client.data.user);
-    this.logger.log(`Client disconnected: ${client.id}`);
-    client.disconnect();
+    this.disconnect(client);
   }
 
   @SubscribeMessage('status')
@@ -93,13 +104,13 @@ export class SessionGateway
         player.userId,
         otherPlayer.userId,
       );
-      
+
       const matchInfos: MatchInfos = {
         id: match.id,
         player1: match.player1.id,
         player2: match.player2.id,
-      }
-      
+      };
+
       otherPlayer.socket.emit('joinGameQueue', matchInfos);
       player.socket.emit('joinGameQueue', matchInfos);
     } else {
@@ -107,9 +118,20 @@ export class SessionGateway
     }
   }
 
+  @SubscribeMessage('playWithFriend')
+  async handlePlayWithFriend(client: Socket, game: Game) {
+    if (client.data.user.id == game.player1) {
+      this.server.emit('playWithFriend', game);
+    }
+  }
+
+  @SubscribeMessage('answerToGameRequest')
+  async handleAnswerGameRequest(client: Socket, gameAnswer: GameAnswer) {
+    this.server.emit('answerToGameRequest', gameAnswer);
+  }
+
   private disconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
-    client.emit('error', new UnauthorizedException());
     client.disconnect();
   }
 

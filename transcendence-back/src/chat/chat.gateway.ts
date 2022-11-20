@@ -26,18 +26,7 @@ type muteEvent = {
   mutedUser: string;
   channel: number;
   duration: number;
-}
-
-interface Game {
-	room: number;
-	player1: string;
-	player2: string;
-}
-
-interface GameAnswer {
-	room: number;
-	accepted: boolean;
-}
+};
 
 @WebSocketGateway({ namespace: '/chat' })
 export class ChatGateway
@@ -112,7 +101,11 @@ export class ChatGateway
   @SubscribeMessage('muteUser')
   async handleMuteUser(client: Socket, muteEvent: muteEvent) {
     try {
-      await this.channelService.handleMute(muteEvent.channel, muteEvent.mutedUser, true);
+      await this.channelService.handleMute(
+        muteEvent.channel,
+        muteEvent.mutedUser,
+        true,
+      );
     } catch (err) {
       client.emit('muteUser', false);
       return;
@@ -120,28 +113,20 @@ export class ChatGateway
     client.emit('muteUser', true);
     this.server.to(muteEvent.channel.toString()).emit('muteUser', true);
     setTimeout(() => {
-      this.channelService.handleMute(muteEvent.channel, muteEvent.mutedUser, false);
+      this.channelService.handleMute(
+        muteEvent.channel,
+        muteEvent.mutedUser,
+        false,
+      );
       this.server.to(muteEvent.channel.toString()).emit('muteUser', true);
     }, muteEvent.duration);
   }
-  
+
   @SubscribeMessage('refreshFriends')
   async handleRefreshFriends(client: Socket, blockedEvent: boolean) {
-    this.server.emit('refreshFriends'); 
+    this.server.emit('refreshFriends');
   }
-  
-  @SubscribeMessage('playWithFriend')
-  async handlePlayWithFriend(client: Socket, game: Game) {
-    if (client.data.user.id == game.player1) {
-      this.server.emit('playWithFriend', game); 
-    } 
-  }
-  
-  @SubscribeMessage('answerToGameRequest')
-  async handleAnswerGameRequest(client: Socket, gameAnswer: GameAnswer) {
-    this.server.emit('answerToGameRequest', gameAnswer);
-  }
-  
+
   private disconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
     client.emit('error', new UnauthorizedException());

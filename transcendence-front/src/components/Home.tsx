@@ -161,7 +161,7 @@ const AcceptGameInvite = ({ setIsHost, setGameActive, setOpenDialog, chatRoom} :
 			room: chatRoom,
 			accepted: true,
 		}
-		chatSocket.emit('answerToGameRequest', answer);
+		sessionSocket.emit('answerToGameRequest', answer);
 		setIsHost(false);
 		setGameActive(true);
 	}
@@ -171,7 +171,7 @@ const AcceptGameInvite = ({ setIsHost, setGameActive, setOpenDialog, chatRoom} :
 			room: chatRoom,
 			accepted: false,
 		}
-		chatSocket.emit('answerToGameRequest', answer);
+		sessionSocket.emit('answerToGameRequest', answer);
 		setOpenDialog(false);
 	}
 	
@@ -217,7 +217,7 @@ export const Home = ({
 
 	sessionSocket.connect()
 
-	chatSocket.off('playWithFriend').on('playWithFriend', (game) => {
+	sessionSocket.off('playWithFriend').on('playWithFriend', (game) => {
 		if (game.player2 == userId) {
 			setChatRoom(game.room);
 			setOpenDialog(true);
@@ -226,7 +226,7 @@ export const Home = ({
 					room: chatRoom,
 					accepted: false,
 				}
-				chatSocket.emit('answerToGameRequest', answer);
+				sessionSocket.emit('answerToGameRequest', answer);
 				setOpenDialog(false);
 			}, 20000);
 		}

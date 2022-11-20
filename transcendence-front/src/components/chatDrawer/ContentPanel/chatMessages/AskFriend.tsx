@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useReducer } from "react";
 import { Box, DialogTitle, DialogActions, CircularProgress } from "@mui/material";
-import { chatSocket } from "../../../context/socket";
+import { chatSocket, sessionSocket } from "../../../context/socket";
 import { booleanSetState, DEFAULT_TOAST_MSG } from "../../../utils/constants";
 import ErrorToast from "./ErrorToast";
 
@@ -23,7 +23,7 @@ export const AskFriend: FunctionComponent<Props> = ({ setGameActive, setIsHost, 
 		toastMessage: DEFAULT_TOAST_MSG,
 	});
 	
-	chatSocket.off('answerToGameRequest').on('answerToGameRequest', (answer) => {
+	sessionSocket.off('answerToGameRequest').on('answerToGameRequest', (answer) => {
 		if (answer.room != activeChannel) {
 			return ;
 		}

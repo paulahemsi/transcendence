@@ -2,7 +2,7 @@ import React, { FunctionComponent, useState } from "react";
 import { Box, Typography, Button, Dialog } from "@mui/material";
 import ProfileCard from "../../../profileDrawer/ProfileDrawer";
 import BlockUserDialog from "./BlockUserDialog";
-import { chatSocket } from "../../../context/socket";
+import { chatSocket, sessionSocket } from "../../../context/socket";
 import { booleanSetState, getIdFromToken } from "../../../utils/constants";
 import AskFriend from "./AskFriend";
 
@@ -61,7 +61,7 @@ const InviteToGame: FunctionComponent<inviteProps> = ({ setIsHost, setGameActive
 			player1: userId,
 			player2: friendId,
 		}
-		chatSocket.emit('playWithFriend', players);
+		sessionSocket.emit('playWithFriend', players);
 		setOpenDialog(true);
 	}
 	
