@@ -1,14 +1,13 @@
 import { Button, Dialog, Typography } from "@mui/material"
 import { Box } from "@mui/system"
-import React, { FunctionComponent, useEffect, useState } from "react"
+import React, { FunctionComponent, useState } from "react"
 import AddAdminDialog from "./AddAdminDialog"
-import AdminDialog, { AddMembersDialog } from "./AddMembersDialog"
+import { AddMembersDialog } from "./AddMembersDialog"
 import ChangePasswordDialog from "./ChangePasswordDialog"
 import DeleteMembersDialog from "./DeleteMembersDialog"
 import LeaveChannelDialog from "./LeaveChannelDialog"
-import jwt from 'jwt-decode';
 import MuteMembersDialog from "./MuteMembersDialog"
-import { booleanSetState, numberSetState, objectSetState, tokenData } from "../../utils/constants"
+import { booleanSetState, getIdFromToken, numberSetState, objectSetState } from "../../utils/constants"
 
 interface Props {
 	setMembersMockData: objectSetState;
@@ -181,16 +180,18 @@ export const AdminControlPannel: FunctionComponent<Props> = ({ setMembersMockDat
 	const [openLeaveDialog, setOpenLeaveDialog] = useState(false);
 	const [openPasswordDialog, setOpenPasswordDialog] = useState(false);
 
+	const userId = getIdFromToken();
+
 	let isOwner = false;
 	let isAdmin = false;
 
 	const isUserOwner = () => {
-		return (tokenData.id === channelData.ownerId);
+		return (userId === channelData.ownerId);
 	}
 
 	const isUserAdmin = () => {
 		if (channelData.admin) {
-			return channelData.admin.some( (e: {[key: string]: any}) => e.id === tokenData.id )
+			return channelData.admin.some( (e: {[key: string]: any}) => e.id === userId );
 		}
 	}
 	

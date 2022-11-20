@@ -3,11 +3,10 @@ import { Typography, Box, Button, DialogTitle, DialogActions, Dialog, CircularPr
 import Header from "./header/Header";
 import { Footer } from "./footer/Footer";
 import ChatDrawer from "./chatDrawer/ChatDrawer";
-import jwt from 'jwt-decode';
 import ProfileCard from "./profileDrawer/ProfileDrawer";
 import { Navigate } from "react-router-dom";
 import { chatSocket, sessionSocket } from "./context/socket";
-import { booleanSetState, tokenData } from "./utils/constants";
+import { booleanSetState, getIdFromToken } from "./utils/constants";
 
 const startGameButton = {
 	borderRadius: 3,
@@ -49,7 +48,7 @@ const Matchmaker = ({ setGameActive, setOpenDialog, userId, setIsHost } : { setG
 	}
 	
 	sessionSocket.on('joinGameQueue', (match) => {
-		if (match.player1 == tokenData.id) {
+		if (match.player1 == userId) {
 			setIsHost(true);
 		} else {
 			setIsHost(false);
@@ -177,11 +176,12 @@ export const Home = ({ setLoggedIn, setIsHost } : { setLoggedIn: booleanSetState
 	const [gameActive, setGameActive] = useState(false);
 	const [openDialog, setOpenDialog] = useState(false);
 	const [chatRoom, setChatRoom] = useState(0);
+	const userId = getIdFromToken();
 
 	sessionSocket.connect()
 
 	chatSocket.off('playWithFriend').on('playWithFriend', (game) => {
-		if (game.player2 == tokenData.id) {
+		if (game.player2 == userId) {
 			setChatRoom(game.room);
 			setOpenDialog(true);
 			setTimeout(() =>{
@@ -206,9 +206,9 @@ export const Home = ({ setLoggedIn, setIsHost } : { setLoggedIn: booleanSetState
 	return (
 		<>
 			{ <Header setOpenDrawer={setOpenDrawer} setOpenCard={setOpenCard} /> }
-			{ openCard && <ProfileCard setOpenCard={setOpenCard}  userId={tokenData.id}/> }
+			{ openCard && <ProfileCard setOpenCard={setOpenCard}  userId={userId}/> }
 			{ openDrawer && <ChatDrawer setOpenDrawer={setOpenDrawer} setIsHost={setIsHost} setGameActive={setGameActive}/> }
-			{ <Background setGameActive={setGameActive} userId={tokenData.id} setIsHost={setIsHost}/> }
+			{ <Background setGameActive={setGameActive} userId={userId} setIsHost={setIsHost}/> }
 			{ <Footer setLoggedIn={setLoggedIn}/> }
 			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
 				<AcceptGameInvite setIsHost={setIsHost} setGameActive={setGameActive} chatRoom={chatRoom} setOpenDialog={setOpenDialog} />

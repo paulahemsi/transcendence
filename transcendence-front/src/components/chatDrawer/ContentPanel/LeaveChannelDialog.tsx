@@ -1,9 +1,8 @@
 import React, { FunctionComponent, useReducer } from "react"
 import { Button, DialogActions, DialogTitle } from "@mui/material"
-import axios, { AxiosRequestHeaders } from 'axios';
-import jwt from 'jwt-decode';
+import axios from 'axios';
 import ErrorToast from "../../utils/ErrorToast";
-import { authToken, booleanSetState, DEFAULT_TOAST_MSG, numberSetState, objectSetState, tokenData } from "../../utils/constants";
+import { authToken, booleanSetState, DEFAULT_TOAST_MSG, getIdFromToken, numberSetState, objectSetState } from "../../utils/constants";
 
 interface Props {
 	channelData: {[key: string]: any};
@@ -23,7 +22,8 @@ export const LeaveChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, c
 	});
 
 	const handleSave = () => {
-		axios.delete(`http://localhost:3000/channels/${channelData.id}/members/${tokenData.id}`, { headers: authToken }).then( () => {
+		const userId = getIdFromToken();
+		axios.delete(`http://localhost:3000/channels/${channelData.id}/members/${userId}`, { headers: authToken }).then( () => {
 			setActiveChannel(0);
 			setOpenDialog(false);
 		}).catch( () => {

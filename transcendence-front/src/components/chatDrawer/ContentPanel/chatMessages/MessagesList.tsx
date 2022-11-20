@@ -1,7 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { Chip, List, ListItem } from "@mui/material";
-import jwt from 'jwt-decode';
-import { LIST_CSS, tokenData } from "../../../utils/constants";
+import { getIdFromToken, LIST_CSS } from "../../../utils/constants";
 
 interface Props {
     messagesData: {[key: string]: any};
@@ -33,7 +32,7 @@ const messageCSS = ( isFromUser : boolean ) => {
 }
 
 export const MessagesList : FunctionComponent<Props> = ({ messagesData }) => {
-	const userId = tokenData.id;
+	const userId = getIdFromToken();
 	const messages = [] as JSX.Element[];
 
 	messagesData.forEach((element : {[key: string]: any}, index : number) => {

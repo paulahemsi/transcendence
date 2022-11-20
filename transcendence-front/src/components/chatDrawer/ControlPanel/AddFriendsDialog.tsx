@@ -1,10 +1,9 @@
 import React, { FunctionComponent, useEffect, useReducer } from "react"
 import { Button, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
-import axios, { AxiosRequestHeaders } from 'axios';
-import jwt from 'jwt-decode';
+import axios from 'axios';
 import UsersList from "./UsersList";
 import ErrorToast from "../../utils/ErrorToast";
-import { authToken, booleanSetState, DEFAULT_TOAST_MSG, objectSetState, tokenData } from "../../utils/constants";
+import { authToken, booleanSetState, DEFAULT_TOAST_MSG, getIdFromToken, objectSetState } from "../../utils/constants";
 import { chatSocket } from "../../context/socket";
 
 interface Props {
@@ -17,6 +16,7 @@ const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) 
 }
 
 export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, setFriendsData }) => {
+	const userId = getIdFromToken();
 	const [state, setState] = useReducer(reducer, {
 		usersName: [],
 		loading: true,
@@ -37,12 +37,12 @@ export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 	}
 
 	const requestUsersData = async () => {
-		const bloquedFriends: {[key: string]: any} = await axios.get(`http://localhost:3000/users/${tokenData.id}/block`, { headers: authToken });
+		const bloquedFriends: {[key: string]: any} = await axios.get(`http://localhost:3000/users/${userId}/block`, { headers: authToken });
 
 		await axios.get("http://localhost:3000/users/", { headers: authToken }).then((response: {[key: string]: any}) => {
 			var usersName: Array<string> = [];
 			response.data.forEach((userData: {[key: string]: any}) => {
-				if (userData.id !== tokenData.id) {
+				if (userData.id !== userId) {
 					if (bloquedFriends.data.find((e: {[key: string]: any} ) => e.id == userData.id)){} else {
 						usersName.push(userData.username)
 					}
@@ -53,7 +53,7 @@ export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 	}
 
 	const requestFriendsData = async () => {
-		await axios.get(`http://localhost:3000/users/${tokenData.id}/friends`, { headers: authToken }).then((response) => {
+		await axios.get(`http://localhost:3000/users/${userId}/friends`, { headers: authToken }).then((response) => {
 		setFriendsData(response.data);
 		}).catch( () => {
 			setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
@@ -67,7 +67,7 @@ export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 			return;
 		}
 
-		axios.post(`http://localhost:3000/users/${tokenData.id}/friends/by_name`, {
+		axios.post(`http://localhost:3000/users/${userId}/friends/by_name`, {
 			"name": selectedUser[0]
 		}, { headers: authToken }).then( () => {
 			requestFriendsData();
