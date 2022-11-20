@@ -31,12 +31,6 @@ const transcendenceText = {
 	margin: '2vh'
 }
 
-export interface EndGameData {
-	player1Name: string,
-	player2Name: string,
-	winner: 1 | 2 | undefined
-}
-
 interface MatchInfos {
   id: string;
   player1: string;
