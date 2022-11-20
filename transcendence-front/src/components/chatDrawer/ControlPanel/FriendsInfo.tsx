@@ -36,14 +36,6 @@ const UserName = ({userName} : {userName : string}) => {
 	)
 }
 
-const UserRating = ({userRating} : {userRating : number}) => {
-	return (
-		<Typography sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '4vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
-					{`| ${userRating}`}
-		</Typography>
-	)
-}
-
 const UserStatus = ({statusColor} : {statusColor : string}) => {
 	return (
 		<Box margin={2}
@@ -63,7 +55,6 @@ export const FriendsInfo = ({ userData } : {[key: string]: any}) => {
 			<UserStatus statusColor={defineColor(userData.status)}/>
 			<UserImage imageUrl={userData.image_url}/>
 			<UserName userName={userData.username}/>
-			<UserRating userRating={userData.rating}/>
 		</Box>
 	)
 }
