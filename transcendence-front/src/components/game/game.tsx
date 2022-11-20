@@ -11,6 +11,7 @@ interface Props {
 	setEndGameVisible: React.Dispatch<React.SetStateAction<boolean>>
 	setEndGameDisplay: React.Dispatch<React.SetStateAction<EndGameData>>
 	isHost: boolean
+	matchRoom: string
 }
 
 interface Ball {
@@ -23,7 +24,13 @@ interface Score {
   player2: number;
 }
 
-export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisible, setEndGameDisplay, isHost}) => {
+export const PhaserGame: FunctionComponent<Props> = ({
+	setScore,
+	setEndGameVisible,
+	setEndGameDisplay,
+	isHost,
+	matchRoom,
+}) => {
 	useEffect(() =>  {
 		const gameConfig: Phaser.Types.Core.GameConfig = {
 			type: Phaser.AUTO,
@@ -73,6 +80,7 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 
 		function create(this: Phaser.Scene): void {
 			gameSocket.connect();
+			gameSocket.emit('joinGameRoom', matchRoom);
 			player1 = this.physics.add.sprite(screenWidth * 0.1, screenHeight * 0.5, 'pad');
 			player2 = this.physics.add.sprite(screenWidth * 0.9, screenHeight * 0.5, 'pad');
 			ball = this.physics.add.sprite(this.sys.canvas.width / 2, this.sys.canvas.height / 2, 'ball').setSize(30, 30);
@@ -114,7 +122,7 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 		function updatePlayer1Position() {
 			if (player1.y != player1PosY) {
 				player1PosY = player1.y;
-				gameSocket.emit('player1', player1PosY);
+				gameSocket.emit('player1', { room: matchRoom, value: player1PosY });
 			}
 		}
 
@@ -127,7 +135,7 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 		function updatePlayer2Position() {
 			if (player2.y != player2PosY) {
 				player2PosY = player2.y;
-				gameSocket.emit('player2', player2PosY);
+				gameSocket.emit('player2', { room: matchRoom, value: player2PosY });
 			}
 		}
 
@@ -141,7 +149,7 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 			if (ball.x != ballPos.x || ball.y != ballPos.y) {
 				ballPos.x = ball.x;
 				ballPos.y = ball.y;
-				gameSocket.emit('ball', ballPos);
+				gameSocket.emit('ball', { room: matchRoom, ball: ballPos });
 			}
 		}
 
@@ -176,6 +184,7 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 					winner: winningPlayer
 				})
 				setEndGameVisible(true);
+				gameSocket.emit('leaveGameRoom', matchRoom);
 				sleep(1000).then(() => {game.destroy(true);});
 			}
 		}
@@ -195,14 +204,14 @@ export const PhaserGame: FunctionComponent<Props> = ({setScore, setEndGameVisibl
 
 	function increaseP1Score() {
 		setScore([score.player1 += 1, score.player2]);
-		gameSocket.emit('score', {player1: score.player1, player2: score.player2} );
+		gameSocket.emit('score', { room: matchRoom, score: score } );
 		initializeBall();
 		startBall()
 	}
 
 	function increaseP2Score() {
 		setScore([score.player1, score.player2 += 1]);
-		gameSocket.emit('score', {player1: score.player1, player2: score.player2} );
+		gameSocket.emit('score', { room: matchRoom, score: score } );
 		initializeBall();
 		startBall()
 	}

@@ -6,6 +6,7 @@ export type objectSetState = React.Dispatch<React.SetStateAction<{[key: string]:
 export type numberSetState = React.Dispatch<React.SetStateAction<number>>
 export type arraySetState = React.Dispatch<React.SetStateAction<string[]>>
 export type anchorSetState = React.Dispatch<React.SetStateAction<null | HTMLElement>>
+export type stringSetState = React.Dispatch<React.SetStateAction<string>>
 
 export type tokenData = {
 	id: string;

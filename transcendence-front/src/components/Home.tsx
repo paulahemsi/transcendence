@@ -3,11 +3,10 @@ import { Typography, Box, Button, DialogTitle, DialogActions, Dialog, CircularPr
 import Header from "./header/Header";
 import { Footer } from "./footer/Footer";
 import ChatDrawer from "./chatDrawer/ChatDrawer";
-import jwt from 'jwt-decode';
 import ProfileCard from "./profileDrawer/ProfileDrawer";
 import { Navigate } from "react-router-dom";
 import { chatSocket, sessionSocket } from "./context/socket";
-import { booleanSetState, tokenData } from "./utils/constants";
+import { booleanSetState, stringSetState, tokenData } from "./utils/constants";
 
 const startGameButton = {
 	borderRadius: 3,
@@ -38,7 +37,25 @@ export interface EndGameData {
 	winner: 1 | 2 | undefined
 }
 
-const Matchmaker = ({ setGameActive, setOpenDialog, userId, setIsHost } : { setGameActive: booleanSetState,  setOpenDialog: booleanSetState, userId: string, setIsHost: booleanSetState }) => {
+interface MatchInfos {
+  id: string;
+  player1: string;
+  player2: string;
+}
+
+const Matchmaker = ({
+	setGameActive,
+	setOpenDialog,
+	userId,
+	setIsHost,
+	setMatchRoom,
+} : {
+	setGameActive: booleanSetState, 
+	setOpenDialog: booleanSetState,
+	userId: string,
+	setIsHost: booleanSetState,
+	setMatchRoom: stringSetState,
+}) => {
 	const [goGame, setGoGame] = useState(false);
 	const [loading, setLoading] = useState(false);
 
@@ -48,12 +65,13 @@ const Matchmaker = ({ setGameActive, setOpenDialog, userId, setIsHost } : { setG
 		console.log(`User ${userId} wanna play`)
 	}
 	
-	sessionSocket.on('joinGameQueue', (match) => {
+	sessionSocket.on('joinGameQueue', (match: MatchInfos) => {
 		if (match.player1 == tokenData.id) {
 			setIsHost(true);
 		} else {
 			setIsHost(false);
 		}
+		setMatchRoom(match.id);
 		setLoading(false);
 		setGoGame(true)
 	} )
@@ -101,7 +119,17 @@ const Matchmaker = ({ setGameActive, setOpenDialog, userId, setIsHost } : { setG
 	)
 }
 
-const Background = ({ setGameActive, userId, setIsHost } : { setGameActive: booleanSetState, userId: string, setIsHost: booleanSetState }) => {
+const Background = ({
+	setGameActive,
+	userId,
+	setIsHost,
+	setMatchRoom,
+} : {
+	setGameActive: booleanSetState,
+	userId: string,
+	setIsHost: booleanSetState
+	setMatchRoom: stringSetState
+}) => {
 	const [ openDialog, setOpenDialog ] = useState(false);
 
 	const handleClose = () => {
@@ -120,7 +148,13 @@ const Background = ({ setGameActive, userId, setIsHost } : { setGameActive: bool
 				</Button>
 			</Box>
 			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
-				<Matchmaker setOpenDialog={setOpenDialog} setGameActive={setGameActive} userId={userId}  setIsHost={setIsHost}/>
+				<Matchmaker
+					setOpenDialog={setOpenDialog}
+					setGameActive={setGameActive}
+					userId={userId}
+					setIsHost={setIsHost}
+					setMatchRoom={setMatchRoom}
+				/>
 			</Dialog>
 		</>
 	);
@@ -171,7 +205,15 @@ const AcceptGameInvite = ({ setIsHost, setGameActive, setOpenDialog, chatRoom} :
 	)
 }
 
-export const Home = ({ setLoggedIn, setIsHost } : { setLoggedIn: booleanSetState, setIsHost: booleanSetState}) => {
+export const Home = ({
+	setLoggedIn,
+	setIsHost,
+	setMatchRoom,
+} : {
+	setLoggedIn: booleanSetState,
+	setIsHost: booleanSetState,
+	setMatchRoom: stringSetState,
+}) => {
 	const [openDrawer, setOpenDrawer] = useState(false)
 	const [openCard, setOpenCard] = useState(false)
 	const [gameActive, setGameActive] = useState(false);
@@ -208,7 +250,12 @@ export const Home = ({ setLoggedIn, setIsHost } : { setLoggedIn: booleanSetState
 			{ <Header setOpenDrawer={setOpenDrawer} setOpenCard={setOpenCard} /> }
 			{ openCard && <ProfileCard setOpenCard={setOpenCard}  userId={tokenData.id}/> }
 			{ openDrawer && <ChatDrawer setOpenDrawer={setOpenDrawer} setIsHost={setIsHost} setGameActive={setGameActive}/> }
-			{ <Background setGameActive={setGameActive} userId={tokenData.id} setIsHost={setIsHost}/> }
+			{ <Background
+				setGameActive={setGameActive}
+				userId={tokenData.id}
+				setIsHost={setIsHost}
+				setMatchRoom={setMatchRoom}
+			  /> }
 			{ <Footer setLoggedIn={setLoggedIn}/> }
 			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
 				<AcceptGameInvite setIsHost={setIsHost} setGameActive={setGameActive} chatRoom={chatRoom} setOpenDialog={setOpenDialog} />
