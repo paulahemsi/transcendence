@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import React, { FunctionComponent } from 'react'
 import io from 'socket.io-client';
 import { useEffect } from 'react';
-import { EndGameData } from '../Home';
+import { EndGameData } from '../GamePage';
 
 const gameSocket = io('/game');
 
@@ -107,6 +107,7 @@ export const PhaserGame: FunctionComponent<Props> = ({
 		}
 
 		function update(this: Phaser.Scene): void {
+			listenStopGame(this.scene);
 			if (isHost) {
 				updatePlayerVelocit(player1, this.input);
 				updatePlayer1Position();
@@ -118,7 +119,6 @@ export const PhaserGame: FunctionComponent<Props> = ({
 				updatePlayer2Position();
 				updateBallPositionFromSocket();
 			}
-		
 			checkEndGame(this.scene);
 		}
 
@@ -182,9 +182,10 @@ export const PhaserGame: FunctionComponent<Props> = ({
 				winningPlayer = score.player1 > score.player2 ? 1 : 2;
 				phaserScene.pause();
 				setEndGameDisplay({
+					disconnected: false,
 					player1Name: "PLAYER 1",
 					player2Name: "PLAYER 2",
-					winner: winningPlayer
+					winner: winningPlayer,
 				})
 				setEndGameVisible(true);
 				gameSocket.emit('leaveGameRoom', matchRoom);
@@ -254,6 +255,25 @@ export const PhaserGame: FunctionComponent<Props> = ({
 			score = scoreFromSocket;	
 			setScore([score.player1, score.player2]);
 		} );
+	}
+
+	function listenStopGame(phaserScene: Phaser.Scenes.ScenePlugin) {
+		gameSocket.off('stopGame').on('stopGame', () => {
+			stopGame(phaserScene);
+		} );
+	}
+
+	function stopGame(phaserScene: Phaser.Scenes.ScenePlugin) {
+		phaserScene.pause();
+		setEndGameDisplay({
+			disconnected: true,
+			player1Name: "PLAYER 1",
+			player2Name: "PLAYER 2",
+			winner: winningPlayer,
+		})
+		setEndGameVisible(true);
+		gameSocket.emit('leaveGameRoom', matchRoom);
+		sleep(1000).then(() => {game.destroy(true);});
 	}
 
 	}, [])

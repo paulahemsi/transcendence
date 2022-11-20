@@ -30,6 +30,7 @@ const player2Score = {
 }
 
 export interface EndGameData {
+	disconnected: boolean,
 	player1Name: string,
 	player2Name: string,
 	winner: 1 | 2 | undefined
@@ -41,7 +42,17 @@ interface EndGameCardProps {
 	setGameActive: booleanSetState 
 }
 
+
 const EndGameCard: FunctionComponent<EndGameCardProps> = ({endGameDisplay, setEndGameVisible, setGameActive}) => {
+	
+	function endGameContent() {
+		if (endGameDisplay.disconnected) {
+			return ('The game ended because one of the players disconnected');
+		}
+		const winner = endGameDisplay.winner == 1 ? endGameDisplay.player1Name : endGameDisplay.player2Name;
+		return ( winner + ' is the winner!');
+	}
+
 	return (
 		<Box display="flex" position="absolute" justifyContent="center" alignItems="center" height="100vh" width="100vw" sx={{backgroundColor: 'rgba(0,0,0,0.5)',}}>
 			<Card sx={{
@@ -53,7 +64,7 @@ const EndGameCard: FunctionComponent<EndGameCardProps> = ({endGameDisplay, setEn
 					}}>
 					<CardContent style={{ paddingLeft: 35, paddingTop: 25 }}>
 						<Typography align="left" sx={{ fontSize: 24, fontFamily: 'Orbitron', fontWeight: 500}}>
-							{endGameDisplay.winner == 1 ? endGameDisplay.player1Name : endGameDisplay.player2Name} is the winner!
+							{endGameContent()} 
 						</Typography>
 					</CardContent>
 					<CardActions sx={{ justifyContent: 'center', paddingTop: 8 }}>
@@ -88,7 +99,7 @@ interface gameProps {
 const GamePage:  FunctionComponent<gameProps>  = ({isHost, matchRoom, standardMode}) => {
 	const [ score, setScore ] = useState<number[]>([0, 0]);
 	const [ endGameVisible, setEndGameVisible ] = useState<boolean>(false);
-	const [ endGameDisplay, setEndGameDisplay ] = useState<EndGameData>({player1Name: "player1", player2Name: "player2", winner: 1});
+	const [ endGameDisplay, setEndGameDisplay ] = useState<EndGameData>({ disconnected:false, player1Name: "player1", player2Name: "player2", winner: 1});
 	const [ gameActive, setGameActive ] = useState(true);
 
 	if (gameActive === false) {
