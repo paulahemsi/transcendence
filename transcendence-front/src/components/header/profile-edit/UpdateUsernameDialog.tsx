@@ -1,8 +1,7 @@
 import React, { FunctionComponent, useReducer } from "react";
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, TextField, } from "@mui/material"
-import axios, { AxiosRequestHeaders } from 'axios';
-import jwt from 'jwt-decode';
-import { authToken, booleanSetState, DEFAULT_TOAST_MSG, tokenData } from "../../utils/constants";
+import axios from 'axios';
+import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken } from "../../utils/constants";
 
 interface Props {
     open: boolean;
@@ -35,7 +34,9 @@ export const UpdateUsernameDialog : FunctionComponent<Props> = ({ open, setOpen,
 			return ;
 		}
 		
-		axios.patch(`http://localhost:3000/users/${tokenData.id}`, { "username": state.username }, { headers: authToken }).then( () => {
+		const userId = getIdFromToken();
+		const authToken = getAuthToken();
+		axios.patch(`http://localhost:3000/users/${userId}`, { "username": state.username }, { headers: authToken }).then( () => {
 			userData.username = state.username;
 			setUserData(userData);
 			setOpen(false);

@@ -1,9 +1,8 @@
 import React, { FunctionComponent, useEffect, useReducer, useState } from "react";
 import { TextField, Box } from "@mui/material";
-import axios, { AxiosRequestHeaders } from 'axios';
+import axios from 'axios';
 import MessagesList from "./MessagesList";
-import jwt from 'jwt-decode';
-import { arraySetState, authToken, booleanSetState, messagesBorderCSS, objectSetState, tokenData } from "../../../utils/constants";
+import { arraySetState, booleanSetState, getAuthToken, getIdFromToken, messagesBorderCSS, objectSetState } from "../../../utils/constants";
 import DMButtons from "./DMButtons";
 import Muted from "./Muted";
 import NoMessages from "./NoMessages";
@@ -23,6 +22,7 @@ const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) =
 
 const requestMessagesFromChannel = async ( activeChannel : number , setMessagesData : arraySetState ) =>  {
 
+	const authToken = getAuthToken();
 	await axios.get(`http://localhost:4444/channels/${activeChannel}/messages`, { headers: authToken }).then((response) => {
 		setMessagesData(response.data);
 	}).catch( () => {});
@@ -30,8 +30,10 @@ const requestMessagesFromChannel = async ( activeChannel : number , setMessagesD
 
 const requestMembersFromChannel = async ( activeChannel : number , setState : objectSetState ) =>  {
 
+	const userId = getIdFromToken();
+	const authToken = getAuthToken();
 	await axios.get(`http://localhost:4444/channels/${activeChannel}/members`, { headers: authToken }).then((response) => {
-		const user = response.data.filter((member: {[key: string]: any}) => member.id === tokenData.id)
+		const user = response.data.filter((member: {[key: string]: any}) => member.id === userId)
 		if (user.length) {
 			setState({muted: user[0].muted});
 		}
@@ -56,13 +58,14 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 	}
 
 	const keyDownHandler = ( event :  React.KeyboardEvent<HTMLInputElement>) => {
+		const userId = getIdFromToken();
 		if (event.key === 'Enter') {
 			event.preventDefault();
 			if (!newMessage.trim()) {
 				return ;
 			}
 			const msgToSend = {
-				user: tokenData.id,
+				user: userId,
 				channel: activeChannel.toString(),
 				message: newMessage,
 			}

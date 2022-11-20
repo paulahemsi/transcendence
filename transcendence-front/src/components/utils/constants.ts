@@ -12,8 +12,15 @@ export type tokenData = {
 	id: string;
 }
 
-export const tokenData: tokenData = jwt(document.cookie);
-export const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+export function getIdFromToken() {
+	const tokenData: tokenData = jwt(document.cookie);
+	return tokenData.id;
+}
+
+export function getAuthToken() {
+	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+	return authToken; 
+}
 
 export const DEFAULT_TOAST_MSG = "ooops, something went wrong";
 

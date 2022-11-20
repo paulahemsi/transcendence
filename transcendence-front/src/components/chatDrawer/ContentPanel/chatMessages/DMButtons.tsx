@@ -1,9 +1,9 @@
-import React, { FunctionComponent, useReducer, useState } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { Box, Typography, Button, Dialog } from "@mui/material";
 import ProfileCard from "../../../profileDrawer/ProfileDrawer";
 import BlockUserDialog from "./BlockUserDialog";
 import { chatSocket } from "../../../context/socket";
-import { booleanSetState, tokenData } from "../../../utils/constants";
+import { booleanSetState, getIdFromToken } from "../../../utils/constants";
 import AskFriend from "./AskFriend";
 
 const PROFILE = "Go to profile";
@@ -55,9 +55,10 @@ const InviteToGame: FunctionComponent<inviteProps> = ({ setIsHost, setGameActive
 	const [ openDialog, setOpenDialog] = useState(false);
 	
 	const handleClick = () => {
+		const userId = getIdFromToken();
 		const players: Game = {
 			room: activeChannel,
-			player1: tokenData.id,
+			player1: userId,
 			player2: friendId,
 		}
 		chatSocket.emit('playWithFriend', players);

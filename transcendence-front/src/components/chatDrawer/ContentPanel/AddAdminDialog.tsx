@@ -1,10 +1,9 @@
 import React, { FunctionComponent, useEffect, useReducer } from "react"
 import { Button, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
-import axios, { AxiosRequestHeaders } from 'axios';
-import jwt from 'jwt-decode';
+import axios from 'axios';
 import UsersList from "../ControlPanel/UsersList";
 import ErrorToast from "../../utils/ErrorToast";
-import { authToken, booleanSetState, DEFAULT_TOAST_MSG, objectSetState, tokenData } from "../../utils/constants";
+import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken, objectSetState } from "../../utils/constants";
 
 interface Props {
 	channelData: {[key: string]: any};
@@ -17,6 +16,7 @@ const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) =
 }
 
 export const AddAdminDialog : FunctionComponent<Props> = ({ setOpenDialog, setMembersMockData, channelData }) => {
+	const userId = getIdFromToken();
 	const [state, setState] = useReducer(reducer, {
 		usersName: [],
 		users: {},
@@ -38,18 +38,19 @@ export const AddAdminDialog : FunctionComponent<Props> = ({ setOpenDialog, setMe
 	}
 
 	const requestUsersData = async () => {
+		const authToken = getAuthToken();
 		await axios.get("http://localhost:3000/users/", { headers: authToken }).then((response: {[key: string]: any}) => {
 			setState({ users: response.data });
 			var usersName: Array<string> = [];
 			response.data.forEach((userData: {[key: string]: any}) => {
-				if (userData.id !== tokenData.id) {
+				if (userData.id !== userId) {
 					usersName.push(userData.username)
 				}
 			});
 
 			var membersName: Array<string> = [];
 			channelData.members.forEach((member: {[key: string]: any}) => {
-				if (member.id !== tokenData.id) {
+				if (member.id !== userId) {
 					membersName.push(member.name)
 				}
 			});
@@ -66,6 +67,7 @@ export const AddAdminDialog : FunctionComponent<Props> = ({ setOpenDialog, setMe
 			return;
 		}
 		
+		const authToken = getAuthToken();
 		axios.post(`http://localhost:3000/channels/${channelData.id}/admin`, { "userId": selectedUser[0].id },  { headers: authToken }).then( () => {
 			setOpenDialog(false);
 		}).catch( () => {

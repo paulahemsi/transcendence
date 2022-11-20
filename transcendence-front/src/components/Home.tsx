@@ -6,7 +6,7 @@ import ChatDrawer from "./chatDrawer/ChatDrawer";
 import ProfileCard from "./profileDrawer/ProfileDrawer";
 import { Navigate } from "react-router-dom";
 import { chatSocket, sessionSocket } from "./context/socket";
-import { booleanSetState, stringSetState, tokenData } from "./utils/constants";
+import { booleanSetState, getIdFromToken, stringSetState } from "./utils/constants";
 
 const startGameButton = {
 	borderRadius: 3,
@@ -66,7 +66,7 @@ const Matchmaker = ({
 	}
 	
 	sessionSocket.on('joinGameQueue', (match: MatchInfos) => {
-		if (match.player1 == tokenData.id) {
+		if (match.player1 == userId) {
 			setIsHost(true);
 		} else {
 			setIsHost(false);
@@ -219,11 +219,12 @@ export const Home = ({
 	const [gameActive, setGameActive] = useState(false);
 	const [openDialog, setOpenDialog] = useState(false);
 	const [chatRoom, setChatRoom] = useState(0);
+	const userId = getIdFromToken();
 
 	sessionSocket.connect()
 
 	chatSocket.off('playWithFriend').on('playWithFriend', (game) => {
-		if (game.player2 == tokenData.id) {
+		if (game.player2 == userId) {
 			setChatRoom(game.room);
 			setOpenDialog(true);
 			setTimeout(() =>{
@@ -248,11 +249,11 @@ export const Home = ({
 	return (
 		<>
 			{ <Header setOpenDrawer={setOpenDrawer} setOpenCard={setOpenCard} /> }
-			{ openCard && <ProfileCard setOpenCard={setOpenCard}  userId={tokenData.id}/> }
+			{ openCard && <ProfileCard setOpenCard={setOpenCard}  userId={userId}/> }
 			{ openDrawer && <ChatDrawer setOpenDrawer={setOpenDrawer} setIsHost={setIsHost} setGameActive={setGameActive}/> }
 			{ <Background
 				setGameActive={setGameActive}
-				userId={tokenData.id}
+				userId={userId}
 				setIsHost={setIsHost}
 				setMatchRoom={setMatchRoom}
 			  /> }

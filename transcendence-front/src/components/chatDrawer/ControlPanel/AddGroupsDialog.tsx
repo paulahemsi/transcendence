@@ -1,10 +1,9 @@
 import React, { FunctionComponent, useEffect, useReducer } from "react"
 import { Button, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
-import axios, { AxiosRequestHeaders } from 'axios';
-import jwt from 'jwt-decode';
+import axios from 'axios';
 import SearchGroupsList from "./SearchGroupsList";
 import ErrorToast from "../../utils/ErrorToast";
-import { authToken, booleanSetState, DEFAULT_TOAST_MSG, objectSetState, tokenData } from "../../utils/constants";
+import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken, objectSetState } from "../../utils/constants";
 
 const PROTECTED = 'PROTECTED';
 const PUBLIC = 'PUBLIC'
@@ -30,8 +29,9 @@ const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) 
 	return {...state, ...newState};
 }
 
-
 export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setGroupsData }) => {
+	const userId = getIdFromToken();
+	const authToken = getAuthToken();
 	const [state, setState] = useReducer(reducer, {
 		groupsList: {},
 		loading: true,
@@ -72,7 +72,7 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 	}
 
 	const setUserGroupsData = async () => {
-		await axios.get(`http://localhost:3000/users/${tokenData.id}/channels`, { headers: authToken }).then((response) => {
+		await axios.get(`http://localhost:3000/users/${userId}/channels`, { headers: authToken }).then((response) => {
 			setGroupsData(response.data);
 	}).catch( () => {
 		setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
@@ -82,7 +82,7 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 	const handleSave = () => {
 		const group = state.title === JOIN_TITLE ? selectedGroup(state.searchQuery) : selectedGroup(state.groupName);
 		axios.post(`http://localhost:3000/channels/${group[0].id}/members`, {
-			"userId": tokenData.id,
+			"userId": userId,
 			"password": state.searchQuery
 		}, { headers: authToken }).then( () => {
 			setUserGroupsData();

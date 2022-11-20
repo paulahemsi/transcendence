@@ -3,9 +3,8 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import ChannelsList from "./ChannelsList";
 import ChatAuxiliaryButton from "./ChatAuxiliaryButton";
 import ChatButton from "./ChatButton";
-import axios, { AxiosRequestHeaders } from 'axios';
-import jwt from 'jwt-decode';
-import { authToken, booleanSetState, numberSetState, objectSetState, tokenData } from "../../utils/constants";
+import axios from 'axios';
+import { booleanSetState, getAuthToken, getIdFromToken, numberSetState, objectSetState } from "../../utils/constants";
 
 interface Props {
 	setChannelsAdminPanel: booleanSetState;
@@ -24,7 +23,9 @@ export const ControlPanel : FunctionComponent<Props> = ({ setChannelsAdminPanel,
 
 	const requestGroupsData = async () => {
 
-		await axios.get(`http://localhost:3000/users/${tokenData.id}/channels`, { headers: authToken }).then((response) => {
+		const userId = getIdFromToken();
+		const authToken = getAuthToken();
+		await axios.get(`http://localhost:3000/users/${userId}/channels`, { headers: authToken }).then((response) => {
 			setGroupsData(response.data);
 			setLoading(false);
 		}).catch( () => {});

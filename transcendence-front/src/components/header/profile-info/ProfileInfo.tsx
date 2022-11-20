@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material"
-import axios, { AxiosRequestHeaders } from 'axios';
-import jwt from 'jwt-decode';
+import axios from 'axios';
 import { ProfileButton } from "./ProfileButton";
 import EditProfile from "../profile-edit/EditButton";
 import { UpdateUsernameDialog } from "../profile-edit/UpdateUsernameDialog";
 import { UpdateImageDialog } from "../profile-edit/UpdateImageDialog";
 import { ConfigTwoFactorAuthDialog } from "../profile-edit/config-two-factor-auth/ConfigTwoFactorAuthDialog";
-import { authToken, booleanSetState, tokenData } from "../../utils/constants";
+import { booleanSetState, getAuthToken, getIdFromToken } from "../../utils/constants";
 
 const requestUserData = async ({ setUserData } : { setUserData: React.Dispatch<React.SetStateAction<{[key: string]: any}>>}) => {
 	
-	await axios.get('http://localhost:3000/users/' + tokenData.id, { headers: authToken }).then((response) => {setUserData({
+	const userId = getIdFromToken();
+	const authToken = getAuthToken();
+	await axios.get('http://localhost:3000/users/' + userId, { headers: authToken }).then((response) => {setUserData({
 		id: response.data.id,
 		username: response.data.username,
 		rating: response.data.rating,

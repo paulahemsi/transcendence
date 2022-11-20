@@ -1,10 +1,9 @@
 import React, { FunctionComponent, useReducer } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
-import axios, { AxiosRequestHeaders } from 'axios';
-import jwt from 'jwt-decode';
+import axios from 'axios';
 import { Box } from "@mui/system";
 import ErrorToast from "../../utils/ErrorToast";
-import { authToken, booleanSetState, DEFAULT_TOAST_MSG, tokenData } from "../../utils/constants";
+import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken } from "../../utils/constants";
 
 interface Props {
     open: boolean;
@@ -41,6 +40,8 @@ export const UpdateImageDialog : FunctionComponent<Props> = ({ open, setOpen, us
 	
 	const handleSave = async () => {
 		const formData = new FormData();
+		const userId = getIdFromToken();
+		const authToken = getAuthToken();
 	
 		if (state.selectedFile === null) return;
 		formData.append('image', state.selectedFile);
@@ -48,7 +49,7 @@ export const UpdateImageDialog : FunctionComponent<Props> = ({ open, setOpen, us
 		.then((response) => {
 			if (response.data.url != "") {
 				const imageUrl = response.data.url;
-				axios.patch(`http://localhost:3000/users/${tokenData.id}`, { "image_url": imageUrl }, { headers: authToken }).then( () => {
+				axios.patch(`http://localhost:3000/users/${userId}`, { "image_url": imageUrl }, { headers: authToken }).then( () => {
 					userData.image_url = imageUrl;
 					setUserData(userData);
 					setOpen(false);
