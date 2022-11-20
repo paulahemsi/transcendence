@@ -4,7 +4,7 @@ import ChatMessages from "./ContentPanel/chatMessages/ChatMessages";
 import ControlPanel from "./ControlPanel/ControlPanel";
 import ChannelsAdminPanel from "./ContentPanel/ChannelsAdminPanel";
 import axios, { AxiosRequestHeaders } from "axios";
-import { chatSocket } from "../context/socket";
+import { chatSocket, sessionSocket } from "../context/socket";
 import { booleanSetState, getAuthToken, getIdFromToken, stringSetState } from "../utils/constants";
 
 interface Props {
@@ -32,6 +32,9 @@ export const ChatDrawer : FunctionComponent<Props> = ({ setOpenDrawer, setIsHost
 	useEffect(() => {requestFriendsData({setFriendsData})}, []);
 
 	chatSocket.off('refreshFriends').on('refreshFriends', () => {
+		requestFriendsData({setFriendsData})
+	});
+	sessionSocket.off('refreshFriends').on('refreshFriends', () => {
 		requestFriendsData({setFriendsData})
 	});
 

@@ -133,6 +133,11 @@ export class SessionGateway
     this.server.emit('answerToGameRequest', matchInviteAnswer);
   }
 
+  @SubscribeMessage('refreshFriends')
+  async handleRefreshFriends(client: Socket, message: string) {
+    this.server.emit('refreshFriends');
+  }
+
   private disconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
     client.disconnect();
@@ -142,6 +147,7 @@ export class SessionGateway
     await this.usersService.getStatus(user.id);
     if (user.status == status.OFFLINE) {
       this.usersService.setStatusOnline(user.id);
+      this.server.emit('refreshFriends');
     }
   }
 
@@ -153,5 +159,6 @@ export class SessionGateway
       return;
     }
     this.usersService.setStatusOffline(user.id);
+    this.server.emit('refreshFriends');
   }
 }
