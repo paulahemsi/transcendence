@@ -31,16 +31,17 @@ function isLoggedIn() {
   return validateToken(cookie);
 }
 
-const PreHome = ({setIsHost, setMatchRoom} : {
+const PreHome = ({setIsHost, setMatchRoom,  setStandardMode } : {
   setIsHost: booleanSetState
   setMatchRoom: stringSetState
+  setStandardMode: booleanSetState
 }) => {
   const[ loggedIn, setLoggedIn ] = useState(isLoggedIn());
 
 	return (
     <main>
       {loggedIn
-      ? <Home setLoggedIn={setLoggedIn} setIsHost={setIsHost} setMatchRoom={setMatchRoom}/>
+      ? <Home setLoggedIn={setLoggedIn} setIsHost={setIsHost} setMatchRoom={setMatchRoom}  setStandardMode={setStandardMode}/>
       : <LoginCard/> }
     </main>
 	);
@@ -49,14 +50,15 @@ const PreHome = ({setIsHost, setMatchRoom} : {
 function App() {
   const [isHost, setIsHost] = useState(false);
   const [matchRoom, setMatchRoom] = useState('');
-
+  const [standardMode, setStandardMode] = useState(true);
+  
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<PreHome setIsHost={setIsHost} setMatchRoom={setMatchRoom}/>} />
+        <Route path='/' element={<PreHome setIsHost={setIsHost} setMatchRoom={setMatchRoom} setStandardMode={setStandardMode}/>} />
         <Route path='/login' element={<LoginCard/>} />
         <Route path='/2fa' element={<TwoFactorAuthCard/>} />
-        <Route path='/game' element={<GamePage isHost={isHost} matchRoom={matchRoom}/>} />
+        <Route path='/game' element={<GamePage isHost={isHost} matchRoom={matchRoom} standardMode={standardMode}/>} />
       </Routes>
     </BrowserRouter>
   );
