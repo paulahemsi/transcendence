@@ -27,14 +27,8 @@ interface MatchInfos {
   player2: string;
 }
 
-interface Game {
-  room: number;
-  player1: string;
-  player2: string;
-}
-
-interface GameAnswer {
-  room: number;
+export interface MatchInviteAnswer {
+  matchInfos: MatchInfos;
   accepted: boolean;
 }
 
@@ -100,17 +94,10 @@ export class SessionGateway
     };
     if (this.gameQueue.length > 0) {
       const otherPlayer = this.gameQueue.pop();
-      const match = await this.matchHistoryService.createMatch(
+      const matchInfos = await this.createMatch(
         player.userId,
         otherPlayer.userId,
       );
-
-      const matchInfos: MatchInfos = {
-        id: match.id,
-        player1: match.player1.id,
-        player2: match.player2.id,
-      };
-
       otherPlayer.socket.emit('joinGameQueue', matchInfos);
       player.socket.emit('joinGameQueue', matchInfos);
     } else {
@@ -118,16 +105,32 @@ export class SessionGateway
     }
   }
 
+  async createMatch(playerId1: string, playerId2: string) {
+    const match = await this.matchHistoryService.createMatch(
+      playerId1,
+      playerId2,
+    );
+
+    const matchInfos: MatchInfos = {
+      id: match.id,
+      player1: match.player1.id,
+      player2: match.player2.id,
+    };
+    return matchInfos;
+  }
+
   @SubscribeMessage('playWithFriend')
-  async handlePlayWithFriend(client: Socket, game: Game) {
-    if (client.data.user.id == game.player1) {
-      this.server.emit('playWithFriend', game);
-    }
+  async handlePlayWithFriend(client: Socket, friendId: string) {
+    const matchInfos = await this.createMatch(client.data.user.id, friendId);
+    this.server.emit('playWithFriend', matchInfos);
   }
 
   @SubscribeMessage('answerToGameRequest')
-  async handleAnswerGameRequest(client: Socket, gameAnswer: GameAnswer) {
-    this.server.emit('answerToGameRequest', gameAnswer);
+  async handleAnswerGameRequest(
+    client: Socket,
+    matchInviteAnswer: MatchInviteAnswer,
+  ) {
+    this.server.emit('answerToGameRequest', matchInviteAnswer);
   }
 
   private disconnect(client: Socket) {

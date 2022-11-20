@@ -2,8 +2,8 @@ import React, { FunctionComponent, useState } from "react";
 import { Box, Typography, Button, Dialog } from "@mui/material";
 import ProfileCard from "../../../profileDrawer/ProfileDrawer";
 import BlockUserDialog from "./BlockUserDialog";
-import { chatSocket, sessionSocket } from "../../../context/socket";
-import { booleanSetState, getIdFromToken } from "../../../utils/constants";
+import { sessionSocket } from "../../../context/socket";
+import { booleanSetState, stringSetState } from "../../../utils/constants";
 import AskFriend from "./AskFriend";
 
 const PROFILE = "Go to profile";
@@ -35,33 +35,21 @@ interface Props {
     setGameActive: booleanSetState;
     setIsHost: booleanSetState;
 	friendId: string;
-	activeChannel: number;
+	setMatchRoom: stringSetState;
 }
 
 interface inviteProps {
     setGameActive: booleanSetState;
     setIsHost: booleanSetState;
 	friendId: string;
-	activeChannel: number;
+	setMatchRoom: stringSetState;
 }
 
-interface Game {
-	room: number;
-	player1: string;
-	player2: string;
-}
-
-const InviteToGame: FunctionComponent<inviteProps> = ({ setIsHost, setGameActive, friendId, activeChannel}) => {
+const InviteToGame: FunctionComponent<inviteProps> = ({ setIsHost, setGameActive, friendId, setMatchRoom }) => {
 	const [ openDialog, setOpenDialog] = useState(false);
 	
 	const handleClick = () => {
-		const userId = getIdFromToken();
-		const players: Game = {
-			room: activeChannel,
-			player1: userId,
-			player2: friendId,
-		}
-		sessionSocket.emit('playWithFriend', players);
+		sessionSocket.emit('playWithFriend', friendId);
 		setOpenDialog(true);
 	}
 	
@@ -86,7 +74,8 @@ const InviteToGame: FunctionComponent<inviteProps> = ({ setIsHost, setGameActive
 					setGameActive={setGameActive}
 					setIsHost={setIsHost}
 					setOpenDialog={setOpenDialog}
-					activeChannel={activeChannel}
+					friendId={friendId}
+					setMatchRoom={setMatchRoom}
 				/>
 			</Dialog>
 		</>
@@ -133,7 +122,7 @@ const GoToProfile = ({ setOpenCard } : { setOpenCard: booleanSetState }) => {
 	)
 }
 
-export const DMButtons: FunctionComponent<Props> = ({ friendId, setIsHost, setGameActive, activeChannel }) => {
+export const DMButtons: FunctionComponent<Props> = ({ friendId, setIsHost, setGameActive, setMatchRoom }) => {
 
 	const [openProfile, setOpenProfile] = useState(false);
 	const [openDialog, setOpenDialog] = useState(false)
@@ -145,7 +134,12 @@ export const DMButtons: FunctionComponent<Props> = ({ friendId, setIsHost, setGa
 	return (
 		<>
 			<Box display="flex" justifyContent="space-around" minWidth="50vw" marginTop="1vh">
-				<InviteToGame setIsHost={setIsHost} setGameActive={setGameActive} friendId={friendId} activeChannel={activeChannel}/>
+				<InviteToGame
+					setIsHost={setIsHost}
+					setGameActive={setGameActive}
+					friendId={friendId}
+					setMatchRoom={setMatchRoom}
+				/>
 				<BlockUser setOpenDialog={setOpenDialog}/>
 				<GoToProfile setOpenCard={setOpenProfile}/>
 			</Box>
