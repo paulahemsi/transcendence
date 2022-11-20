@@ -4,7 +4,7 @@ import ChannelsList from "./ChannelsList";
 import ChatAuxiliaryButton from "./ChatAuxiliaryButton";
 import ChatButton from "./ChatButton";
 import axios from 'axios';
-import { authToken, booleanSetState, getIdFromToken, numberSetState, objectSetState } from "../../utils/constants";
+import { booleanSetState, getAuthToken, getIdFromToken, numberSetState, objectSetState } from "../../utils/constants";
 
 interface Props {
 	setChannelsAdminPanel: booleanSetState;
@@ -24,6 +24,7 @@ export const ControlPanel : FunctionComponent<Props> = ({ setChannelsAdminPanel,
 	const requestGroupsData = async () => {
 
 		const userId = getIdFromToken();
+		const authToken = getAuthToken();
 		await axios.get(`http://localhost:3000/users/${userId}/channels`, { headers: authToken }).then((response) => {
 			setGroupsData(response.data);
 			setLoading(false);

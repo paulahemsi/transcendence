@@ -17,7 +17,10 @@ export function getIdFromToken() {
 	return tokenData.id;
 }
 
-export const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+export function getAuthToken() {
+	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+	return authToken; 
+}
 
 export const DEFAULT_TOAST_MSG = "ooops, something went wrong";
 

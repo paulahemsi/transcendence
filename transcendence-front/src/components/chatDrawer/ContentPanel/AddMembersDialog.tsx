@@ -3,7 +3,7 @@ import { Button, DialogActions, DialogContent, DialogTitle, TextField } from "@m
 import axios from 'axios';
 import UsersList from "../ControlPanel/UsersList";
 import ErrorToast from "../../utils/ErrorToast";
-import { authToken, booleanSetState, DEFAULT_TOAST_MSG, getIdFromToken, objectSetState } from "../../utils/constants";
+import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken, objectSetState } from "../../utils/constants";
 
 interface Props {
 	channelData: {[key: string]: any};
@@ -38,6 +38,7 @@ export const AddMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 
 	const requestUsersData = async () => {
 		const userId = getIdFromToken();
+		const authToken = getAuthToken();
 		await axios.get("http://localhost:3000/users/", { headers: authToken }).then((response: {[key: string]: any}) => {
 			setState({ users: response.data });
 			var usersName: Array<string> = [];
@@ -70,6 +71,7 @@ export const AddMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 			return;
 		}
 		
+		const authToken = getAuthToken();
 		axios.patch(`http://localhost:3000/channels/${channelData.id}/members`, {
 			"userId": selectedUser[0].id,
 		}, { headers: authToken }).then( () => {
