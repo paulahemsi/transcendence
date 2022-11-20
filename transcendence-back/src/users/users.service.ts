@@ -58,7 +58,6 @@ export class UsersService {
       email: user.email,
       external_id: user.external_id,
       image_url: user.image_url,
-      rating: user.rating,
       status: user.status,
       hasTwoFactorAuth: user.hasTwoFactorAuth,
     };
@@ -81,13 +80,12 @@ export class UsersService {
   }
 
   async getUserProfile(id: string) {
-    const { username, rating, status, image_url } = await this.findUser(id);
+    const { username,status, image_url } = await this.findUser(id);
 
     const profile = {
       name: username,
       image_url: image_url,
       status: status,
-      rating: rating,
       matchHistory: await this.matchHistoryService.buildMatchHistory(id),
     };
 
@@ -115,7 +113,6 @@ export class UsersService {
       email: userInfo.email,
       external_id: userInfo.external_id,
       image_url: image,
-      rating: 0,
     });
     return this.userRepository.save(newUser);
   }

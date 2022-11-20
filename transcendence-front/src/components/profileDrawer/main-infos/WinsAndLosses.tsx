@@ -27,10 +27,10 @@ export const WinsAndLosses = ({ matchHistory } : { matchHistory : Array<matchInf
 
 	return (
 		<Box display='flex' flexDirection='column' justifyContent='center'>
-			<Typography alignSelf='flex-end' sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '3vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
+			<Typography alignSelf='flex-beging' sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '3vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
 				wins: {wins}
 			</Typography>
-			<Typography alignSelf='flex-end' sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '3vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
+			<Typography alignSelf='flex-beging' sx={{ color: '#1E1E1E', fontFamily: 'Orbitron', fontWeight: 600, fontSize: '3vh', paddingLeft: '1.7vh', paddingRight: '1.7vh'}}>
 				losses: {losses}
 			</Typography>
 		</Box>
