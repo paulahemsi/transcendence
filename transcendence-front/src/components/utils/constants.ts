@@ -23,6 +23,8 @@ export function getAuthToken() {
 }
 
 export const DEFAULT_TOAST_MSG = "ooops, something went wrong";
+export const STANDARD = 0;
+export const UNICORN = 1;
 
 export const LIST_CSS = { 
 	width: '100%',  height: '64vh', position: 'relative', overflow: 'auto',   overflowY: "auto",

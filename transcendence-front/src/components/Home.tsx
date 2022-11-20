@@ -49,12 +49,14 @@ const Matchmaker = ({
 	userId,
 	setIsHost,
 	setMatchRoom,
+	setStandardMode,
 } : {
 	setGameActive: booleanSetState, 
 	setOpenDialog: booleanSetState,
 	userId: string,
 	setIsHost: booleanSetState,
 	setMatchRoom: stringSetState,
+	setStandardMode: booleanSetState,
 }) => {
 	const [goGame, setGoGame] = useState(false);
 	const [loading, setLoading] = useState(false);
@@ -97,21 +99,27 @@ const Matchmaker = ({
 	return (
 		<>
 		<DialogTitle sx={{fontFamily: 'Orbitron'}}>
-			How do you wanna play?
+			Which pong do you wanna play?
 		</DialogTitle>
 		<DialogActions>
 		<Button
-			onClick={joinGameQueue}
+			onClick={() => {
+				setStandardMode(true)
+				joinGameQueue();
+			}}
 			sx={{fontFamily: 'Orbitron'}}
 		>
-			With someone
+			Stardard one
 		</Button>
 		<Button
 			variant="contained"
-			onClick={() => setGameActive(true)}
+			onClick={() => {
+				setStandardMode(false)
+				joinGameQueue();
+			}}
 			sx={{fontFamily: 'Orbitron'}}
 		>
-			Alone with myself
+			Unicorn one
 		</Button>
 		</DialogActions>
 		{/* <ErrorToast state={state} setState={setState}/> */}
@@ -124,11 +132,13 @@ const Background = ({
 	userId,
 	setIsHost,
 	setMatchRoom,
+	setStandardMode,
 } : {
 	setGameActive: booleanSetState,
 	userId: string,
-	setIsHost: booleanSetState
-	setMatchRoom: stringSetState
+	setIsHost: booleanSetState,
+	setMatchRoom: stringSetState,
+	setStandardMode: booleanSetState,
 }) => {
 	const [ openDialog, setOpenDialog ] = useState(false);
 
@@ -154,6 +164,7 @@ const Background = ({
 					userId={userId}
 					setIsHost={setIsHost}
 					setMatchRoom={setMatchRoom}
+					setStandardMode={setStandardMode}
 				/>
 			</Dialog>
 		</>
@@ -209,10 +220,12 @@ export const Home = ({
 	setLoggedIn,
 	setIsHost,
 	setMatchRoom,
+	setStandardMode
 } : {
 	setLoggedIn: booleanSetState,
 	setIsHost: booleanSetState,
 	setMatchRoom: stringSetState,
+	setStandardMode: booleanSetState,
 }) => {
 	const [openDrawer, setOpenDrawer] = useState(false)
 	const [openCard, setOpenCard] = useState(false)
@@ -256,6 +269,7 @@ export const Home = ({
 				userId={userId}
 				setIsHost={setIsHost}
 				setMatchRoom={setMatchRoom}
+				setStandardMode={setStandardMode}
 			  /> }
 			{ <Footer setLoggedIn={setLoggedIn}/> }
 			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>

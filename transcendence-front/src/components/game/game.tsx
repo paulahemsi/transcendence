@@ -12,6 +12,7 @@ interface Props {
 	setEndGameDisplay: React.Dispatch<React.SetStateAction<EndGameData>>
 	isHost: boolean
 	matchRoom: string
+	standardMode: boolean
 }
 
 interface Ball {
@@ -30,13 +31,14 @@ export const PhaserGame: FunctionComponent<Props> = ({
 	setEndGameDisplay,
 	isHost,
 	matchRoom,
+	standardMode,
 }) => {
 	useEffect(() =>  {
 		const gameConfig: Phaser.Types.Core.GameConfig = {
 			type: Phaser.AUTO,
 			width: window.innerWidth - 4,
 			height: window.innerHeight - 4,
-			backgroundColor: '#110931',
+			backgroundColor: standardMode ? '#110931' : '#33FFFF',
 			physics: {
 				default: 'arcade',
 				arcade: {
