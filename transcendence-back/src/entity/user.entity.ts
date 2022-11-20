@@ -37,7 +37,7 @@ export class User {
 
   @Column({
     nullable: false,
-    default: 0,
+    default: 100,
   })
   rating: number;
 
