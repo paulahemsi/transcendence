@@ -1,9 +1,8 @@
 import React, { FunctionComponent, useReducer } from "react"
 import { Button, DialogActions, DialogTitle } from "@mui/material"
 import ErrorToast from "../../../utils/ErrorToast";
-import axios, { AxiosRequestHeaders } from 'axios';
-import { authToken, booleanSetState, DEFAULT_TOAST_MSG, tokenData } from "../../../utils/constants";
-import jwt from 'jwt-decode';
+import axios from 'axios';
+import { authToken, booleanSetState, DEFAULT_TOAST_MSG, getIdFromToken } from "../../../utils/constants";
 import { chatSocket } from "../../../context/socket";
 
 interface Props {
@@ -22,8 +21,8 @@ export const BlockUserDialog : FunctionComponent<Props> = ({ setOpenDialog, frie
 	});
 
 	const handleBlock = () => {
-
-		axios.post(`http://localhost:3000/users/${tokenData.id}/block`, {
+		const userId = getIdFromToken();
+		axios.post(`http://localhost:3000/users/${userId}/block`, {
 			"id": friendId
 		}, { headers: authToken }).then( () => {
 			chatSocket.emit('refreshFriends');

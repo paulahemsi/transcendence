@@ -1,9 +1,8 @@
 import React, { FunctionComponent, useReducer } from "react"
 import { Button, Checkbox, DialogActions, DialogContent, DialogTitle, FormControlLabel, TextField } from "@mui/material"
-import axios, { AxiosRequestHeaders } from 'axios';
-import jwt from 'jwt-decode';
+import axios from 'axios';
 import ErrorToast from "../../utils/ErrorToast";
-import { authToken, booleanSetState, DEFAULT_TOAST_MSG, objectSetState, tokenData } from "../../utils/constants";
+import { authToken, booleanSetState, DEFAULT_TOAST_MSG, getIdFromToken, objectSetState } from "../../utils/constants";
 
 interface Props {
 	setOpenDialog: booleanSetState;
@@ -38,6 +37,7 @@ export const CreateChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 
 	const handleSave = () => {
 		const type = state.isPrivate ? PRIVATE : PUBLIC;
+		const userId = getIdFromToken();
 		
 		if (!state.channelName) {
 			setState({ toastError: true, toastMessage: "?!? you must choose a name" });
@@ -47,7 +47,7 @@ export const CreateChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 		axios.post(`http://localhost:3000/channels`, {
 			"name": state.channelName,
 			"type": state.password ? PROTECTED : type,
-			"owner": tokenData.id,
+			"owner": userId,
 			"password": state.password,
 		}, { headers: authToken }).then( (response) => {
 			const newGroupsData

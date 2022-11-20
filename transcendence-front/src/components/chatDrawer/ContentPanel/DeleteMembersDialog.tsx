@@ -1,10 +1,9 @@
 import React, { FunctionComponent, useEffect, useReducer } from "react"
 import { Button, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material"
-import axios, { AxiosRequestHeaders } from 'axios';
-import jwt from 'jwt-decode';
+import axios from 'axios';
 import UsersList from "../ControlPanel/UsersList";
 import ErrorToast from "../../utils/ErrorToast";
-import { authToken, booleanSetState, DEFAULT_TOAST_MSG, objectSetState, tokenData } from "../../utils/constants";
+import { authToken, booleanSetState, DEFAULT_TOAST_MSG, getIdFromToken, objectSetState } from "../../utils/constants";
 
 interface Props {
 	channelData: {[key: string]: any};
@@ -38,18 +37,19 @@ export const DeleteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 	}
 
 	const requestUsersData = async () => {
+		const userId = getIdFromToken();
 		await axios.get("http://localhost:3000/users/", { headers: authToken }).then((response: {[key: string]: any}) => {
 			setState({ users: response.data });
 			var usersName: Array<string> = [];
 			response.data.forEach((userData: {[key: string]: any}) => {
-				if (userData.id !== tokenData.id) {
+				if (userData.id !== userId) {
 					usersName.push(userData.username)
 				}
 			});
 
 			var membersName: Array<string> = [];
 			channelData.members.forEach((member: {[key: string]: any}) => {
-				if (member.id !== tokenData.id) {
+				if (member.id !== userId) {
 					membersName.push(member.name)
 				}
 			});

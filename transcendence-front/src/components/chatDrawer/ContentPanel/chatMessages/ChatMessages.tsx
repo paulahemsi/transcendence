@@ -1,9 +1,8 @@
 import React, { FunctionComponent, useEffect, useReducer, useState } from "react";
 import { TextField, Box } from "@mui/material";
-import axios, { AxiosRequestHeaders } from 'axios';
+import axios from 'axios';
 import MessagesList from "./MessagesList";
-import jwt from 'jwt-decode';
-import { arraySetState, authToken, booleanSetState, messagesBorderCSS, objectSetState, tokenData } from "../../../utils/constants";
+import { arraySetState, authToken, booleanSetState, getIdFromToken, messagesBorderCSS, objectSetState } from "../../../utils/constants";
 import DMButtons from "./DMButtons";
 import Muted from "./Muted";
 import NoMessages from "./NoMessages";
@@ -30,8 +29,9 @@ const requestMessagesFromChannel = async ( activeChannel : number , setMessagesD
 
 const requestMembersFromChannel = async ( activeChannel : number , setState : objectSetState ) =>  {
 
+	const userId = getIdFromToken();
 	await axios.get(`http://localhost:4444/channels/${activeChannel}/members`, { headers: authToken }).then((response) => {
-		const user = response.data.filter((member: {[key: string]: any}) => member.id === tokenData.id)
+		const user = response.data.filter((member: {[key: string]: any}) => member.id === userId)
 		if (user.length) {
 			setState({muted: user[0].muted});
 		}
@@ -56,13 +56,14 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 	}
 
 	const keyDownHandler = ( event :  React.KeyboardEvent<HTMLInputElement>) => {
+		const userId = getIdFromToken();
 		if (event.key === 'Enter') {
 			event.preventDefault();
 			if (!newMessage.trim()) {
 				return ;
 			}
 			const msgToSend = {
-				user: tokenData.id,
+				user: userId,
 				channel: activeChannel.toString(),
 				message: newMessage,
 			}
