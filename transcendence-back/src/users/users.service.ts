@@ -27,6 +27,9 @@ type channelInfo = {
   name: string;
 };
 
+const AVOCADO_TEMP =
+  'https://images.vexels.com/media/users/3/185791/isolated/preview/27c69d1413163918103a032d4951213e-abacate-kawaii-winking.png';
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -101,11 +104,15 @@ export class UsersService {
   }
 
   create(userInfo: Intra42UserData): Promise<User> {
+    let image = userInfo.image_url;
+    if (image == null) {
+      image = AVOCADO_TEMP;
+    }
     const newUser: User = this.userRepository.create({
       username: userInfo.username,
       email: userInfo.email,
       external_id: userInfo.external_id,
-      image_url: userInfo.image_url,
+      image_url: image,
     });
     return this.userRepository.save(newUser);
   }

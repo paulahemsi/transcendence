@@ -1,8 +1,9 @@
 import React, { FunctionComponent, useReducer } from "react";
 import { Box, DialogTitle, DialogActions, CircularProgress } from "@mui/material";
-import { chatSocket } from "../../../context/socket";
-import { booleanSetState, DEFAULT_TOAST_MSG } from "../../../utils/constants";
+import { sessionSocket } from "../../../context/socket";
+import { booleanSetState, DEFAULT_TOAST_MSG, getIdFromToken, stringSetState } from "../../../utils/constants";
 import ErrorToast from "./ErrorToast";
+import { MatchInfos, MatchInviteAnswer } from "../../../utils/match-interfaces";
 
 const GAME_DECLINED = "It seems your friend are not available now :( ";
 
@@ -10,29 +11,35 @@ interface Props {
     setGameActive: booleanSetState;
     setIsHost: booleanSetState;
     setOpenDialog: booleanSetState;
-	activeChannel: number;
+	friendId: string;
+	setMatchRoom: stringSetState;
 }
 
 const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) => {
 	return { ...state, ...newState};
 }
 
-export const AskFriend: FunctionComponent<Props> = ({ setGameActive, setIsHost, setOpenDialog, activeChannel }) => {
+export const AskFriend: FunctionComponent<Props> = ({
+	setGameActive, setIsHost, setOpenDialog, friendId, setMatchRoom
+}) => {
 	const [stateToast, setStateToast] = useReducer(reducer, {
 		toastError: false,
 		toastMessage: DEFAULT_TOAST_MSG,
 	});
 	
-	chatSocket.off('answerToGameRequest').on('answerToGameRequest', (answer) => {
-		if (answer.room != activeChannel) {
+	sessionSocket.off('answerToGameRequest').on('answerToGameRequest', (answer: MatchInviteAnswer) => {
+		const userId = getIdFromToken();
+		const matchInfos: MatchInfos = answer.matchInfos;
+		const isNotMyMatch: boolean = !(matchInfos.player1 == userId && matchInfos.player2 == friendId);
+		if (isNotMyMatch) {
 			return ;
 		}
 		if (answer.accepted) {
+			setMatchRoom(matchInfos.id);
 			setIsHost(true);
 			setGameActive(true);
 		}
 		else {
-			console.log('declined')
 			setStateToast({ toastError: true, toastMessage: GAME_DECLINED });
 		}
 	} )
