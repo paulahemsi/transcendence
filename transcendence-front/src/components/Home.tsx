@@ -5,8 +5,9 @@ import { Footer } from "./footer/Footer";
 import ChatDrawer from "./chatDrawer/ChatDrawer";
 import ProfileCard from "./profileDrawer/ProfileDrawer";
 import { Navigate } from "react-router-dom";
-import { chatSocket, sessionSocket } from "./context/socket";
+import { sessionSocket } from "./context/socket";
 import { booleanSetState, getIdFromToken, stringSetState } from "./utils/constants";
+import { MatchInfos, MatchInviteAnswer } from "./utils/match-interfaces";
 
 const startGameButton = {
 	borderRadius: 3,
@@ -29,12 +30,6 @@ const transcendenceText = {
 	color: '#FFFFFF',
 	textShadow: '0px 0px 6px #FFFFFF',
 	margin: '2vh'
-}
-
-interface MatchInfos {
-  id: string;
-  player1: string;
-  player2: string;
 }
 
 const Matchmaker = ({
@@ -154,24 +149,27 @@ const Background = ({
 	);
 }
 
-const AcceptGameInvite = ({ setIsHost, setGameActive, setOpenDialog, chatRoom} : { setIsHost: booleanSetState, setGameActive: booleanSetState, setOpenDialog: booleanSetState, chatRoom: number }) => {
+const AcceptGameInvite = ({ setIsHost, setGameActive, setOpenDialog, matchInfos} : {
+	setIsHost: booleanSetState, setGameActive: booleanSetState, setOpenDialog: booleanSetState, matchInfos: MatchInfos
+}) => {
 	
+	const userId = getIdFromToken();
 	const handleAccept = () => {
-		const answer = {
-			room: chatRoom,
+		const answer: MatchInviteAnswer = {
+			matchInfos: matchInfos,
 			accepted: true,
-		}
-		chatSocket.emit('answerToGameRequest', answer);
+		}			
+		sessionSocket.emit('answerToGameRequest', answer);
 		setIsHost(false);
 		setGameActive(true);
 	}
 	
 	const handleDecline = () => {
-		const answer = {
-			room: chatRoom,
+		const answer: MatchInviteAnswer = {
+			matchInfos: matchInfos,
 			accepted: false,
-		}
-		chatSocket.emit('answerToGameRequest', answer);
+		}			
+		sessionSocket.emit('answerToGameRequest', answer);
 		setOpenDialog(false);
 	}
 	
@@ -212,21 +210,23 @@ export const Home = ({
 	const [openCard, setOpenCard] = useState(false)
 	const [gameActive, setGameActive] = useState(false);
 	const [openDialog, setOpenDialog] = useState(false);
-	const [chatRoom, setChatRoom] = useState(0);
+	const [matchInfos, setMatchInfos] = useState({ id: '', player1: '', player2: '' });
+
 	const userId = getIdFromToken();
 
 	sessionSocket.connect()
 
-	chatSocket.off('playWithFriend').on('playWithFriend', (game) => {
-		if (game.player2 == userId) {
-			setChatRoom(game.room);
+	sessionSocket.off('playWithFriend').on('playWithFriend', (matchInfosInvite: MatchInfos) => {
+		if (matchInfosInvite.player2 == userId) {
+			setMatchInfos(matchInfosInvite);
+			setMatchRoom(matchInfosInvite.id);
 			setOpenDialog(true);
 			setTimeout(() =>{
-				const answer = {
-					room: chatRoom,
+				const answer: MatchInviteAnswer = {
+					matchInfos: matchInfosInvite,
 					accepted: false,
-				}
-				chatSocket.emit('answerToGameRequest', answer);
+				}			
+				sessionSocket.emit('answerToGameRequest', answer);
 				setOpenDialog(false);
 			}, 20000);
 		}
@@ -244,16 +244,23 @@ export const Home = ({
 		<>
 			{ <Header setOpenDrawer={setOpenDrawer} setOpenCard={setOpenCard} /> }
 			{ openCard && <ProfileCard setOpenCard={setOpenCard}  userId={userId}/> }
-			{ openDrawer && <ChatDrawer setOpenDrawer={setOpenDrawer} setIsHost={setIsHost} setGameActive={setGameActive}/> }
-			{ <Background
-				setGameActive={setGameActive}
-				userId={userId}
-				setIsHost={setIsHost}
-				setMatchRoom={setMatchRoom}
-			  /> }
+			{ openDrawer &&
+				<ChatDrawer
+					setOpenDrawer={setOpenDrawer}
+					setIsHost={setIsHost}
+					setGameActive={setGameActive}
+					setMatchRoom={setMatchRoom}
+					/> }
+			{
+				<Background
+					setGameActive={setGameActive}
+					userId={userId}
+					setIsHost={setIsHost}
+					setMatchRoom={setMatchRoom}
+			 	/> }
 			{ <Footer setLoggedIn={setLoggedIn}/> }
 			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
-				<AcceptGameInvite setIsHost={setIsHost} setGameActive={setGameActive} chatRoom={chatRoom} setOpenDialog={setOpenDialog} />
+				<AcceptGameInvite setIsHost={setIsHost} setGameActive={setGameActive} matchInfos={matchInfos} setOpenDialog={setOpenDialog} />
 			</Dialog>
 		</>
 	);

@@ -27,6 +27,11 @@ interface MatchInfos {
   player2: string;
 }
 
+export interface MatchInviteAnswer {
+  matchInfos: MatchInfos;
+  accepted: boolean;
+}
+
 @WebSocketGateway({ namespace: '/session' })
 export class SessionGateway
   implements
@@ -64,6 +69,7 @@ export class SessionGateway
       await this.connectedUsersService.create(client.id, user);
       this.setStatusOnline(user);
     } catch {
+      client.emit('error', new UnauthorizedException());
       this.disconnect(client);
     }
     this.logger.log(`Client connected: ${client.id}`);
@@ -72,8 +78,7 @@ export class SessionGateway
   async handleDisconnect(client: Socket) {
     this.connectedUsersService.delete(client.id);
     this.setStatusOffline(await client.data.user);
-    this.logger.log(`Client disconnected: ${client.id}`);
-    client.disconnect();
+    this.disconnect(client);
   }
 
   @SubscribeMessage('status')
@@ -89,17 +94,10 @@ export class SessionGateway
     };
     if (this.gameQueue.length > 0) {
       const otherPlayer = this.gameQueue.pop();
-      const match = await this.matchHistoryService.createMatch(
+      const matchInfos = await this.createMatch(
         player.userId,
         otherPlayer.userId,
       );
-      
-      const matchInfos: MatchInfos = {
-        id: match.id,
-        player1: match.player1.id,
-        player2: match.player2.id,
-      }
-      
       otherPlayer.socket.emit('joinGameQueue', matchInfos);
       player.socket.emit('joinGameQueue', matchInfos);
     } else {
@@ -107,9 +105,36 @@ export class SessionGateway
     }
   }
 
+  async createMatch(playerId1: string, playerId2: string) {
+    const match = await this.matchHistoryService.createMatch(
+      playerId1,
+      playerId2,
+    );
+
+    const matchInfos: MatchInfos = {
+      id: match.id,
+      player1: match.player1.id,
+      player2: match.player2.id,
+    };
+    return matchInfos;
+  }
+
+  @SubscribeMessage('playWithFriend')
+  async handlePlayWithFriend(client: Socket, friendId: string) {
+    const matchInfos = await this.createMatch(client.data.user.id, friendId);
+    this.server.emit('playWithFriend', matchInfos);
+  }
+
+  @SubscribeMessage('answerToGameRequest')
+  async handleAnswerGameRequest(
+    client: Socket,
+    matchInviteAnswer: MatchInviteAnswer,
+  ) {
+    this.server.emit('answerToGameRequest', matchInviteAnswer);
+  }
+
   private disconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
-    client.emit('error', new UnauthorizedException());
     client.disconnect();
   }
 
