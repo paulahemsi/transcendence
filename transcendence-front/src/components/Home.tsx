@@ -279,6 +279,7 @@ export const Home = ({
 					setIsHost={setIsHost}
 					setGameActive={setGameActive}
 					setMatchRoom={setMatchRoom}
+					setStandardMode={setStandardMode}
 					/> }
 			{ <Footer setLoggedIn={setLoggedIn}/> }
 			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
