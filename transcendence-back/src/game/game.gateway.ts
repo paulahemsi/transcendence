@@ -36,11 +36,6 @@ interface ScoreDto {
   score: Score;
 }
 
-interface Room {
-  socket: Socket;
-  id: string;
-}
-
 @WebSocketGateway({ namespace: '/game' })
 export class GameGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
