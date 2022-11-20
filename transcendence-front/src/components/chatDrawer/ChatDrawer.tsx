@@ -47,10 +47,6 @@ export const ChatDrawer : FunctionComponent<Props> = ({ setOpenDrawer, setIsHost
 		})
 	}
 
-	if (activeChannel === 0) {
-		setOpenDrawer(false);
-	}
-	
 	const getFriendId = () => {
 		if (!isDM) {
 			return ;
