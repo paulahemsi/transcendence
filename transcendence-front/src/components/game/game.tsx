@@ -104,6 +104,7 @@ export const PhaserGame: FunctionComponent<Props> = ({
 		}
 
 		function update(this: Phaser.Scene): void {
+			listenStopGame(this.scene);
 			if (isHost) {
 				updatePlayerVelocit(player1, this.input);
 				updatePlayer1Position();
@@ -115,7 +116,6 @@ export const PhaserGame: FunctionComponent<Props> = ({
 				updatePlayer2Position();
 				updateBallPositionFromSocket();
 			}
-		
 			checkEndGame(this.scene);
 		}
 
@@ -251,6 +251,19 @@ export const PhaserGame: FunctionComponent<Props> = ({
 			score = scoreFromSocket;	
 			setScore([score.player1, score.player2]);
 		} );
+	}
+
+	function listenStopGame(phaserScene: Phaser.Scenes.ScenePlugin) {
+		gameSocket.off('stopGame').on('stopGame', () => {
+			stopGame(phaserScene);
+		} );
+	}
+
+	function stopGame(phaserScene: Phaser.Scenes.ScenePlugin) {
+		phaserScene.pause();
+		setEndGameVisible(true);
+		gameSocket.emit('leaveGameRoom', matchRoom);
+		sleep(1000).then(() => {game.destroy(true);});
 	}
 
 	}, [])

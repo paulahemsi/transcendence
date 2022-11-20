@@ -36,6 +36,11 @@ interface ScoreDto {
   score: Score;
 }
 
+interface Room {
+  socket: Socket;
+  id: string;
+}
+
 @WebSocketGateway({ namespace: '/game' })
 export class GameGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
@@ -48,6 +53,7 @@ export class GameGateway
 
   @WebSocketServer()
   server: Server;
+  clientRoom: Map<string, string> = new Map();
 
   afterInit() {
     this.logger.log('Initialize');
@@ -60,31 +66,35 @@ export class GameGateway
       const user = await this.authService.validateUser(decodedToken.id);
       client.data.user = user;
     } catch {
+      client.emit('error', new UnauthorizedException());
       this.disconnect(client);
     }
     this.logger.log(`Client connected: ${client.id}`);
   }
 
   handleDisconnect(client: Socket) {
-    this.logger.log(`Client disconnected: ${client.id}`);
+    const gameRoom = this.clientRoom.get(client.id);
+    this.clientRoom.delete(client.id);
+    this.server.to(gameRoom).emit('stopGame', 'stop');
     client.disconnect();
   }
 
   private disconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
-    client.emit('error', new UnauthorizedException());
     client.disconnect();
   }
 
   @SubscribeMessage('joinGameRoom')
   handleJoinGameRoom(client: Socket, gameRoom: string) {
     client.join(gameRoom);
+    this.clientRoom.set(client.id, gameRoom);
     client.emit('joinGameRoom', gameRoom);
   }
 
   @SubscribeMessage('leaveGameRoom')
   handleLeaveGameRoom(client: Socket, gameRoom: string) {
     client.leave(gameRoom);
+    this.clientRoom.delete(client.id);
     client.emit('leaveGameRoom', gameRoom);
   }
 
