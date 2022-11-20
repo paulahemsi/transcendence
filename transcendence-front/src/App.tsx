@@ -7,7 +7,7 @@ import Home from './components/Home'
 import jwt from 'jwt-decode';
 import TwoFactorAuthCard from './components/TwoFactorAuthCard';
 import GamePage from './components/GamePage';
-import { booleanSetState, STANDARD, stringSetState } from './components/utils/constants';
+import { booleanSetState, stringSetState } from './components/utils/constants';
 
 type tokenData = {
 	id: string;
