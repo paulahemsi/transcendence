@@ -44,15 +44,11 @@ interface MatchInfos {
 }
 
 const Matchmaker = ({
-	setGameActive,
-	setOpenDialog,
 	userId,
 	setIsHost,
 	setMatchRoom,
 	setStandardMode,
 } : {
-	setGameActive: booleanSetState, 
-	setOpenDialog: booleanSetState,
 	userId: string,
 	setIsHost: booleanSetState,
 	setMatchRoom: stringSetState,
@@ -159,8 +155,6 @@ const Background = ({
 			</Box>
 			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
 				<Matchmaker
-					setOpenDialog={setOpenDialog}
-					setGameActive={setGameActive}
 					userId={userId}
 					setIsHost={setIsHost}
 					setMatchRoom={setMatchRoom}
