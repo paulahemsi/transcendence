@@ -38,7 +38,8 @@ export const PhaserGame: FunctionComponent<Props> = ({
 			type: Phaser.AUTO,
 			width: window.innerWidth - 4,
 			height: window.innerHeight - 4,
-			backgroundColor: standardMode ? '#110931' : '#33FFFF',
+			transparent: true,
+			backgroundColor:'#110931',
 			physics: {
 				default: 'arcade',
 				arcade: {

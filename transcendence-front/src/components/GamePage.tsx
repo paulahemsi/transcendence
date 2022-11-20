@@ -118,7 +118,7 @@ const GamePage:  FunctionComponent<gameProps>  = ({isHost, matchRoom, standardMo
 					{score[1]}
 				</Typography>
 			</Box>
-			<Box zIndex={9} position={'absolute'}>
+			<Box zIndex={-1000} position={'absolute'} height="100vh" width="100vw" sx={{backgroundImage: 'linear-gradient(to right, #212980 , #6f0162)'}}>
 				<PhaserGame
 					setScore={setScore}
 					setEndGameVisible={setEndGameVisible}
