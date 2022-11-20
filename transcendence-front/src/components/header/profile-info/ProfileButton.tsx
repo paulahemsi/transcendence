@@ -7,12 +7,7 @@ interface PropsProfileButton {
 	userData: { [key: string]: any; };
 }
 
-const AVOCADO_TEMP = 'https://images.vexels.com/media/users/3/185791/isolated/preview/27c69d1413163918103a032d4951213e-abacate-kawaii-winking.png'
-
 const UserImage = ({imageUrl} : {imageUrl: string}) => {
-	if (imageUrl == null) {
-		imageUrl = AVOCADO_TEMP
-	}
 	return (
 		<Box component='img' src={imageUrl} alt='Profile picture'
 				sx={{
