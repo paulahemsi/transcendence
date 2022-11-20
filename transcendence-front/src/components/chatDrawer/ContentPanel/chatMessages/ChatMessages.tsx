@@ -2,7 +2,7 @@ import React, { FunctionComponent, useEffect, useReducer, useState } from "react
 import { TextField, Box } from "@mui/material";
 import axios from 'axios';
 import MessagesList from "./MessagesList";
-import { arraySetState, authToken, booleanSetState, getIdFromToken, messagesBorderCSS, objectSetState } from "../../../utils/constants";
+import { arraySetState, booleanSetState, getAuthToken, getIdFromToken, messagesBorderCSS, objectSetState } from "../../../utils/constants";
 import DMButtons from "./DMButtons";
 import Muted from "./Muted";
 import NoMessages from "./NoMessages";
@@ -22,6 +22,7 @@ const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) =
 
 const requestMessagesFromChannel = async ( activeChannel : number , setMessagesData : arraySetState ) =>  {
 
+	const authToken = getAuthToken();
 	await axios.get(`http://localhost:4444/channels/${activeChannel}/messages`, { headers: authToken }).then((response) => {
 		setMessagesData(response.data);
 	}).catch( () => {});
@@ -30,6 +31,7 @@ const requestMessagesFromChannel = async ( activeChannel : number , setMessagesD
 const requestMembersFromChannel = async ( activeChannel : number , setState : objectSetState ) =>  {
 
 	const userId = getIdFromToken();
+	const authToken = getAuthToken();
 	await axios.get(`http://localhost:4444/channels/${activeChannel}/members`, { headers: authToken }).then((response) => {
 		const user = response.data.filter((member: {[key: string]: any}) => member.id === userId)
 		if (user.length) {

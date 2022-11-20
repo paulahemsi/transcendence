@@ -3,7 +3,7 @@ import { Button, DialogActions, DialogContent, DialogTitle, TextField } from "@m
 import axios from 'axios';
 import SearchGroupsList from "./SearchGroupsList";
 import ErrorToast from "../../utils/ErrorToast";
-import { authToken, booleanSetState, DEFAULT_TOAST_MSG, getIdFromToken, objectSetState } from "../../utils/constants";
+import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken, objectSetState } from "../../utils/constants";
 
 const PROTECTED = 'PROTECTED';
 const PUBLIC = 'PUBLIC'
@@ -31,6 +31,7 @@ const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) 
 
 export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setGroupsData }) => {
 	const userId = getIdFromToken();
+	const authToken = getAuthToken();
 	const [state, setState] = useReducer(reducer, {
 		groupsList: {},
 		loading: true,

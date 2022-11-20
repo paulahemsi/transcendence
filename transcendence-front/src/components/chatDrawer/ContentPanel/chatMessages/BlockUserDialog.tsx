@@ -2,7 +2,7 @@ import React, { FunctionComponent, useReducer } from "react"
 import { Button, DialogActions, DialogTitle } from "@mui/material"
 import ErrorToast from "../../../utils/ErrorToast";
 import axios from 'axios';
-import { authToken, booleanSetState, DEFAULT_TOAST_MSG, getIdFromToken } from "../../../utils/constants";
+import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken } from "../../../utils/constants";
 import { chatSocket } from "../../../context/socket";
 
 interface Props {
@@ -22,6 +22,7 @@ export const BlockUserDialog : FunctionComponent<Props> = ({ setOpenDialog, frie
 
 	const handleBlock = () => {
 		const userId = getIdFromToken();
+		const authToken = getAuthToken();
 		axios.post(`http://localhost:3000/users/${userId}/block`, {
 			"id": friendId
 		}, { headers: authToken }).then( () => {

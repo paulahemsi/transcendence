@@ -3,7 +3,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/
 import axios from 'axios';
 import { Box } from "@mui/system";
 import ErrorToast from "../../utils/ErrorToast";
-import { authToken, booleanSetState, DEFAULT_TOAST_MSG, getIdFromToken } from "../../utils/constants";
+import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken } from "../../utils/constants";
 
 interface Props {
     open: boolean;
@@ -41,6 +41,7 @@ export const UpdateImageDialog : FunctionComponent<Props> = ({ open, setOpen, us
 	const handleSave = async () => {
 		const formData = new FormData();
 		const userId = getIdFromToken();
+		const authToken = getAuthToken();
 	
 		if (state.selectedFile === null) return;
 		formData.append('image', state.selectedFile);

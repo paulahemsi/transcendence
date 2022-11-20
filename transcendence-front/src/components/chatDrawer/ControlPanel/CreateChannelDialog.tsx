@@ -2,7 +2,7 @@ import React, { FunctionComponent, useReducer } from "react"
 import { Button, Checkbox, DialogActions, DialogContent, DialogTitle, FormControlLabel, TextField } from "@mui/material"
 import axios from 'axios';
 import ErrorToast from "../../utils/ErrorToast";
-import { authToken, booleanSetState, DEFAULT_TOAST_MSG, getIdFromToken, objectSetState } from "../../utils/constants";
+import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken, objectSetState } from "../../utils/constants";
 
 interface Props {
 	setOpenDialog: booleanSetState;
@@ -38,6 +38,7 @@ export const CreateChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 	const handleSave = () => {
 		const type = state.isPrivate ? PRIVATE : PUBLIC;
 		const userId = getIdFromToken();
+		const authToken = getAuthToken();
 		
 		if (!state.channelName) {
 			setState({ toastError: true, toastMessage: "?!? you must choose a name" });

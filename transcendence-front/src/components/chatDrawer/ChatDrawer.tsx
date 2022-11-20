@@ -5,7 +5,7 @@ import ControlPanel from "./ControlPanel/ControlPanel";
 import ChannelsAdminPanel from "./ContentPanel/ChannelsAdminPanel";
 import axios, { AxiosRequestHeaders } from "axios";
 import { chatSocket } from "../context/socket";
-import { authToken, booleanSetState, getIdFromToken } from "../utils/constants";
+import { booleanSetState, getAuthToken, getIdFromToken } from "../utils/constants";
 
 interface Props {
     setOpenDrawer: booleanSetState;
@@ -15,7 +15,7 @@ interface Props {
 
 const requestFriendsData = async ({ setFriendsData } : { setFriendsData: React.Dispatch<React.SetStateAction<{[key: string]: any}>>}) => {
 	const userId = getIdFromToken();
-
+	const authToken = getAuthToken();
 	await axios.get(`http://localhost:3000/users/${userId}/friends`, { headers: authToken }).then((response) => {
 		setFriendsData(response.data);
 })

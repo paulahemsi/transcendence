@@ -6,11 +6,12 @@ import EditProfile from "../profile-edit/EditButton";
 import { UpdateUsernameDialog } from "../profile-edit/UpdateUsernameDialog";
 import { UpdateImageDialog } from "../profile-edit/UpdateImageDialog";
 import { ConfigTwoFactorAuthDialog } from "../profile-edit/config-two-factor-auth/ConfigTwoFactorAuthDialog";
-import { authToken, booleanSetState, getIdFromToken } from "../../utils/constants";
+import { booleanSetState, getAuthToken, getIdFromToken } from "../../utils/constants";
 
 const requestUserData = async ({ setUserData } : { setUserData: React.Dispatch<React.SetStateAction<{[key: string]: any}>>}) => {
 	
 	const userId = getIdFromToken();
+	const authToken = getAuthToken();
 	await axios.get('http://localhost:3000/users/' + userId, { headers: authToken }).then((response) => {setUserData({
 		id: response.data.id,
 		username: response.data.username,

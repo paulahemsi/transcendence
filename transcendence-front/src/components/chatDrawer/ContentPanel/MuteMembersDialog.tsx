@@ -3,7 +3,7 @@ import { Button, DialogActions, DialogContent, DialogTitle, FormControl, FormCon
 import axios from 'axios';
 import UsersList from "../ControlPanel/UsersList";
 import ErrorToast from "../../utils/ErrorToast";
-import { authToken, booleanSetState, DEFAULT_TOAST_MSG, getIdFromToken, objectSetState } from "../../utils/constants";
+import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken, objectSetState } from "../../utils/constants";
 import { chatSocket } from "../../context/socket";
 
 interface Props {
@@ -89,6 +89,7 @@ export const MuteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, ch
 
 	const requestUsersData = async () => {
 		const userId = getIdFromToken();
+		const authToken = getAuthToken();
 		await axios.get("http://localhost:3000/users/", { headers: authToken }).then((response: {[key: string]: any}) => {
 			setState({ users: response.data });
 			var usersName: Array<string> = [];
