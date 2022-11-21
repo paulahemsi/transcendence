@@ -12,7 +12,6 @@ import { Socket, Server } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
 import { ConnnectedUsersService } from 'src/connected-users/connected-users.service';
 import { User } from 'src/entity';
-import { status } from 'src/entity/user.entity';
 import { MatchHistoryService } from 'src/match-history/match-history.service';
 import { UsersService } from 'src/users/users.service';
 
@@ -144,8 +143,9 @@ export class SessionGateway
   }
 
   async setStatusOnline(user: User) {
-    this.usersService.setStatusOnline(user.id);
-    this.server.emit('refreshFriends');
+    this.usersService
+      .setStatusOnline(user.id)
+      .then(() => this.server.emit('refreshFriends'));
   }
 
   private async setStatusOffline(user: User) {
@@ -155,12 +155,14 @@ export class SessionGateway
     if (await this.connectedUsersService.hasConnections(user)) {
       return;
     }
-    this.usersService.setStatusOffline(user.id);
-    setTimeout(() => this.server.emit('refreshFriends'), 100);
+    this.usersService
+      .setStatusOffline(user.id)
+      .then(() => this.server.emit('refreshFriends'));
   }
 
   async setStatusInGame(user: User) {
-    this.usersService.setStatusInGame(user.id);
-    setTimeout(() => this.server.emit('refreshFriends'), 100);
+    this.usersService
+      .setStatusInGame(user.id)
+      .then(() => this.server.emit('refreshFriends'));
   }
 }

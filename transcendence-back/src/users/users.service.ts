@@ -176,19 +176,19 @@ export class UsersService {
   private async setStatus(id: string, status: status) {
     const user = await this.checkUser(id);
     user.status = status;
-    this.userRepository.save(user);
+    return this.userRepository.save(user);
   }
 
-  setStatusOnline(id: string) {
-    this.setStatus(id, status.ONLINE);
+  async setStatusOnline(id: string) {
+    return this.setStatus(id, status.ONLINE);
   }
 
-  setStatusOffline(id: string) {
-    this.setStatus(id, status.OFFLINE);
+  async setStatusOffline(id: string) {
+    return this.setStatus(id, status.OFFLINE);
   }
 
-  setStatusInGame(id: string) {
-    this.setStatus(id, status.IN_GAME);
+  async setStatusInGame(id: string) {
+    return this.setStatus(id, status.IN_GAME);
   }
 
   async getStatus(id: string) {
