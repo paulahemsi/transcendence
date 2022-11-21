@@ -1,6 +1,7 @@
 import React, { FunctionComponent } from "react";
-import { Box, Button, List, ListItem, Typography } from "@mui/material";
+import { Box, Button, List, ListItem, Tooltip, Typography, Zoom } from "@mui/material";
 import FriendsInfo from "./FriendsInfo";
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { booleanSetState, LIST_CSS, numberSetState, typographyCSS } from "../../utils/constants";
 
 interface Props {
@@ -46,6 +47,23 @@ const NoFriends = () => {
 	)
 }
 
+const WatchGame = () => {
+	const handleClick = () => {
+		console.log("quero assisir esse jogo (:");
+	};
+
+	return (
+		<Tooltip title='watch game' placement='right' arrow TransitionComponent={Zoom}>
+			<VisibilityIcon
+				fontSize="large"
+				sx={{ alignSelf: 'center', color: '#9575CD', marginRight: '25px'}}
+				onClick={handleClick}
+			>
+			</VisibilityIcon>
+		</Tooltip>
+	)
+}
+
 export const FriendsList : FunctionComponent<Props> = ({ friendsData, setExtraContent, setActiveChannel, activeChannel, setChannelsAdminPanel }) => {
 	
 	const friends = [] as JSX.Element[];
@@ -64,6 +82,12 @@ export const FriendsList : FunctionComponent<Props> = ({ friendsData, setExtraCo
 				<Button sx={friendsCSS(isActiveGroup)} onClick={handleClick}>
 					<FriendsInfo userData={element}/>
 				</Button>
+				{
+					element.status === 'in_game' &&
+					<Box padding='1vh'>
+						<WatchGame />
+					</Box>
+				}
 			</ListItem>);
 		})
 	}
