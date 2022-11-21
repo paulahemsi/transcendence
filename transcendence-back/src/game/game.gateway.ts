@@ -129,4 +129,10 @@ export class GameGateway
       scoreDto.score.player2,
     );
   }
+
+  @SubscribeMessage('watchGame')
+  handleWatchGame(client: Socket, friendId: string) {
+    const gameRoom = this.userRoom.get(friendId);
+    client.emit('watchGame', gameRoom);
+  }
 }
