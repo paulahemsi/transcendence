@@ -84,9 +84,15 @@ export const PhaserGame: FunctionComponent<Props> = ({
 		function create(this: Phaser.Scene): void {
 			gameSocket.connect();
 			gameSocket.emit('joinGameRoom', matchRoom);
-			player1 = this.physics.add.sprite(screenWidth * 0.1, screenHeight * 0.5, 'pad');
-			player2 = this.physics.add.sprite(screenWidth * 0.9, screenHeight * 0.5, 'pad');
-			ball = this.physics.add.sprite(this.sys.canvas.width / 2, this.sys.canvas.height / 2, 'ball').setSize(30, 30);
+			player1 = this.physics.add.sprite(screenWidth * 0.1, screenHeight * 0.5, 'pad').setSize(screenWidth * 0.045, screenHeight * 0.325);
+			player1.displayWidth = screenWidth * 0.05;
+			player1.displayHeight = screenHeight * 0.35;
+			player2 = this.physics.add.sprite(screenWidth * 0.9, screenHeight * 0.5, 'pad').setSize(screenWidth * 0.045, screenHeight * 0.325);
+			player2.displayWidth = screenWidth * 0.05;
+			player2.displayHeight = screenHeight * 0.35;
+			ball = this.physics.add.sprite(this.sys.canvas.width / 2, this.sys.canvas.height / 2, 'ball').setSize(15, 15);
+			ball.displayWidth = screenWidth * 0.075;
+			ball.displayHeight = ball.displayWidth;
 			rightGoal = this.physics.add.sprite(screenWidth, screenHeight * 0.5, 'pad').setSize(screenWidth * 0.01, screenHeight).setVisible(false);
 			leftGoal = this.physics.add.sprite(1, screenHeight * 0.5, 'pad').setSize(screenWidth * 0.01, screenHeight).setVisible(false);
 
