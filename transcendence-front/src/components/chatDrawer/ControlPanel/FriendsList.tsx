@@ -47,9 +47,10 @@ const NoFriends = () => {
 	)
 }
 
-const WatchGame = () => {
+const WatchGame = ({ friendId } : { friendId: string }) => {
 	const handleClick = () => {
 		console.log("quero assisir esse jogo (:");
+		console.log(friendId);
 	};
 
 	return (
@@ -85,7 +86,7 @@ export const FriendsList : FunctionComponent<Props> = ({ friendsData, setExtraCo
 				{
 					element.status === 'in_game' &&
 					<Box padding='1vh'>
-						<WatchGame />
+						<WatchGame friendId={element.id}/>
 					</Box>
 				}
 			</ListItem>);
