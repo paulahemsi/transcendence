@@ -1,10 +1,8 @@
 import Phaser from 'phaser';
 import React, { FunctionComponent } from 'react'
-import io from 'socket.io-client';
 import { useEffect } from 'react';
+import { gameSocket } from '../context/socket';
 import { EndGameData } from '../GamePage';
-
-const gameSocket = io('/game');
 
 interface Props {
 	setScore: React.Dispatch<React.SetStateAction<number[]>>
