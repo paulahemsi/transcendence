@@ -51,6 +51,7 @@ export class GameGateway
   @WebSocketServer()
   server: Server;
   clientRoom: Map<string, string> = new Map();
+  userRoom: Map<string, string> = new Map();
 
   afterInit() {
     this.logger.log('Initialize');
@@ -72,6 +73,7 @@ export class GameGateway
   handleDisconnect(client: Socket) {
     const gameRoom = this.clientRoom.get(client.id);
     this.clientRoom.delete(client.id);
+    this.userRoom.delete(client.data.user.id);
     this.server.to(gameRoom).emit('stopGame', 'stop');
     client.disconnect();
   }
@@ -85,6 +87,7 @@ export class GameGateway
   handleJoinGameRoom(client: Socket, gameRoom: string) {
     client.join(gameRoom);
     this.clientRoom.set(client.id, gameRoom);
+    this.userRoom.set(client.data.user.id, gameRoom);
     this.sessionGateway.setStatusInGame(client.data.user);
     client.emit('joinGameRoom', gameRoom);
   }
@@ -93,6 +96,7 @@ export class GameGateway
   handleLeaveGameRoom(client: Socket, gameRoom: string) {
     client.leave(gameRoom);
     this.clientRoom.delete(client.id);
+    this.userRoom.delete(client.data.user.id);
     this.sessionGateway.setStatusOnline(client.data.user);
     client.emit('leaveGameRoom', gameRoom);
   }
