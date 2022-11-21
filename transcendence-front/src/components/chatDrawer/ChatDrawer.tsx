@@ -12,6 +12,7 @@ interface Props {
 	setIsHost: booleanSetState;
 	setGameActive: booleanSetState;
 	setMatchRoom: stringSetState;
+	setStandardMode: booleanSetState;
 }
 
 const requestFriendsData = async ({ setFriendsData } : { setFriendsData: React.Dispatch<React.SetStateAction<{[key: string]: any}>>}) => {
@@ -22,7 +23,7 @@ const requestFriendsData = async ({ setFriendsData } : { setFriendsData: React.D
 })
 }
 
-export const ChatDrawer : FunctionComponent<Props> = ({ setOpenDrawer, setIsHost, setGameActive, setMatchRoom }) => {
+export const ChatDrawer : FunctionComponent<Props> = ({ setOpenDrawer, setIsHost, setGameActive, setMatchRoom, setStandardMode }) => {
 	const [friendsData, setFriendsData] = useState<{[key: string]: any}>({});
 	const [extraContent, setExtraContent] = useState(false);
 	const [channelsAdminPanel, setChannelsAdminPanel] = useState(false);
@@ -83,6 +84,7 @@ export const ChatDrawer : FunctionComponent<Props> = ({ setOpenDrawer, setIsHost
 							setIsHost={setIsHost}
 							setGameActive={setGameActive}
 							setMatchRoom={setMatchRoom}
+							setStandardMode={setStandardMode}
 						/>
 					}
 					{

@@ -15,6 +15,7 @@ interface ChatMessageProps {
 	setIsHost: booleanSetState;
 	setGameActive: booleanSetState;
 	setMatchRoom: stringSetState;
+	setStandardMode: booleanSetState;
 }
 
 const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) => {
@@ -111,8 +112,7 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 }
 
 export const ChatMessages: FunctionComponent<ChatMessageProps> = ({
-	activeChannel, isDM, friendId, setIsHost, setGameActive, setMatchRoom
-}) => {
+	activeChannel, isDM, friendId, setIsHost, setGameActive, setMatchRoom, setStandardMode}) => {
 	const [state, setState] = useReducer(reducer, {
 		joined: false,
 		muted: false,
@@ -153,6 +153,7 @@ export const ChatMessages: FunctionComponent<ChatMessageProps> = ({
 					setIsHost={setIsHost}
 					setGameActive={setGameActive}
 					setMatchRoom={setMatchRoom}
+					setStandardMode={setStandardMode}
 				/>
 			}
 			{

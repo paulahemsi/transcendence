@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from "react";
-import { Box, Typography, Button, Dialog } from "@mui/material";
+import { Box, Typography, Button, Dialog, DialogTitle, DialogActions } from "@mui/material";
 import ProfileCard from "../../../profileDrawer/ProfileDrawer";
 import BlockUserDialog from "./BlockUserDialog";
 import { sessionSocket } from "../../../context/socket";
@@ -36,6 +36,7 @@ interface Props {
     setIsHost: booleanSetState;
 	friendId: string;
 	setMatchRoom: stringSetState;
+	setStandardMode: booleanSetState;
 }
 
 interface inviteProps {
@@ -43,18 +44,59 @@ interface inviteProps {
     setIsHost: booleanSetState;
 	friendId: string;
 	setMatchRoom: stringSetState;
+	setStandardMode: booleanSetState;
 }
 
-const InviteToGame: FunctionComponent<inviteProps> = ({ setIsHost, setGameActive, friendId, setMatchRoom }) => {
+const ChooseGameMode = ({setStandardMode, setOpenWaitingDialog, setOpenDialog, friendId } : {setStandardMode: booleanSetState, setOpenWaitingDialog: booleanSetState, setOpenDialog: booleanSetState, friendId: string}) => {
+	const invite = () => {
+		sessionSocket.emit('playWithFriend', friendId);
+		setOpenWaitingDialog(true);
+		setOpenDialog(false);
+	}
+	
+	return (
+		<>
+			<DialogTitle sx={{fontFamily: 'Orbitron'}}>
+				Which pong do you wanna play?
+			</DialogTitle>
+			<DialogActions>
+			<Button
+				onClick={() => {
+					setStandardMode(true)
+					invite();
+				}}
+				sx={{fontFamily: 'Orbitron'}}
+			>
+				Stardard one
+			</Button>
+			<Button
+				variant="contained"
+				onClick={() => {
+					setStandardMode(false)
+					invite();
+				}}
+				sx={{fontFamily: 'Orbitron'}}
+			>
+				Unicorn one
+			</Button>
+			</DialogActions>
+		</>
+	)
+}
+const InviteToGame: FunctionComponent<inviteProps> = ({ setIsHost, setGameActive, friendId, setMatchRoom, setStandardMode }) => {
 	const [ openDialog, setOpenDialog] = useState(false);
+	const [ openWaitingDialog, setOpenWaitingDialog] = useState(false);
 	
 	const handleClick = () => {
-		sessionSocket.emit('playWithFriend', friendId);
 		setOpenDialog(true);
 	}
 	
 	const handleClose = () => {
 		setOpenDialog(false);
+	}
+	
+	const handleCloseWaiting = () => {
+		setOpenWaitingDialog(false);
 	}
 
 	return (
@@ -70,10 +112,18 @@ const InviteToGame: FunctionComponent<inviteProps> = ({ setIsHost, setGameActive
 				</Typography>
 			</Button>
 			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
+				<ChooseGameMode
+					setOpenWaitingDialog={setOpenWaitingDialog}
+					setStandardMode={setStandardMode}
+					setOpenDialog={setOpenDialog}
+					friendId={friendId}
+				/>
+			</Dialog>
+			<Dialog open={openWaitingDialog} fullWidth maxWidth="sm" onClose={handleCloseWaiting}>
 				<AskFriend
 					setGameActive={setGameActive}
 					setIsHost={setIsHost}
-					setOpenDialog={setOpenDialog}
+					setOpenDialog={setOpenWaitingDialog}
 					friendId={friendId}
 					setMatchRoom={setMatchRoom}
 				/>
@@ -122,7 +172,7 @@ const GoToProfile = ({ setOpenCard } : { setOpenCard: booleanSetState }) => {
 	)
 }
 
-export const DMButtons: FunctionComponent<Props> = ({ friendId, setIsHost, setGameActive, setMatchRoom }) => {
+export const DMButtons: FunctionComponent<Props> = ({ friendId, setIsHost, setGameActive, setMatchRoom, setStandardMode }) => {
 
 	const [openProfile, setOpenProfile] = useState(false);
 	const [openDialog, setOpenDialog] = useState(false)
@@ -139,6 +189,7 @@ export const DMButtons: FunctionComponent<Props> = ({ friendId, setIsHost, setGa
 					setGameActive={setGameActive}
 					friendId={friendId}
 					setMatchRoom={setMatchRoom}
+					setStandardMode={setStandardMode}
 				/>
 				<BlockUser setOpenDialog={setOpenDialog}/>
 				<GoToProfile setOpenCard={setOpenProfile}/>
