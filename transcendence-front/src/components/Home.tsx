@@ -7,7 +7,7 @@ import ProfileCard from "./profileDrawer/ProfileDrawer";
 import { Navigate } from "react-router-dom";
 import { sessionSocket } from "./context/socket";
 import { booleanSetState, getIdFromToken, stringSetState } from "./utils/constants";
-import { MatchInfos, MatchInviteAnswer } from "./utils/match-interfaces";
+import { MatchInfos, MatchInviteAnswer, matchInfosSetState } from "./utils/match-interfaces";
 
 const startGameButton = {
 	borderRadius: 3,
@@ -217,6 +217,29 @@ const AcceptGameInvite = ({ setIsHost, setGameActive, setOpenDialog, matchInfos,
 	)
 }
 
+function listenPlayWithFriend(
+	userId: string,
+	setMatchInfos: matchInfosSetState,
+	setMatchRoom: stringSetState,
+	setOpenDialog: booleanSetState,
+	) {
+	sessionSocket.off('playWithFriend').on('playWithFriend', (matchInfosInvite: MatchInfos) => {
+		if (matchInfosInvite.player2 == userId) {
+			setMatchInfos(matchInfosInvite);
+			setMatchRoom(matchInfosInvite.id);
+			setOpenDialog(true);
+			setTimeout(() =>{
+				const answer: MatchInviteAnswer = {
+					matchInfos: matchInfosInvite,
+					accepted: false,
+				}
+				sessionSocket.emit('answerToGameRequest', answer);
+				setOpenDialog(false);
+			}, 20000);
+		}
+	} )
+}
+
 export const Home = ({
 	setLoggedIn,
 	setIsHost,
@@ -238,21 +261,7 @@ export const Home = ({
 
 	sessionSocket.connect()
 
-	sessionSocket.off('playWithFriend').on('playWithFriend', (matchInfosInvite: MatchInfos) => {
-		if (matchInfosInvite.player2 == userId) {
-			setMatchInfos(matchInfosInvite);
-			setMatchRoom(matchInfosInvite.id);
-			setOpenDialog(true);
-			setTimeout(() =>{
-				const answer: MatchInviteAnswer = {
-					matchInfos: matchInfosInvite,
-					accepted: false,
-				}			
-				sessionSocket.emit('answerToGameRequest', answer);
-				setOpenDialog(false);
-			}, 20000);
-		}
-	} )
+	listenPlayWithFriend(userId, setMatchInfos, setMatchRoom, setOpenDialog);
 
 	if (gameActive) {
 		return (<Navigate to='/game'/>)
