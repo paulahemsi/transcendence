@@ -5,7 +5,7 @@ import { Footer } from "./footer/Footer";
 import ChatDrawer from "./chatDrawer/ChatDrawer";
 import ProfileCard from "./profileDrawer/ProfileDrawer";
 import { Navigate } from "react-router-dom";
-import { sessionSocket } from "./context/socket";
+import { gameSocket, sessionSocket } from "./context/socket";
 import { booleanSetState, getIdFromToken, stringSetState } from "./utils/constants";
 import { MatchInfos, MatchInviteAnswer, matchInfosSetState } from "./utils/match-interfaces";
 
@@ -240,6 +240,13 @@ function listenPlayWithFriend(
 	} )
 }
 
+function listenWatchGame(setMatchRoom: stringSetState, setGameActive: booleanSetState) {
+	gameSocket.off('watchGame').on('watchGame', (gameRoom: string) => {
+		setMatchRoom(gameRoom);
+		setGameActive(true);
+	})
+}
+
 export const Home = ({
 	setLoggedIn,
 	setIsHost,
@@ -262,6 +269,7 @@ export const Home = ({
 	sessionSocket.connect()
 
 	listenPlayWithFriend(userId, setMatchInfos, setMatchRoom, setOpenDialog);
+	listenWatchGame(setMatchRoom, setGameActive);
 
 	if (gameActive) {
 		return (<Navigate to='/game'/>)

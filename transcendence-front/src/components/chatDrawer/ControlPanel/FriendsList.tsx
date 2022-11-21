@@ -3,6 +3,7 @@ import { Box, Button, List, ListItem, Tooltip, Typography, Zoom } from "@mui/mat
 import FriendsInfo from "./FriendsInfo";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { booleanSetState, LIST_CSS, numberSetState, typographyCSS } from "../../utils/constants";
+import { gameSocket } from "../../context/socket";
 
 interface Props {
     friendsData: {[key: string]: any};
@@ -51,6 +52,7 @@ const WatchGame = ({ friendId } : { friendId: string }) => {
 	const handleClick = () => {
 		console.log("quero assisir esse jogo (:");
 		console.log(friendId);
+		gameSocket.emit('watchGame', friendId);
 	};
 
 	return (
