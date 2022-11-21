@@ -143,12 +143,9 @@ export class SessionGateway
     client.disconnect();
   }
 
-  private async setStatusOnline(user: User) {
-    await this.usersService.getStatus(user.id);
-    if (user.status == status.OFFLINE) {
-      this.usersService.setStatusOnline(user.id);
-      this.server.emit('refreshFriends');
-    }
+  async setStatusOnline(user: User) {
+    this.usersService.setStatusOnline(user.id);
+    this.server.emit('refreshFriends');
   }
 
   private async setStatusOffline(user: User) {
@@ -159,6 +156,11 @@ export class SessionGateway
       return;
     }
     this.usersService.setStatusOffline(user.id);
-    this.server.emit('refreshFriends');
+    setTimeout(() => this.server.emit('refreshFriends'), 100);
+  }
+
+  async setStatusInGame(user: User) {
+    this.usersService.setStatusInGame(user.id);
+    setTimeout(() => this.server.emit('refreshFriends'), 100);
   }
 }

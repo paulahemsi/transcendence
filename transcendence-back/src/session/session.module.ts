@@ -8,5 +8,6 @@ import { SessionGateway } from './session.gateway';
 @Module({
   imports: [AuthModule, ConnectedUsersModule, UsersModule, MatchHistoryModule],
   providers: [SessionGateway],
+  exports: [SessionGateway],
 })
 export class SessionModule {}
