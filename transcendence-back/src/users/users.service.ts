@@ -80,7 +80,7 @@ export class UsersService {
   }
 
   async getUserProfile(id: string) {
-    const { username,status, image_url } = await this.findUser(id);
+    const { username, status, image_url } = await this.findUser(id);
 
     const profile = {
       name: username,
@@ -176,15 +176,19 @@ export class UsersService {
   private async setStatus(id: string, status: status) {
     const user = await this.checkUser(id);
     user.status = status;
-    this.userRepository.save(user);
+    return this.userRepository.save(user);
   }
 
-  setStatusOnline(id: string) {
-    this.setStatus(id, status.ONLINE);
+  async setStatusOnline(id: string) {
+    return this.setStatus(id, status.ONLINE);
   }
 
-  setStatusOffline(id: string) {
-    this.setStatus(id, status.OFFLINE);
+  async setStatusOffline(id: string) {
+    return this.setStatus(id, status.OFFLINE);
+  }
+
+  async setStatusInGame(id: string) {
+    return this.setStatus(id, status.IN_GAME);
   }
 
   async getStatus(id: string) {

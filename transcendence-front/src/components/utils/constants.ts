@@ -63,3 +63,15 @@ export const messagesBorderCSS = {
 	borderRadius: 3,
 	boxShadow: 5
 }
+
+export const defineColor = (status: string) => {
+	switch( status ) {
+		case 'online':
+			return '#4CAF50';
+		case 'offline':
+			return '#1E1E1E';
+		case 'in_game':
+			return '#9575CD';
+		default: return '#FF0000';
+	}
+}

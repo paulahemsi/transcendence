@@ -10,6 +10,7 @@ import {
 import { Socket, Server } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
 import { MatchHistoryService } from 'src/match-history/match-history.service';
+import { SessionGateway } from 'src/session/session.gateway';
 
 interface Ball {
   x: number;
@@ -43,6 +44,7 @@ export class GameGateway
   constructor(
     private readonly authService: AuthService,
     private readonly matchHistoryService: MatchHistoryService,
+    private readonly sessionGateway: SessionGateway,
   ) {}
   private logger: Logger = new Logger('GameGateway');
 
@@ -83,6 +85,7 @@ export class GameGateway
   handleJoinGameRoom(client: Socket, gameRoom: string) {
     client.join(gameRoom);
     this.clientRoom.set(client.id, gameRoom);
+    this.sessionGateway.setStatusInGame(client.data.user);
     client.emit('joinGameRoom', gameRoom);
   }
 
@@ -90,6 +93,7 @@ export class GameGateway
   handleLeaveGameRoom(client: Socket, gameRoom: string) {
     client.leave(gameRoom);
     this.clientRoom.delete(client.id);
+    this.sessionGateway.setStatusOnline(client.data.user);
     client.emit('leaveGameRoom', gameRoom);
   }
 
