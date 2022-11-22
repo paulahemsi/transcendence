@@ -83,11 +83,8 @@ export const PhaserGame: FunctionComponent<Props> = ({
 
 		function create(this: Phaser.Scene): void {
 			gameSocket.connect();
-			if (isSpectator) {
-				gameSocket.emit('joinGameRoomAsSpectator', matchRoom);
-			} else {
-				gameSocket.emit('joinGameRoom', matchRoom);
-			}
+			joinGameRoom();
+
 			player1 = this.physics.add.sprite(screenWidth * 0.1, screenHeight * 0.5, 'pad').setSize(screenWidth * 0.045, screenHeight * 0.325);
 			player1.displayWidth = screenWidth * 0.05;
 			player1.displayHeight = screenHeight * 0.35;
@@ -202,16 +199,26 @@ export const PhaserGame: FunctionComponent<Props> = ({
 					winner: winningPlayer,
 				})
 				setEndGameVisible(true);
-				if (isSpectator) {
-					gameSocket.emit('leaveGameRoomAsSpectator', matchRoom);
-				} else {
-					gameSocket.emit('leaveGameRoom', matchRoom);
-				}
+				leaveGameRoom();
 				if (isHost) {
 					gameSocket.emit('computeMatch', { room: matchRoom, score: score } );
 				}
 				sleep(1000).then(() => {game.destroy(true);});
 			}
+		}
+
+		function joinGameRoom() {
+			if (isSpectator) {
+				return gameSocket.emit('joinGameRoomAsSpectator', matchRoom);
+			}
+			return gameSocket.emit('joinGameRoom', matchRoom);
+		}
+
+		function leaveGameRoom() {
+			if (isSpectator) {
+				return gameSocket.emit('leaveGameRoomAsSpectator', matchRoom);
+			}
+			gameSocket.emit('leaveGameRoom', matchRoom);
 		}
 
 	function HandleCollision(this: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody) : void {
