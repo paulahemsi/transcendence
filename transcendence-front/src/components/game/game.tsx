@@ -1,16 +1,15 @@
 import Phaser from 'phaser';
 import React, { FunctionComponent } from 'react'
-import io from 'socket.io-client';
 import { useEffect } from 'react';
+import { gameSocket } from '../context/socket';
 import { EndGameData } from '../GamePage';
-
-const gameSocket = io('/game');
 
 interface Props {
 	setScore: React.Dispatch<React.SetStateAction<number[]>>
 	setEndGameVisible: React.Dispatch<React.SetStateAction<boolean>>
 	setEndGameDisplay: React.Dispatch<React.SetStateAction<EndGameData>>
 	isHost: boolean
+	isSpectator: boolean
 	matchRoom: string
 	standardMode: boolean
 }
@@ -30,6 +29,7 @@ export const PhaserGame: FunctionComponent<Props> = ({
 	setEndGameVisible,
 	setEndGameDisplay,
 	isHost,
+	isSpectator,
 	matchRoom,
 	standardMode,
 }) => {
@@ -83,7 +83,8 @@ export const PhaserGame: FunctionComponent<Props> = ({
 
 		function create(this: Phaser.Scene): void {
 			gameSocket.connect();
-			gameSocket.emit('joinGameRoom', matchRoom);
+			joinGameRoom();
+
 			player1 = this.physics.add.sprite(screenWidth * 0.1, screenHeight * 0.5, 'pad').setSize(screenWidth * 0.045, screenHeight * 0.325);
 			player1.displayWidth = screenWidth * 0.05;
 			player1.displayHeight = screenHeight * 0.35;
@@ -114,7 +115,11 @@ export const PhaserGame: FunctionComponent<Props> = ({
 
 		function update(this: Phaser.Scene): void {
 			listenStopGame(this.scene);
-			if (isHost) {
+			if (isSpectator) {
+				updatePlayer1PositionFromSocket();
+				updatePlayer2PositionFromSocket();
+				updateBallPositionFromSocket();
+			} else if (isHost) {
 				updatePlayerVelocit(player1, this.input);
 				updatePlayer1Position();
 				updatePlayer2PositionFromSocket();
@@ -194,12 +199,26 @@ export const PhaserGame: FunctionComponent<Props> = ({
 					winner: winningPlayer,
 				})
 				setEndGameVisible(true);
-				gameSocket.emit('leaveGameRoom', matchRoom);
+				leaveGameRoom();
 				if (isHost) {
 					gameSocket.emit('computeMatch', { room: matchRoom, score: score } );
 				}
 				sleep(1000).then(() => {game.destroy(true);});
 			}
+		}
+
+		function joinGameRoom() {
+			if (isSpectator) {
+				return gameSocket.emit('joinGameRoomAsSpectator', matchRoom);
+			}
+			return gameSocket.emit('joinGameRoom', matchRoom);
+		}
+
+		function leaveGameRoom() {
+			if (isSpectator) {
+				return gameSocket.emit('leaveGameRoomAsSpectator', matchRoom);
+			}
+			gameSocket.emit('leaveGameRoom', matchRoom);
 		}
 
 	function HandleCollision(this: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody) : void {
