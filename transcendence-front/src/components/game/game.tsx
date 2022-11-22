@@ -16,13 +16,13 @@ interface Props {
 }
 
 interface Ball {
-  x: number;
-  y: number;
+	x: number;
+	y: number;
 }
 
 interface Score {
-  player1: number;
-  player2: number;
+	player1: number;
+	player2: number;
 }
 
 export const PhaserGame: FunctionComponent<Props> = ({
@@ -84,10 +84,10 @@ export const PhaserGame: FunctionComponent<Props> = ({
 		function create(this: Phaser.Scene): void {
 			gameSocket.connect();
 			gameSocket.emit('joinGameRoom', matchRoom);
-			player1 = this.physics.add.sprite(screenWidth * 0.1, screenHeight * 0.5, 'pad').setSize(screenWidth * 0.045, screenHeight * 0.325);
+			player1 = this.physics.add.sprite(screenWidth * 0.1, screenHeight * 0.5, 'pad');
 			player1.displayWidth = screenWidth * 0.05;
 			player1.displayHeight = screenHeight * 0.35;
-			player2 = this.physics.add.sprite(screenWidth * 0.9, screenHeight * 0.5, 'pad').setSize(screenWidth * 0.045, screenHeight * 0.325);
+			player2 = this.physics.add.sprite(screenWidth * 0.9, screenHeight * 0.5, 'pad');
 			player2.displayWidth = screenWidth * 0.05;
 			player2.displayHeight = screenHeight * 0.35;
 			ball = this.physics.add.sprite(this.sys.canvas.width / 2, this.sys.canvas.height / 2, 'ball').setSize(15, 15);
@@ -131,26 +131,26 @@ export const PhaserGame: FunctionComponent<Props> = ({
 		function updatePlayer1Position() {
 			if (player1.y != player1PosY) {
 				player1PosY = player1.y;
-				gameSocket.emit('player1', { room: matchRoom, value: player1PosY });
+				gameSocket.emit('player1', { room: matchRoom, value: player1PosY / screenHeight });
 			}
 		}
 
 		function updatePlayer1PositionFromSocket() {
 			gameSocket.off('player1').on('player1', (pos: number) => {
-				player1.y = pos;
+				player1.y = pos * screenHeight;
 			} );
 		}
 		
 		function updatePlayer2Position() {
 			if (player2.y != player2PosY) {
 				player2PosY = player2.y;
-				gameSocket.emit('player2', { room: matchRoom, value: player2PosY });
+				gameSocket.emit('player2', { room: matchRoom, value: player2PosY / screenHeight });
 			}
 		}
 
 		function updatePlayer2PositionFromSocket() {
 			gameSocket.off('player2').on('player2', (pos: number) => {
-				player2.y = pos;
+				player2.y = pos * screenHeight;
 			} );
 		}
 		
@@ -158,15 +158,16 @@ export const PhaserGame: FunctionComponent<Props> = ({
 			if (ball.x != ballPos.x || ball.y != ballPos.y) {
 				ballPos.x = ball.x;
 				ballPos.y = ball.y;
-				gameSocket.emit('ball', { room: matchRoom, ball: ballPos });
+				let normalizedBallPos: Ball = {x: ballPos.x / screenWidth, y: ballPos.y / screenHeight}
+				gameSocket.emit('ball', { room: matchRoom, ball: normalizedBallPos });
 			}
 		}
 
 		function updateBallPositionFromSocket() {
 			gameSocket.off('ball').on('ball', (ballPosFromSocket: Ball) => {
 				ballPos = ballPosFromSocket
-				ball.x = ballPos.x;
-				ball.y = ballPos.y;
+				ball.x = ballPos.x * screenWidth;
+				ball.y = ballPos.y * screenHeight;
 			} );
 		}
 
