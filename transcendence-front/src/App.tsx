@@ -31,8 +31,9 @@ function isLoggedIn() {
   return validateToken(cookie);
 }
 
-const PreHome = ({setIsHost, setMatchRoom,  setStandardMode } : {
+const PreHome = ({setIsHost, setIsSpectator, setMatchRoom,  setStandardMode } : {
   setIsHost: booleanSetState
+  setIsSpectator: booleanSetState
   setMatchRoom: stringSetState
   setStandardMode: booleanSetState
 }) => {
@@ -41,7 +42,13 @@ const PreHome = ({setIsHost, setMatchRoom,  setStandardMode } : {
 	return (
     <main>
       {loggedIn
-      ? <Home setLoggedIn={setLoggedIn} setIsHost={setIsHost} setMatchRoom={setMatchRoom}  setStandardMode={setStandardMode}/>
+      ? <Home
+          setLoggedIn={setLoggedIn}
+          setIsHost={setIsHost}
+          setIsSpectator={setIsSpectator}
+          setMatchRoom={setMatchRoom} 
+          setStandardMode={setStandardMode}
+        />
       : <LoginCard/> }
     </main>
 	);
@@ -49,16 +56,31 @@ const PreHome = ({setIsHost, setMatchRoom,  setStandardMode } : {
 
 function App() {
   const [isHost, setIsHost] = useState(false);
+  const [isSpectator, setIsSpectator] = useState(false);
   const [matchRoom, setMatchRoom] = useState('');
   const [standardMode, setStandardMode] = useState(true);
   
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<PreHome setIsHost={setIsHost} setMatchRoom={setMatchRoom} setStandardMode={setStandardMode}/>} />
+        <Route path='/' element={
+          <PreHome
+            setIsHost={setIsHost}
+            setIsSpectator={setIsSpectator}
+            setMatchRoom={setMatchRoom}
+            setStandardMode={setStandardMode}
+          />}
+        />
         <Route path='/login' element={<LoginCard/>} />
         <Route path='/2fa' element={<TwoFactorAuthCard/>} />
-        <Route path='/game' element={<GamePage isHost={isHost} matchRoom={matchRoom} standardMode={standardMode}/>} />
+        <Route path='/game' element={
+          <GamePage
+            isHost={isHost}
+            isSpectator={isSpectator}
+            matchRoom={matchRoom}
+            standardMode={standardMode}
+          />}
+        />
       </Routes>
     </BrowserRouter>
   );

@@ -240,21 +240,28 @@ function listenPlayWithFriend(
 	} )
 }
 
-function listenWatchGame(setMatchRoom: stringSetState, setGameActive: booleanSetState) {
+function listenWatchGame(
+	setMatchRoom: stringSetState,
+	setGameActive: booleanSetState,
+	setIsSpectator: booleanSetState
+	) {
 	gameSocket.off('watchGame').on('watchGame', (gameRoom: string) => {
 		setMatchRoom(gameRoom);
 		setGameActive(true);
+		setIsSpectator(true);
 	})
 }
 
 export const Home = ({
 	setLoggedIn,
 	setIsHost,
+	setIsSpectator,
 	setMatchRoom,
 	setStandardMode
 } : {
 	setLoggedIn: booleanSetState,
 	setIsHost: booleanSetState,
+	setIsSpectator: booleanSetState
 	setMatchRoom: stringSetState,
 	setStandardMode: booleanSetState,
 }) => {
@@ -269,7 +276,7 @@ export const Home = ({
 	sessionSocket.connect()
 
 	listenPlayWithFriend(userId, setMatchInfos, setMatchRoom, setOpenDialog);
-	listenWatchGame(setMatchRoom, setGameActive);
+	listenWatchGame(setMatchRoom, setGameActive, setIsSpectator);
 
 	if (gameActive) {
 		return (<Navigate to='/game'/>)

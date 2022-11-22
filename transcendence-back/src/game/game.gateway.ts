@@ -92,6 +92,12 @@ export class GameGateway
     client.emit('joinGameRoom', gameRoom);
   }
 
+  @SubscribeMessage('joinGameRoomAsSpectator')
+  handleJoinGameRoomAsSpectator(client: Socket, gameRoom: string) {
+    client.join(gameRoom);
+    client.emit('joinGameRoomAsSpectator', gameRoom);
+  }
+
   @SubscribeMessage('leaveGameRoom')
   handleLeaveGameRoom(client: Socket, gameRoom: string) {
     client.leave(gameRoom);
@@ -99,6 +105,12 @@ export class GameGateway
     this.userRoom.delete(client.data.user.id);
     this.sessionGateway.setStatusOnline(client.data.user);
     client.emit('leaveGameRoom', gameRoom);
+  }
+
+  @SubscribeMessage('leaveGameRoomAsSpectator')
+  handleLeaveGameRoomAsSpectator(client: Socket, gameRoom: string) {
+    client.leave(gameRoom);
+    client.emit('leaveGameRoomAsSpectator', gameRoom);
   }
 
   @SubscribeMessage('player1')

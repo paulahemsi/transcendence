@@ -92,11 +92,12 @@ const EndGameCard: FunctionComponent<EndGameCardProps> = ({endGameDisplay, setEn
 
 interface gameProps {
 	isHost: boolean;
+	isSpectator: boolean;
 	matchRoom: string;
 	standardMode: boolean;
 }
 
-const GamePage:  FunctionComponent<gameProps>  = ({isHost, matchRoom, standardMode}) => {
+const GamePage:  FunctionComponent<gameProps>  = ({isHost, isSpectator, matchRoom, standardMode}) => {
 	const [ score, setScore ] = useState<number[]>([0, 0]);
 	const [ endGameVisible, setEndGameVisible ] = useState<boolean>(false);
 	const [ endGameDisplay, setEndGameDisplay ] = useState<EndGameData>({ disconnected:false, player1Name: "player1", player2Name: "player2", winner: 1});
@@ -135,6 +136,7 @@ const GamePage:  FunctionComponent<gameProps>  = ({isHost, matchRoom, standardMo
 					setEndGameVisible={setEndGameVisible}
 					setEndGameDisplay={setEndGameDisplay}
 					isHost={isHost}
+					isSpectator={isSpectator}
 					matchRoom={matchRoom}
 					standardMode={standardMode}
 				/>
