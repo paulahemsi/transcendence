@@ -73,7 +73,7 @@ export const PhaserGame: FunctionComponent<Props> = ({
 		let ballPos: Ball = {x: 0, y: 0}
 
 		let score: Score = {player1: 0, player2: 0}
-		let endingScore: number =  4;
+		let endingScore: number =  10;
 		let winningPlayer: 1 | 2 | undefined = undefined;
 
 		function preload(this: Phaser.Scene): void {
@@ -165,7 +165,7 @@ export const PhaserGame: FunctionComponent<Props> = ({
 
 		function updateBallPositionFromSocket() {
 			gameSocket.off('ball').on('ball', (ballPosFromSocket: Ball) => {
-				ballPos = ballPosFromSocket
+				ballPos = ballPosFromSocket;
 				ball.x = ballPos.x * screenWidth;
 				ball.y = ballPos.y * screenHeight;
 			} );
