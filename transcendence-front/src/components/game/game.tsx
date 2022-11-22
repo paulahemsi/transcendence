@@ -250,10 +250,10 @@ export const PhaserGame: FunctionComponent<Props> = ({
 		(ball.body as Phaser.Physics.Arcade.Body).onWorldBounds = true;
 		setBallVelocity()
 		ball.setBounce(1);
-		this.physics.add.collider(ball, player1, HandleCollision, () => (console.log("COLLIDED WITH PLAYER 1")), player1);
-		this.physics.add.collider(ball, player2, HandleCollision, () => (console.log("COLLIDED WITH PLAYER 2")), player2);
-		this.physics.add.collider(ball, rightGoal, increaseP1Score, () => (console.log("COLLIDED WITH RIGHT GOAL")), rightGoal);
-		this.physics.add.collider(ball, leftGoal, increaseP2Score, () => (console.log("COLLIDED WITH LEFT GOAL")), leftGoal);
+		this.physics.add.collider(ball, player1, HandleCollision, undefined);
+		this.physics.add.collider(ball, player2, HandleCollision, undefined);
+		this.physics.add.collider(ball, rightGoal, increaseP1Score, undefined);
+		this.physics.add.collider(ball, leftGoal, increaseP2Score, undefined);
 	}
 
 	function updateScore() {

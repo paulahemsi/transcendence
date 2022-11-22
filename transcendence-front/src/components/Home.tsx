@@ -49,7 +49,6 @@ const Matchmaker = ({
 	const joinGameQueue = () => {
 		sessionSocket.emit('joinGameQueue');
 		setLoading(true);
-		console.log(`User ${userId} wanna play`)
 	}
 	
 	sessionSocket.on('joinGameQueue', (match: MatchInfos) => {

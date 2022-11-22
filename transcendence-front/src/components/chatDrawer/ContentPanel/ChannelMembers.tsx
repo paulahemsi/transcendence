@@ -2,14 +2,6 @@ import { Button, List, ListItem } from "@mui/material";
 import React from "react";
 import MembersInfo from "./MembersInfo";
 
-const onHoverFriend = {
-	'&:hover': {
-		color: '#B998FF',
-	},
-	textTransform: 'lowercase',
-	borderRadius: '0'
-}
-
 const LIST_CSS = { 
 	height: '55vh',
 	position: 'relative',
@@ -36,10 +28,8 @@ export const ChannelMembers = ({ channelMembers } : { channelMembers: {[key: str
 	const members = [] as JSX.Element[];
 	channelMembers.forEach((element : {[key: string]: any}) => {
 		members.push(
-	<ListItem disablePadding key={element.id} sx={{ padding: '1vh', marginRight: '10vh' }} > 
-			<Button sx={onHoverFriend} onClick={() => console.log('click')} >
-				<MembersInfo userData={element}/>
-			</Button>
+		<ListItem disablePadding key={element.id} sx={{ padding: '1vh', marginRight: '10vh' }} > 
+			<MembersInfo userData={element}/>
 		</ListItem>);
 	})
 	

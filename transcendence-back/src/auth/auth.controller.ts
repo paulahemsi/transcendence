@@ -22,7 +22,6 @@ export class AuthController {
   @Get('status')
   getUserStatus(@Res() response: Response) {
     response.sendStatus(200);
-    console.log('\nCongratulations, your JWT guard works.\n');
   }
 
   @Get('logout')
