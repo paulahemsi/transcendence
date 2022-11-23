@@ -13,13 +13,19 @@ services:
             - POSTGRES_DB=${DB_NAME}
         ports:
             - 5432:${DB_PORT}
+        networks:
+            - transcendence 
 
     front:
         image: node:16-alpine3.16
         container_name: transcendence_front
         restart: unless-stopped
+        depends_on:
+            - back
         env_file:
             - .env
+        environment:
+            - PORT=3000
         ports:
             - 3000:3000
         volumes:
@@ -28,6 +34,25 @@ services:
         entrypoint:
             - npm
             - start
-            #- tail
-            #- -f
-            #- /dev/null
+        networks:
+            - transcendence 
+
+    back:
+        build: ./transcendence-back
+        image: transcendence_back 
+        container_name: transcendence_back
+        restart: unless-stopped
+        depends_on:
+            - db
+        env_file:
+            - .env
+        environment:
+            - DB_HOST=transcendence_db
+        ports:
+            - 4444:4444
+        networks:
+            - transcendence 
+
+networks:
+    transcendence:
+        driver: bridge
