@@ -54,7 +54,7 @@ export const PhaserGame: FunctionComponent<Props> = ({
 			scene: {
 				preload: preload,
 				create: create,
-				update: update
+				update: isHost ? updateHost : updateGuest
 			}
 		}
 		let game = new Phaser.Game(gameConfig);
@@ -110,33 +110,71 @@ export const PhaserGame: FunctionComponent<Props> = ({
 			} else {
 				updateScore();
 			}
+			listenStopGame(this.scene);
 		}
 
 		function update(this: Phaser.Scene): void {
-			listenStopGame(this.scene);
 			if (isSpectator) {
 				updatePlayer1PositionFromSocket();
 				updatePlayer2PositionFromSocket();
 				updateBallPositionFromSocket();
-			} else if (isHost) {
-				updatePlayerVelocit(player1, this.input);
-				updatePlayer1Position();
+			}
+			
+			if (isHost) {
+				updatePlayerVelocity(player1, this.input);
+				if (player1.y != player1PosY) {
+					updatePlayer1Position();
+				}
 				updatePlayer2PositionFromSocket();
-				updateBallPosition();
-			} else {
-				updatePlayerVelocit(player2, this.input);
+				if (ball.x != ballPos.x || ball.y != ballPos.y) {
+					updateBallPosition();
+				}
+			} 
+			
+			if (!isHost && !isSpectator) {
+				updatePlayerVelocity(player2, this.input);
 				updatePlayer1PositionFromSocket();
-				updatePlayer2Position();
+				if (player2.y != player2PosY) {
+					updatePlayer2Position();
+				}
 				updateBallPositionFromSocket();
+			}
+
+			checkEndGame(this.scene);
+		}
+
+		function updateSpectator(this: Phaser.Scene): void {
+			updatePlayer1PositionFromSocket();
+			updatePlayer2PositionFromSocket();
+			updateBallPositionFromSocket();
+			checkEndGame(this.scene);
+		}
+
+		function updateHost(this: Phaser.Scene): void {
+			updatePlayerVelocity(player1, this.input);
+			if (player1.y != player1PosY) {
+				updatePlayer1Position();
+			}
+			updatePlayer2PositionFromSocket();
+			if (ball.x != ballPos.x || ball.y != ballPos.y) {
+				updateBallPosition();
 			}
 			checkEndGame(this.scene);
 		}
 
-		function updatePlayer1Position() {
-			if (player1.y != player1PosY) {
-				player1PosY = player1.y;
-				gameSocket.emit('player1', { room: matchRoom, value: player1PosY / screenHeight });
+		function updateGuest(this: Phaser.Scene): void {
+			updatePlayerVelocity(player2, this.input);
+			updatePlayer1PositionFromSocket();
+			if (player2.y != player2PosY) {
+				updatePlayer2Position();
 			}
+			updateBallPositionFromSocket();
+			checkEndGame(this.scene);
+		}
+
+		function updatePlayer1Position() {
+			player1PosY = player1.y;
+			gameSocket.emit('player1', { room: matchRoom, value: player1PosY / screenHeight });
 		}
 
 		function updatePlayer1PositionFromSocket() {
@@ -146,10 +184,8 @@ export const PhaserGame: FunctionComponent<Props> = ({
 		}
 		
 		function updatePlayer2Position() {
-			if (player2.y != player2PosY) {
 				player2PosY = player2.y;
 				gameSocket.emit('player2', { room: matchRoom, value: player2PosY / screenHeight });
-			}
 		}
 
 		function updatePlayer2PositionFromSocket() {
@@ -159,12 +195,10 @@ export const PhaserGame: FunctionComponent<Props> = ({
 		}
 		
 		function updateBallPosition() {
-			if (ball.x != ballPos.x || ball.y != ballPos.y) {
-				ballPos.x = ball.x;
-				ballPos.y = ball.y;
-				let normalizedBallPos: Ball = {x: ballPos.x / screenWidth, y: ballPos.y / screenHeight}
-				gameSocket.emit('ball', { room: matchRoom, ball: normalizedBallPos });
-			}
+			ballPos.x = ball.x;
+			ballPos.y = ball.y;
+			let normalizedBallPos: Ball = {x: ballPos.x / screenWidth, y: ballPos.y / screenHeight}
+			gameSocket.emit('ball', { room: matchRoom, ball: normalizedBallPos });
 		}
 
 		function updateBallPositionFromSocket() {
@@ -175,7 +209,7 @@ export const PhaserGame: FunctionComponent<Props> = ({
 			} );
 		}
 
-		function updatePlayerVelocit(player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody, input: Phaser.Input.InputPlugin) {
+		function updatePlayerVelocity(player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody, input: Phaser.Input.InputPlugin) {
 			const cursors = input.keyboard.createCursorKeys();
 			if (cursors.up.isDown) {
 				player.setVelocityY(-500);
