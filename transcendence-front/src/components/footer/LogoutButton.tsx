@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Button } from "@mui/material";
 import { booleanSetState } from "../utils/constants";
 
-const logoutUrl = 'http://localhost:3000/auth/logout'
+const logoutUrl = 'http://localhost:4444/auth/logout'
 
 export const LogoutButton = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
 	

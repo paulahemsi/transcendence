@@ -36,7 +36,7 @@ export const UpdateUsernameDialog : FunctionComponent<Props> = ({ open, setOpen,
 		
 		const userId = getIdFromToken();
 		const authToken = getAuthToken();
-		axios.patch(`http://localhost:3000/users/${userId}`, { "username": state.username }, { headers: authToken }).then( () => {
+		axios.patch(`http://localhost:4444/users/${userId}`, { "username": state.username }, { headers: authToken }).then( () => {
 			userData.username = state.username;
 			setUserData(userData);
 			setOpen(false);

@@ -21,7 +21,7 @@ const TwoFactorAuthButton = ({
 		const authToken: AxiosRequestHeaders = {
 			'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 		
-		axios.post(`http://localhost:3000/two-factor-auth/login?user=${userId}`,{ code: code }, { headers: authToken })
+		axios.post(`http://localhost:4444/two-factor-auth/login?user=${userId}`,{ code: code }, { headers: authToken })
 			.then(() => {
 				setState({verified: true});
 			}).catch(() => {

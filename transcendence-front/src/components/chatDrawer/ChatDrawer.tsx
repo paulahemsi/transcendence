@@ -18,7 +18,7 @@ interface Props {
 const requestFriendsData = async ({ setFriendsData } : { setFriendsData: React.Dispatch<React.SetStateAction<{[key: string]: any}>>}) => {
 	const userId = getIdFromToken();
 	const authToken = getAuthToken();
-	await axios.get(`http://localhost:3000/users/${userId}/friends`, { headers: authToken }).then((response) => {
+	await axios.get(`http://localhost:4444/users/${userId}/friends`, { headers: authToken }).then((response) => {
 		setFriendsData(response.data);
 })
 }

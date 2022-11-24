@@ -45,11 +45,11 @@ export const UpdateImageDialog : FunctionComponent<Props> = ({ open, setOpen, us
 	
 		if (state.selectedFile === null) return;
 		formData.append('image', state.selectedFile);
-		axios.post('http://localhost:3000/images', formData, {headers: authToken})
+		axios.post('http://localhost:4444/images', formData, {headers: authToken})
 		.then((response) => {
 			if (response.data.url != "") {
 				const imageUrl = response.data.url;
-				axios.patch(`http://localhost:3000/users/${userId}`, { "image_url": imageUrl }, { headers: authToken }).then( () => {
+				axios.patch(`http://localhost:4444/users/${userId}`, { "image_url": imageUrl }, { headers: authToken }).then( () => {
 					userData.image_url = imageUrl;
 					setUserData(userData);
 					setOpen(false);

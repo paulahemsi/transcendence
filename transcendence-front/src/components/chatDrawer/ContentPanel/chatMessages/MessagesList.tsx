@@ -44,7 +44,7 @@ export const MessagesList : FunctionComponent<Props> = ({ messagesData }) => {
 	useEffect(() => {getBlockedUsers()}, [blockedUsers]);
 
 	const getBlockedUsers = async () => {
-		await axios.get(`http://localhost:3000/users/${userId}/block`, { headers: getAuthToken() }).then((response) => {
+		await axios.get(`http://localhost:4444/users/${userId}/block`, { headers: getAuthToken() }).then((response) => {
 			setBlockedUsers(response.data);
 			setLoading(false);
 		}).catch( () => {});
