@@ -28,7 +28,10 @@ type muteEvent = {
   duration: number;
 };
 
-@WebSocketGateway({ namespace: '/chat' })
+@WebSocketGateway({
+  namespace: '/chat',
+  origin: 'http://localhost:3000',
+})
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {

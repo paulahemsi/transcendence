@@ -37,7 +37,7 @@ interface ScoreDto {
   score: Score;
 }
 
-@WebSocketGateway({ namespace: '/game' })
+@WebSocketGateway({ namespace: '/game', origin: 'http://localhost:3000' })
 export class GameGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {

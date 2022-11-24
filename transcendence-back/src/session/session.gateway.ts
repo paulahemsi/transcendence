@@ -31,7 +31,7 @@ export interface MatchInviteAnswer {
   accepted: boolean;
 }
 
-@WebSocketGateway({ namespace: '/session' })
+@WebSocketGateway({ namespace: '/session', origin: 'http://localhost:3000' })
 export class SessionGateway
   implements
     OnGatewayInit,
