@@ -109,7 +109,7 @@ export class FriendshipService {
     let channel = await this.channelsService.createDirectMessageChannelEntity(
       user,
     );
-    if ((this.alreadyFriends(user, friend)) || (this.alreadyFriends(friend, user))) {
+    if ((await this.alreadyFriends(user, friend)) || (await this.alreadyFriends(friend, user))) {
         throw new BadRequestException('users alredy friends');
     }
 
