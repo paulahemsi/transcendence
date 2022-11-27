@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useReducer, useState } from "react";
 import { Typography, Box, Button, DialogTitle, DialogActions, Dialog, CircularProgress  } from '@mui/material';
 import Header from "./header/Header";
 import { Footer } from "./footer/Footer";
@@ -6,8 +6,11 @@ import ChatDrawer from "./chatDrawer/ChatDrawer";
 import ProfileCard from "./profileDrawer/ProfileDrawer";
 import { Navigate } from "react-router-dom";
 import { gameSocket, sessionSocket } from "./context/socket";
-import { booleanSetState, getIdFromToken, stringSetState } from "./utils/constants";
+import { booleanSetState, DEFAULT_TOAST_MSG, getIdFromToken, reducer, stringSetState } from "./utils/constants";
 import { MatchInfos, MatchInviteAnswer, matchInfosSetState } from "./utils/match-interfaces";
+import ErrorToast from "./utils/ErrorToast";
+
+const NO_ONE_AVAILABLE = "Ooops, nobody wanna play right now. Try again later"
 
 const startGameButton = {
 	borderRadius: 3,
@@ -37,21 +40,29 @@ const Matchmaker = ({
 	setIsHost,
 	setMatchRoom,
 	setStandardMode,
+	setCanClose,
 } : {
 	userId: string,
 	setIsHost: booleanSetState,
 	setMatchRoom: stringSetState,
 	setStandardMode: booleanSetState,
+	setCanClose: booleanSetState,
 }) => {
-	const [goGame, setGoGame] = useState(false);
-	const [loading, setLoading] = useState(false);
+	const [state, setState] = useReducer(reducer, {
+		goGame: false,
+		loading: false,
+		toastError: false,
+		toastMessage: NO_ONE_AVAILABLE,
+	});
 
 	const joinGameQueue = () => {
 		sessionSocket.emit('joinGameQueue');
-		setLoading(true);
+		setState({ loading: true });
+		setCanClose(false);
 		setTimeout(() => {
-			setLoading(false);
-			
+			setState({ loading: false });
+			setState({ toastError: true, toastMesasge: NO_ONE_AVAILABLE });
+			setCanClose(true);
 		}, 5000)
 	}
 	
@@ -62,15 +73,15 @@ const Matchmaker = ({
 			setIsHost(false);
 		}
 		setMatchRoom(match.id);
-		setLoading(false);
-		setGoGame(true)
+		setState({ loading: false });
+		setState({ goGame: true });
 	} )
 
-	if (goGame) {
+	if (state.goGame) {
 		return (<Navigate to='/game'/>)
 	}
 
-	if (loading) {
+	if (state.loading) {
 		return (
 			<>
 				<DialogTitle sx={{fontFamily: 'Orbitron'}}>
@@ -110,7 +121,7 @@ const Matchmaker = ({
 			Unicorn one
 		</Button>
 		</DialogActions>
-		{/* <ErrorToast state={state} setState={setState}/> */}
+		<ErrorToast state={state} setState={setState}/>
 	</>
 	)
 }
@@ -127,9 +138,12 @@ const Background = ({
 	setStandardMode: booleanSetState,
 }) => {
 	const [ openDialog, setOpenDialog ] = useState(false);
+	const [ canClose, setCanClose ] = useState(true);
 
 	const handleClose = () => {
-		setOpenDialog(false);
+		if (canClose) {
+			setOpenDialog(false);
+		}
 	}
 
 	return (
@@ -143,12 +157,13 @@ const Background = ({
 					Start Game
 				</Button>
 			</Box>
-			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
+			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose} >
 				<Matchmaker
 					userId={userId}
 					setIsHost={setIsHost}
 					setMatchRoom={setMatchRoom}
 					setStandardMode={setStandardMode}
+					setCanClose={setCanClose}
 				/>
 			</Dialog>
 		</>
