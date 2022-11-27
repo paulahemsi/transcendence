@@ -76,11 +76,12 @@ export class FriendshipService {
     return this.createFriendship(userId, friend.id);
   }
 
-  private async checkFriendship(user: User, friend: User) {
+  private async alreadyFriends(user: User, friend: User) {
     const friendship = await this.findOneFriendship(user.id, friend.id);
     if (friendship) {
-      throw new BadRequestException('users alredy friends');
+      return true;
     }
+    return false;
   }
 
   private async createFriendshipEntity(
@@ -108,8 +109,9 @@ export class FriendshipService {
     let channel = await this.channelsService.createDirectMessageChannelEntity(
       user,
     );
-    this.checkFriendship(user, friend);
-    this.checkFriendship(friend, user);
+    if ((this.alreadyFriends(user, friend)) || (this.alreadyFriends(friend, user))) {
+        throw new BadRequestException('users alredy friends');
+    }
 
     const queryRunner = await this.createTransaction();
     try {
