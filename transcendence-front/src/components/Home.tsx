@@ -49,6 +49,10 @@ const Matchmaker = ({
 	const joinGameQueue = () => {
 		sessionSocket.emit('joinGameQueue');
 		setLoading(true);
+		setTimeout(() => {
+			setLoading(false);
+			
+		}, 5000)
 	}
 	
 	sessionSocket.on('joinGameQueue', (match: MatchInfos) => {
