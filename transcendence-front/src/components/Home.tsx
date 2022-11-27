@@ -63,7 +63,7 @@ const Matchmaker = ({
 			setState({ loading: false });
 			setState({ toastError: true, toastMesasge: NO_ONE_AVAILABLE });
 			setCanClose(true);
-		}, 5000)
+		}, 25000)
 	}
 	
 	sessionSocket.on('joinGameQueue', (match: MatchInfos) => {
