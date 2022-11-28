@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Typography, Box, Button, DialogTitle, DialogActions, Dialog, CircularProgress  } from '@mui/material';
 import Header from "./header/Header";
 import { Footer } from "./footer/Footer";
@@ -272,7 +272,7 @@ export const Home = ({
 
 	const userId = getIdFromToken();
 
-	sessionSocket.connect()
+	useEffect(() => {sessionSocket.connect()}, []);
 
 	listenPlayWithFriend(userId, setMatchInfos, setMatchRoom, setOpenDialog);
 	listenWatchGame(setMatchRoom, setGameActive, setIsSpectator);
