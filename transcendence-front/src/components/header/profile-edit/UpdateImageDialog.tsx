@@ -3,17 +3,13 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/
 import axios from 'axios';
 import { Box } from "@mui/system";
 import ErrorToast from "../../utils/ErrorToast";
-import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken } from "../../utils/constants";
+import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken, reducer } from "../../utils/constants";
 
 interface Props {
     open: boolean;
     setOpen: booleanSetState;
 	userData: { [key: string]: any; };
 	setUserData: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>;
-}
-
-const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
-	return {...state, ...newState};
 }
 
 const ImageUpload = ({ setState } : { setState: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>> }) => {

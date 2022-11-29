@@ -3,7 +3,7 @@ import { Button, Card, CardActions, CardContent, Typography, Box } from '@mui/ma
 import { CodeTextField } from "./header/profile-edit/config-two-factor-auth/CodeTextField";
 import axios from "axios";
 import { Navigate, useSearchParams } from "react-router-dom";
-import { DEFAULT_TOAST_MSG } from "./utils/constants";
+import { DEFAULT_TOAST_MSG, reducer } from "./utils/constants";
 import ErrorToast from "./utils/ErrorToast";
 
 
@@ -95,11 +95,6 @@ const TwoFactorAuthContent = ({
 		</>
 	)
 }
-
-const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
-	return {...state, ...newState};
-}
-
 
 export const TwoFactorAuthCard = () => {
 	

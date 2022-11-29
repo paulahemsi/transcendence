@@ -2,7 +2,7 @@ import React, { FunctionComponent, useReducer } from "react"
 import { Button, Checkbox, DialogActions, DialogContent, DialogTitle, FormControlLabel, TextField } from "@mui/material"
 import axios from 'axios';
 import ErrorToast from "../../utils/ErrorToast";
-import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken, objectSetState } from "../../utils/constants";
+import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken, objectSetState, reducer } from "../../utils/constants";
 
 interface Props {
 	setOpenDialog: booleanSetState;
@@ -13,10 +13,6 @@ interface Props {
 const PUBLIC = "PUBLIC";
 const PRIVATE = "PRIVATE";
 const PROTECTED = "PROTECTED";
-
-const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
-	return {...state, ...newState};
-}
 
 export const CreateChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, setGroupsData, groupsData }) => {
 	const [state, setState] = useReducer(reducer, {

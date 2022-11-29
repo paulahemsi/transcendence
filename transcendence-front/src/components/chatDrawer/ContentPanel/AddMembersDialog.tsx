@@ -3,16 +3,12 @@ import { Button, DialogActions, DialogContent, DialogTitle, TextField } from "@m
 import axios from 'axios';
 import UsersList from "../ControlPanel/UsersList";
 import ErrorToast from "../../utils/ErrorToast";
-import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken, objectSetState } from "../../utils/constants";
+import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken, objectSetState, reducer } from "../../utils/constants";
 
 interface Props {
 	channelData: {[key: string]: any};
 	setOpenDialog: booleanSetState;
 	setMembersMockData: objectSetState;
-}
-
-const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
-	return {...state, ...newState};
 }
 
 export const AddMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, setMembersMockData, channelData }) => {

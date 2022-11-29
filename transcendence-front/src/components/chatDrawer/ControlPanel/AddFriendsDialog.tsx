@@ -3,19 +3,18 @@ import { Button, DialogActions, DialogContent, DialogTitle, TextField } from "@m
 import axios from 'axios';
 import UsersList from "./UsersList";
 import ErrorToast from "../../utils/ErrorToast";
-import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken, objectSetState } from "../../utils/constants";
+import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken, objectSetState, reducer } from "../../utils/constants";
 import { chatSocket } from "../../context/socket";
 
 interface Props {
 	setOpenDialog: booleanSetState;
 	setFriendsData: objectSetState;
+	friendsData: {[key: string]: any};
 }
 
-const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
-	return {...state, ...newState};
-}
+const ALREADY_FRIENDS = "Hey, you two are already friends :)";
 
-export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, setFriendsData }) => {
+export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, setFriendsData, friendsData }) => {
 	const userId = getIdFromToken();
 	const authToken = getAuthToken();
 	const [state, setState] = useReducer(reducer, {
@@ -68,6 +67,10 @@ export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 			return;
 		}
 
+		if (friendsData.filter((u: {[key: string]: any}) => u.username === selectedUser[0]).length) {
+			setState({ toastError: true, toastMessage: ALREADY_FRIENDS });
+			return ;
+		}
 		axios.post(`http://localhost:4444/users/${userId}/friends/by_name`, {
 			"name": selectedUser[0]
 		}, { headers: authToken }).then( () => {
