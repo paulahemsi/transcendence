@@ -4,7 +4,13 @@ COMPOSE_FILE	:=	docker-compose.yml
 all:	build
 
 build:
+		docker-compose -f $(COMPOSE_FILE) up --build
+
+build-detach:
 		docker-compose -f $(COMPOSE_FILE) up --build -d
+
+build-db:
+		docker-compose -f $(COMPOSE_FILE) up --build -d db
 
 down:
 		docker-compose -f $(COMPOSE_FILE) down 
