@@ -252,13 +252,11 @@ function listenWatchGame(
 }
 
 export const Home = ({
-	setLoggedIn,
 	setIsHost,
 	setIsSpectator,
 	setMatchRoom,
 	setStandardMode
 } : {
-	setLoggedIn: booleanSetState,
 	setIsHost: booleanSetState,
 	setIsSpectator: booleanSetState
 	setMatchRoom: stringSetState,
@@ -304,7 +302,7 @@ export const Home = ({
 					setMatchRoom={setMatchRoom}
 					setStandardMode={setStandardMode}
 					/> }
-			{ <Footer setLoggedIn={setLoggedIn}/> }
+			{ <Footer/> }
 			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
 				<AcceptGameInvite
 					setIsHost={setIsHost}
