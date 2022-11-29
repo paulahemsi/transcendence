@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { useReducer } from "react";
 import { Button, Card, CardActions, CardContent, Typography, Box } from '@mui/material';
 import { CodeTextField } from "./header/profile-edit/config-two-factor-auth/CodeTextField";
 import axios, { AxiosRequestHeaders } from "axios";
@@ -36,10 +36,12 @@ const TwoFactorAuthButton = ({
 				onClick={handleAuthentication}
 				size="large"
 				sx={{ 
-					width: 150,
-					height: 55,
 					background: '#9575CD',
-					':hover': { background: '#311B92'}
+					':hover': { background: '#311B92'},
+					textTransform: 'lowercase',
+					fontFamily: 'Orbitron',
+					fontSize: 20,
+					color: '#f5f5f5',
 				}}
 			>
 				authenticate
