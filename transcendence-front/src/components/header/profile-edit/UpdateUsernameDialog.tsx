@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useReducer } from "react";
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, TextField, } from "@mui/material"
 import axios from 'axios';
-import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken } from "../../utils/constants";
+import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken, reducer } from "../../utils/constants";
 
 interface Props {
     open: boolean;
@@ -12,10 +12,6 @@ interface Props {
 
 const REPEATED_NAME = "oops! It seem's there's already an user with this name. Please try another one"
 const EMPTY_NAME = "You must choose a name (:"
-
-const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
-	return {...state, ...newState};
-}
 
 export const UpdateUsernameDialog : FunctionComponent<Props> = ({ open, setOpen, userData ,setUserData }) => {
 	const [state, setState] = useReducer(reducer, {

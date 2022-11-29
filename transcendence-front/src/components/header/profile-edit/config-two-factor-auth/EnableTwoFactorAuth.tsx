@@ -3,7 +3,7 @@ import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, 
 import axios, { AxiosRequestHeaders } from 'axios';
 import { typographyCSS } from './auxiliary'
 import { CodeTextField } from "./CodeTextField";
-import { booleanSetState, DEFAULT_TOAST_MSG } from "../../../utils/constants";
+import { booleanSetState, DEFAULT_TOAST_MSG, reducer } from "../../../utils/constants";
 
 interface Props {
     open: boolean;
@@ -86,10 +86,6 @@ const EnebleQrCodeContent = ({
 			</Box>
 		</>
 	)
-}
-
-const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
-	return {...state, ...newState};
 }
 
 export const EnableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, setOpen, userData, setUserData }) => {

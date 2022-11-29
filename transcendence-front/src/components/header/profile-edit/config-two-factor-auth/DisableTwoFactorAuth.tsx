@@ -3,7 +3,7 @@ import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, 
 import { typographyCSS } from './auxiliary'
 import { CodeTextField } from "./CodeTextField";
 import axios, { AxiosRequestHeaders } from "axios";
-import { booleanSetState, DEFAULT_TOAST_MSG } from "../../../utils/constants";
+import { booleanSetState, DEFAULT_TOAST_MSG, reducer } from "../../../utils/constants";
 
 interface Props {
     open: boolean;
@@ -47,10 +47,6 @@ const disable = async (code: string) => {
 		return false;
 	}
 	return true;
-}
-
-const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
-	return {...state, ...newState};
 }
 
 export const DisableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, setOpen, userData, setUserData }) => {

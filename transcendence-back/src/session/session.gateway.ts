@@ -79,6 +79,13 @@ export class SessionGateway
     this.setStatusOffline(await client.data.user);
     this.disconnect(client);
   }
+  
+  playerAlreadyInQueue(playerId: string) {
+    if (this.gameQueue.filter((p: {[key: string]: any}) => p.userId === playerId).length) {
+      return true;
+    }
+    return false;
+  }
 
   @SubscribeMessage('status')
   handleStatus(client: Socket, message: string) {
@@ -91,6 +98,9 @@ export class SessionGateway
       socket: client,
       userId: client.data.user.id,
     };
+    if (this.playerAlreadyInQueue(client.data.user.id)) {
+      return ;
+    }
     if (this.gameQueue.length > 0) {
       const otherPlayer = this.gameQueue.pop();
       const matchInfos = await this.createMatch(

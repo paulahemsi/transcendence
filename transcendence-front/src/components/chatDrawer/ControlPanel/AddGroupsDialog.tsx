@@ -3,7 +3,7 @@ import { Button, DialogActions, DialogContent, DialogTitle, TextField } from "@m
 import axios from 'axios';
 import SearchGroupsList from "./SearchGroupsList";
 import ErrorToast from "../../utils/ErrorToast";
-import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken, objectSetState } from "../../utils/constants";
+import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken, objectSetState, reducer } from "../../utils/constants";
 
 const PROTECTED = 'PROTECTED';
 const PUBLIC = 'PUBLIC'
@@ -23,10 +23,6 @@ type groupsData = {
 interface Props {
 	setOpenDialog: booleanSetState;
 	setGroupsData: objectSetState;
-}
-
-const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
-	return {...state, ...newState};
 }
 
 export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setGroupsData }) => {

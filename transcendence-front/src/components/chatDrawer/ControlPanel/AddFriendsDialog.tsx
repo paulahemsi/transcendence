@@ -3,7 +3,7 @@ import { Button, DialogActions, DialogContent, DialogTitle, TextField } from "@m
 import axios from 'axios';
 import UsersList from "./UsersList";
 import ErrorToast from "../../utils/ErrorToast";
-import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken, objectSetState } from "../../utils/constants";
+import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken, objectSetState, reducer } from "../../utils/constants";
 import { chatSocket } from "../../context/socket";
 
 interface Props {
@@ -13,10 +13,6 @@ interface Props {
 }
 
 const ALREADY_FRIENDS = "Hey, you two are already friends :)";
-
-const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
-	return {...state, ...newState};
-}
 
 export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, setFriendsData, friendsData }) => {
 	const userId = getIdFromToken();

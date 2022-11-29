@@ -22,6 +22,10 @@ export function getAuthToken() {
 	return authToken; 
 }
 
+export const reducer = (state : {[key: string]: any}, newState : {[key: string]: any}) => {
+	return {...state, ...newState};
+}
+
 export const DEFAULT_TOAST_MSG = "ooops, something went wrong";
 
 export const LIST_CSS = { 
