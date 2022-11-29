@@ -49,6 +49,8 @@ export class TwoFactorAuthController {
     response.cookie('accessToken', this.jwtService.sign(payload), {
       sameSite: 'lax',
     });
-    return response.redirect('http://localhost:3000');
+    return response.status(200).json({
+      cookie: response.getHeader('set-cookie'),
+    });
   }
 }

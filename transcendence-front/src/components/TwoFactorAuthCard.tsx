@@ -1,7 +1,7 @@
 import React, { useReducer } from "react";
 import { Button, Card, CardActions, CardContent, Typography, Box } from '@mui/material';
 import { CodeTextField } from "./header/profile-edit/config-two-factor-auth/CodeTextField";
-import axios, { AxiosRequestHeaders } from "axios";
+import axios from "axios";
 import { Navigate, useSearchParams } from "react-router-dom";
 import { DEFAULT_TOAST_MSG } from "./utils/constants";
 import ErrorToast from "./utils/ErrorToast";
@@ -18,11 +18,12 @@ const TwoFactorAuthButton = ({
 }) => {
 
 	const handleAuthentication = () => {
-		const authToken: AxiosRequestHeaders = {
-			'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-		
-		axios.post(`http://localhost:4444/two-factor-auth/login?user=${userId}`,{ code: code }, { headers: authToken })
-			.then(() => {
+		axios
+			.post(
+				`http://localhost:4444/two-factor-auth/login?user=${userId}`,
+				{ code: code })
+			.then((response) => {
+				document.cookie = response.data.cookie;
 				setState({verified: true});
 			}).catch(() => {
 				setState({code: '', toastError: true});
