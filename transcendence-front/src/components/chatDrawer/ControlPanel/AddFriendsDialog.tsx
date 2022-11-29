@@ -9,9 +9,12 @@ import { chatSocket } from "../../context/socket";
 interface Props {
 	setOpenDialog: booleanSetState;
 	setFriendsData: objectSetState;
+	friendsData: {[key: string]: any};
 }
 
-export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, setFriendsData }) => {
+const ALREADY_FRIENDS = "Hey, you two are already friends :)";
+
+export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, setFriendsData, friendsData }) => {
 	const userId = getIdFromToken();
 	const authToken = getAuthToken();
 	const [state, setState] = useReducer(reducer, {
@@ -64,6 +67,10 @@ export const AddFriendsDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 			return;
 		}
 
+		if (friendsData.filter((u: {[key: string]: any}) => u.username === selectedUser[0]).length) {
+			setState({ toastError: true, toastMessage: ALREADY_FRIENDS });
+			return ;
+		}
 		axios.post(`http://localhost:3000/users/${userId}/friends/by_name`, {
 			"name": selectedUser[0]
 		}, { headers: authToken }).then( () => {

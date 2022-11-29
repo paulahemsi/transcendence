@@ -125,7 +125,7 @@ export const ChatAuxiliaryButton: FunctionComponent<Props> = ({ direct, setChann
 			<CreateChannelDialog setOpenDialog={setOpenDialog} setGroupsData={setGroupsData} groupsData={groupsData}/>
 		</Dialog>
 		<Dialog open={openAddFriendsDialog} fullWidth maxWidth="sm" onClose={handleClose}>
-			<AddFriendsDialog setOpenDialog={setOpenAddFriendsDialog} setFriendsData={setFriendsData}/>
+			<AddFriendsDialog setOpenDialog={setOpenAddFriendsDialog} setFriendsData={setFriendsData} friendsData={friendsData}/>
 		</Dialog>
 		<Dialog open={openAddGroupsDialog} fullWidth maxWidth="sm" onClose={handleClose}>
 			<AddGroupsDialog setOpenDialog={setOpenAddGroupsDialog} setGroupsData={setGroupsData}/>
