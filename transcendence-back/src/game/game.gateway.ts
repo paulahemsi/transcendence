@@ -79,7 +79,9 @@ export class GameGateway
   handleDisconnect(client: Socket) {
     const gameRoom = this.clientRoom.get(client.id);
     this.clientRoom.delete(client.id);
-    this.userRoom.delete(client.data.user.id);
+    if (client.data.user) {
+      this.userRoom.delete(client.data.user.id);
+    }
     this.server.to(gameRoom).emit('stopGame', 'stop');
     client.disconnect();
   }
@@ -108,7 +110,9 @@ export class GameGateway
   handleLeaveGameRoom(client: Socket, gameRoom: string) {
     client.leave(gameRoom);
     this.clientRoom.delete(client.id);
-    this.userRoom.delete(client.data.user.id);
+    if (client.data.user) {
+      this.userRoom.delete(client.data.user.id);
+    }
     this.sessionGateway.setStatusOnline(client.data.user);
     client.emit('leaveGameRoom', gameRoom);
   }
