@@ -1,31 +1,31 @@
 import React from "react";
-import axios from 'axios';
-import { Button } from "@mui/material";
-import { booleanSetState } from "../utils/constants";
+import { Button, Link } from "@mui/material";
 
-const logoutUrl = 'http://localhost:3000/auth/logout'
+const logoutUrl = 'http://localhost:4444/auth/logout'
 
-export const LogoutButton = ({ setLoggedIn } : { setLoggedIn: booleanSetState}) => {
-	
-	const handleLogout = () => {
-		axios.get(logoutUrl);
-		setLoggedIn(false);
-	}
+export const LogoutButton = () => {
 	
 	return (
 		<>
-			<Button variant="outlined" size="small" onClick={handleLogout}
+			<Button variant="outlined" size="small"
 				sx={{ 
 					width: 110,
 					height: '5vh',
-					textTransform: 'lowercase',
 					background: '#F5F5F5',
 					borderColor: '#311B92',
-					color: '#311B92',
-					':hover': { background: '#F5F5F5', borderColor: '#9575CD', color: '#9575CD'},
-					fontFamily: 'Orbitron',
-					fontSize: '2.3vh'}}>
-				logout
+				}}
+			>
+				<Link href={logoutUrl} style={{ textDecoration: 'none' }}
+					sx={{
+						textTransform: 'lowercase',
+						fontFamily: 'Orbitron',
+						fontSize: '2.3vh',
+						color: '#311B92',
+						':hover': { background: '#F5F5F5', borderColor: '#9575CD', color: '#9575CD'},
+					}}
+				>
+					logout
+				</Link>
 			</Button>
 		</>
 	)

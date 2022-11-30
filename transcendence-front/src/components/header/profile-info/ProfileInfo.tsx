@@ -12,7 +12,7 @@ const requestUserData = async ({ setUserData } : { setUserData: React.Dispatch<R
 	
 	const userId = getIdFromToken();
 	const authToken = getAuthToken();
-	await axios.get('http://localhost:3000/users/' + userId, { headers: authToken }).then((response) => {setUserData({
+	await axios.get('http://localhost:4444/users/' + userId, { headers: authToken }).then((response) => {setUserData({
 		id: response.data.id,
 		username: response.data.username,
 		rating: response.data.rating,

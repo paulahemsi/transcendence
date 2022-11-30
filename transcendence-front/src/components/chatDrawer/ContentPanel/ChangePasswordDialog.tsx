@@ -38,7 +38,7 @@ export const ChangePasswordDialog : FunctionComponent<Props> = ({ setOpenDialog,
 			}
 		}
 		
-		axios.patch(`http://localhost:3000/channels/${channelData.id}`, body , { headers: authToken }).then(() => {
+		axios.patch(`http://localhost:4444/channels/${channelData.id}`, body , { headers: authToken }).then(() => {
 			setOpenDialog(false);
 		}
 		)

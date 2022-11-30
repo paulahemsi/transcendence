@@ -9,7 +9,7 @@ const requestUserProfile = async ({ setUserProfile, userId } : { setUserProfile:
 
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 	
-	axios.get(`http://localhost:3000/users/${userId}/profile`, { headers: authToken }).then((response) => {
+	axios.get(`http://localhost:4444/users/${userId}/profile`, { headers: authToken }).then((response) => {
 		setUserProfile(response.data);
 	}).catch( () => {});
 }

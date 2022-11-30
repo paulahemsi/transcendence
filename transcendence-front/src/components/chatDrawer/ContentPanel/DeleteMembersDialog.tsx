@@ -39,7 +39,7 @@ export const DeleteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 	const requestUsersData = async () => {
 		const userId = getIdFromToken();
 		const authToken = getAuthToken();
-		await axios.get("http://localhost:3000/users/", { headers: authToken }).then((response: {[key: string]: any}) => {
+		await axios.get("http://localhost:4444/users/", { headers: authToken }).then((response: {[key: string]: any}) => {
 			setState({ users: response.data });
 			var usersName: Array<string> = [];
 			response.data.forEach((userData: {[key: string]: any}) => {
@@ -70,7 +70,7 @@ export const DeleteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 		}
 		
 		const authToken = getAuthToken();
-		axios.delete(`http://localhost:3000/channels/${channelData.id}/members/${selectedUser[0].id}`, { headers: authToken }).then( () => {
+		axios.delete(`http://localhost:4444/channels/${channelData.id}/members/${selectedUser[0].id}`, { headers: authToken }).then( () => {
 			setMembersMockData(selectedUser);
 			setOpenDialog(false);
 		}).catch( () => {

@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { Typography, Box, Button, DialogTitle, DialogActions, Dialog, CircularProgress  } from '@mui/material';
 import Header from "./header/Header";
 import { Footer } from "./footer/Footer";
@@ -6,7 +6,7 @@ import ChatDrawer from "./chatDrawer/ChatDrawer";
 import ProfileCard from "./profileDrawer/ProfileDrawer";
 import { Navigate } from "react-router-dom";
 import { gameSocket, sessionSocket } from "./context/socket";
-import { booleanSetState, DEFAULT_TOAST_MSG, getIdFromToken, reducer, stringSetState } from "./utils/constants";
+import { booleanSetState, getIdFromToken, reducer, stringSetState } from "./utils/constants";
 import { MatchInfos, MatchInviteAnswer, matchInfosSetState } from "./utils/match-interfaces";
 import ErrorToast from "./utils/ErrorToast";
 
@@ -271,13 +271,11 @@ function listenWatchGame(
 }
 
 export const Home = ({
-	setLoggedIn,
 	setIsHost,
 	setIsSpectator,
 	setMatchRoom,
 	setStandardMode
 } : {
-	setLoggedIn: booleanSetState,
 	setIsHost: booleanSetState,
 	setIsSpectator: booleanSetState
 	setMatchRoom: stringSetState,
@@ -291,7 +289,7 @@ export const Home = ({
 
 	const userId = getIdFromToken();
 
-	sessionSocket.connect()
+	useEffect(() => {sessionSocket.connect()}, []);
 
 	listenPlayWithFriend(userId, setMatchInfos, setMatchRoom, setOpenDialog);
 	listenWatchGame(setMatchRoom, setGameActive, setIsSpectator);
@@ -323,7 +321,7 @@ export const Home = ({
 					setMatchRoom={setMatchRoom}
 					setStandardMode={setStandardMode}
 					/> }
-			{ <Footer setLoggedIn={setLoggedIn}/> }
+			{ <Footer/> }
 			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>
 				<AcceptGameInvite
 					setIsHost={setIsHost}

@@ -31,7 +31,13 @@ export interface MatchInviteAnswer {
   accepted: boolean;
 }
 
-@WebSocketGateway({ namespace: '/session' })
+@WebSocketGateway({
+  namespace: '/session',
+  cors: {
+    origin: 'http://localhost:3000',
+    credentials: true,
+  },
+})
 export class SessionGateway
   implements
     OnGatewayInit,

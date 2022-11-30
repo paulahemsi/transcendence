@@ -39,7 +39,7 @@ export const AddAdminDialog : FunctionComponent<Props> = ({ setOpenDialog, setMe
 
 	const requestUsersData = async () => {
 		const authToken = getAuthToken();
-		await axios.get("http://localhost:3000/users/", { headers: authToken }).then((response: {[key: string]: any}) => {
+		await axios.get("http://localhost:4444/users/", { headers: authToken }).then((response: {[key: string]: any}) => {
 			setState({ users: response.data });
 			var usersName: Array<string> = [];
 			response.data.forEach((userData: {[key: string]: any}) => {
@@ -68,7 +68,7 @@ export const AddAdminDialog : FunctionComponent<Props> = ({ setOpenDialog, setMe
 		}
 		
 		const authToken = getAuthToken();
-		axios.post(`http://localhost:3000/channels/${channelData.id}/admin`, { "userId": selectedUser[0].id },  { headers: authToken }).then( () => {
+		axios.post(`http://localhost:4444/channels/${channelData.id}/admin`, { "userId": selectedUser[0].id },  { headers: authToken }).then( () => {
 			setOpenDialog(false);
 		}).catch( () => {
 			setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });

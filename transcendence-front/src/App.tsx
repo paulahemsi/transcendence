@@ -37,13 +37,13 @@ const PreHome = ({setIsHost, setIsSpectator, setMatchRoom,  setStandardMode } : 
   setMatchRoom: stringSetState
   setStandardMode: booleanSetState
 }) => {
-  const[ loggedIn, setLoggedIn ] = useState(isLoggedIn());
+
+  const loggedIn = isLoggedIn();
 
 	return (
     <main>
       {loggedIn
       ? <Home
-          setLoggedIn={setLoggedIn}
           setIsHost={setIsHost}
           setIsSpectator={setIsSpectator}
           setMatchRoom={setMatchRoom} 
