@@ -25,10 +25,8 @@ services:
             - back
         env_file:
             - .env
-        environment:
-            - PORT=3000
         ports:
-            - 3000:3000
+            - 3000:${FRONT_PORT}
         networks:
             - transcendence 
 
@@ -44,7 +42,7 @@ services:
         environment:
             - DB_HOST=transcendence_db
         ports:
-            - 4444:4444
+            - 4444:${BACK_PORT}
         networks:
             - transcendence 
 

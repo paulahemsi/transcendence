@@ -25,7 +25,7 @@ function initialize(app: any) {
 }
 
 async function bootstrap() {
-  const PORT = process.env.PORT;
+  const PORT = process.env.BACK_PORT;
   const app = await NestFactory.create(AppModule);
   initialize(app);
   await app.listen(PORT, () => console.log('Running on port %d', PORT));
