@@ -77,8 +77,8 @@ export const PhaserGame: FunctionComponent<Props> = ({
 		let winningPlayer: 1 | 2 | undefined = undefined;
 
 		function preload(this: Phaser.Scene): void {
-			this.load.image('pad', require('./assets/pad.png'));
-			this.load.image('ball', require('./assets/ball.png'));
+			this.load.image('pad', (standardMode ? require('./assets/pad.png') : require('./assets/rainbow_pad.png')));
+			this.load.image('ball', (standardMode ? require('./assets/ball.png') : require('./assets/rainbow_ball.png')));
 		}
 
 		function create(this: Phaser.Scene): void {
