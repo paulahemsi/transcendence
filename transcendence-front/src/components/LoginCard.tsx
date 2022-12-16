@@ -1,18 +1,28 @@
-import React, { useState } from "react";
+import React, { useReducer, useState } from "react";
 import { Link, Button, Card, CardActions, CardContent, Typography, Box } from '@mui/material';
+import { DEFAULT_TOAST_MSG, reducer } from "./utils/constants";
+import ErrorToast from "./utils/ErrorToast";
 
 const LoginCardButton = () => {
-	const [loading, setLoading] = useState(false);
+	const [state, setState] = useReducer(reducer, {
+		loading: false,
+		toastError: false,
+		toastMessage: DEFAULT_TOAST_MSG,
+	});
 	
 	const handleLoading = () => {
-		setLoading(true);
+		setState({ loading: true });
+		setTimeout(() => {
+			setState({ loading: false });
+			setState({ toastError: true });
+		}, 7000 )
 	}
 	
 	return (
 		<>
 			<Button 
 			variant="contained"
-			disabled={loading}
+			disabled={state.loading}
 			onClick={handleLoading}
 			size="large"
 			sx={{ 
@@ -33,6 +43,7 @@ const LoginCardButton = () => {
 						login
 				</Link>
 			</Button>
+			<ErrorToast state={state} setState={setState}/>
 		</>
 	)
 }
