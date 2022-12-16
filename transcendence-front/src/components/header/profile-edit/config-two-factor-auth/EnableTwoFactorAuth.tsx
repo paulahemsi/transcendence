@@ -5,6 +5,8 @@ import { typographyCSS } from './auxiliary'
 import { CodeTextField } from "./CodeTextField";
 import { booleanSetState, DEFAULT_TOAST_MSG, reducer } from "../../../utils/constants";
 
+const INVALID_CODE_MSG = "invalid code";
+
 interface Props {
     open: boolean;
     setOpen: booleanSetState;
@@ -20,16 +22,6 @@ const getQRcode = async ({ setState } : { setState: React.Dispatch<React.SetStat
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 	const response = (await axios.get('http://localhost:4444/two-factor-auth/generate', { headers: authToken }));
 	setState({ qrcode: response.data.url });
-}
-
-const enable = async (code: string) => {
-	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-	try {
-		await axios.post('http://localhost:4444/two-factor-auth/enable', {code: code }, { headers: authToken });
-	} catch {
-		return false;
-	}
-	return true;
 }
 
 const EnebleQrCodeContent = ({
@@ -86,16 +78,17 @@ export const EnableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, set
 	useEffect(() => {getQRcode({setState})}, []);
 	
 	const handleEnable = () => {
-		enable(state.code).then((success) => {
-			if (success) {
-				userData.hasTwoFactorAuth = true;
-				setUserData(userData);
-				setOpen(false);
-			}
-			setState({ code: '' });
-		}).catch( () => {
-			setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
-		});
+		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+		axios.post(
+			'http://localhost:4444/two-factor-auth/enable',
+			{ code: state.code },
+			{ headers: authToken }
+		).then(() => {
+			userData.hasTwoFactorAuth = true;
+			setUserData(userData);
+			setOpen(false);
+		}).catch(() => { setState({ toastError: true, toastMessage: INVALID_CODE_MSG })} )
+		setState({ code: '' });
 	}
 	
 	const handleClose = () => {
