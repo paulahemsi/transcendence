@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -44,7 +45,9 @@ export class TwoFactorAuthController {
     @Body() body: TwoFactorAuthCodeDto,
     @Res() response: Response,
   ) {
-    this.twoFactorAuthService.login(`${userId}`, body.code);
+    if (!this.twoFactorAuthService.verify(`${userId}`, body.code)) {
+      throw new BadRequestException('Invalid Code');
+    }
     const payload = { id: userId };
     response.cookie('accessToken', this.jwtService.sign(payload), {
       sameSite: 'lax',

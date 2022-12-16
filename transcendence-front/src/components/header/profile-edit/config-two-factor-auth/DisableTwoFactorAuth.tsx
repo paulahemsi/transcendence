@@ -5,6 +5,8 @@ import { CodeTextField } from "./CodeTextField";
 import axios, { AxiosRequestHeaders } from "axios";
 import { booleanSetState, DEFAULT_TOAST_MSG, reducer } from "../../../utils/constants";
 
+const INVALID_CODE_MSG = "invalid code";
+
 interface Props {
     open: boolean;
     setOpen: booleanSetState;
@@ -41,12 +43,7 @@ const DisableContent = ({
 
 const disable = async (code: string) => {
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-	try {
 		await axios.post('http://localhost:4444/two-factor-auth/disable', {code: code }, { headers: authToken });
-	} catch {
-		return false;
-	}
-	return true;
 }
 
 export const DisableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, setOpen, userData, setUserData }) => {
@@ -57,16 +54,17 @@ export const DisableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, se
 	});
 
 	const handleDisable = () => {
-		disable(state.code).then((success) => {
-			if (success) {
-				userData.hasTwoFactorAuth = false;
-				setUserData(userData);
-				setOpen(false);
-			}
-			setState({ code: '' });
-		}).catch( () => {
-			setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
-		});
+		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
+		axios.post(
+			'http://localhost:4444/two-factor-auth/disable',
+			{code: state.code },
+			{ headers: authToken }
+		).then(() => {
+			userData.hasTwoFactorAuth = false;
+			setUserData(userData);
+			setOpen(false);
+		}).catch( () => { setState({ toastError: true, toastMessage: INVALID_CODE_MSG});});
+		setState({ code: '' });
 	}
 	
 	const handleClose = () => {

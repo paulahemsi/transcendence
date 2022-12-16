@@ -36,14 +36,7 @@ export class TwoFactorAuthService {
     this.usersService.disableTwoFactorAuth(userId);
   }
 
-  async login(userId: string, code: string) {
-    const isCodeInvalid = !(await this.verify(userId, code));
-    if (isCodeInvalid) {
-      throw new BadRequestException('Invalid Code');
-    }
-  }
-
-  private async verify(userId: string, code: string) {
+  async verify(userId: string, code: string) {
     const secret = await this.usersService.getSecret(userId);
     return authenticator.verify({
       token: code,
