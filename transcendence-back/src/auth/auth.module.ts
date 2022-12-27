@@ -15,7 +15,7 @@ import { TwoFactorAuthService } from './two-factor-auth.service';
     PassportModule,
     JwtModule.register({
       secret: 'secret',
-      signOptions: { expiresIn: '86400s' },
+      signOptions: { expiresIn: '155520000s' },
     }),
   ],
   providers: [AuthService, TwoFactorAuthService, Intra42Strategy, JwtStrategy],
