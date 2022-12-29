@@ -45,7 +45,11 @@ export class TwoFactorAuthController {
     @Body() body: TwoFactorAuthCodeDto,
     @Res() response: Response,
   ) {
-    if (!this.twoFactorAuthService.verify(`${userId}`, body.code)) {
+    const isCodeInvalid = !(await this.twoFactorAuthService.verify(
+      `${userId}`,
+      body.code,
+    ));
+    if (isCodeInvalid) {
       throw new BadRequestException('Invalid Code');
     }
     const payload = { id: userId };
