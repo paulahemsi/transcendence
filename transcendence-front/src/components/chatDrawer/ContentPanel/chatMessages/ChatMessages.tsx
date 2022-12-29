@@ -116,10 +116,10 @@ export const ChatMessages: FunctionComponent<ChatMessageProps> = ({
 	const [state, setState] = useReducer(reducer, {
 		joined: false,
 		muted: false,
-		mutedMockCounter: 0,
 	});
+	const [mutedMockCounter, setMutedMockCounter] = useState(0)
 	
-	useEffect(() => {requestMembersFromChannel(activeChannel, setState)}, [state.mutedMockCounter]);
+	useEffect(() => {requestMembersFromChannel(activeChannel, setState)}, [mutedMockCounter]);
 
 	chatSocket.emit('joinChannel', activeChannel);
 
@@ -130,14 +130,10 @@ export const ChatMessages: FunctionComponent<ChatMessageProps> = ({
 	} )
 
 	chatSocket.off('muteUser').on('muteUser', () => {
-			const update = state.mutedMockCounter + 1;
-			setState({ mutedMockCounter: update });
+			const update = mutedMockCounter + 1;
+			setMutedMockCounter(update);
 	});
 
-	chatSocket.on('leaveChannel', (room) => {
-		//?
-	} )
-	
 	if (state.muted) {
 		return (
 			<Muted/>
