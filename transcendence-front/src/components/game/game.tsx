@@ -82,7 +82,6 @@ export const PhaserGame: FunctionComponent<Props> = ({
 		}
 
 		function create(this: Phaser.Scene): void {
-			gameSocket.connect();
 			joinGameRoom();
 			player1 = this.physics.add.sprite(screenWidth * 0.1, screenHeight * 0.5, 'pad');
 			player1.displayWidth = screenWidth * 0.05;
