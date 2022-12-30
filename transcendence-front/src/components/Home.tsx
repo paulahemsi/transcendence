@@ -5,7 +5,7 @@ import { Footer } from "./footer/Footer";
 import ChatDrawer from "./chatDrawer/ChatDrawer";
 import ProfileCard from "./profileDrawer/ProfileDrawer";
 import { Navigate } from "react-router-dom";
-import { gameSocket, sessionSocket } from "./context/socket";
+import { chatSocket, gameSocket, sessionSocket } from "./context/socket";
 import { booleanSetState, getIdFromToken, reducer, stringSetState } from "./utils/constants";
 import { MatchInfos, MatchInviteAnswer, matchInfosSetState } from "./utils/match-interfaces";
 import ErrorToast from "./utils/ErrorToast";
@@ -289,7 +289,11 @@ export const Home = ({
 
 	const userId = getIdFromToken();
 
-	useEffect(() => {sessionSocket.connect()}, []);
+	useEffect(() => {
+		sessionSocket.connect()
+		gameSocket.connect()
+		chatSocket.connect()
+	}, []);
 
 	listenPlayWithFriend(userId, setMatchInfos, setMatchRoom, setOpenDialog);
 	listenWatchGame(setMatchRoom, setGameActive, setIsSpectator);
