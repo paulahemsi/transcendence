@@ -64,7 +64,7 @@ export const DeleteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 	const handleSave = () => {
 		const selectedUser = state.users.filter((u: {[key: string]: any}) => u.username === state.searchQuery);
 		
-		if (!selectedUser.length || !state.usersName.includes(selectedUser.name)) {
+		if (!selectedUser.length || !state.usersName.includes(selectedUser[0].username)) {
 			setState({ toastError: true, toastMessage: "there's no user in the group with this name :s" });
 			return;
 		}
