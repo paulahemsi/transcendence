@@ -54,7 +54,7 @@ export const PhaserGame: FunctionComponent<Props> = ({
 			scene: {
 				preload: preload,
 				create: create,
-				update: isHost ? updateHost : updateGuest
+				update: isSpectator ? updateSpectator : (isHost ? updateHost : updateGuest)
 			}
 		}
 		let game = new Phaser.Game(gameConfig);
@@ -110,36 +110,6 @@ export const PhaserGame: FunctionComponent<Props> = ({
 				updateScore();
 			}
 			listenStopGame(this.scene);
-		}
-
-		function update(this: Phaser.Scene): void {
-			if (isSpectator) {
-				updatePlayer1PositionFromSocket();
-				updatePlayer2PositionFromSocket();
-				updateBallPositionFromSocket();
-			}
-			
-			if (isHost) {
-				updatePlayerVelocity(player1, this.input);
-				if (player1.y != player1PosY) {
-					updatePlayer1Position();
-				}
-				updatePlayer2PositionFromSocket();
-				if (ball.x != ballPos.x || ball.y != ballPos.y) {
-					updateBallPosition();
-				}
-			} 
-			
-			if (!isHost && !isSpectator) {
-				updatePlayerVelocity(player2, this.input);
-				updatePlayer1PositionFromSocket();
-				if (player2.y != player2PosY) {
-					updatePlayer2Position();
-				}
-				updateBallPositionFromSocket();
-			}
-
-			checkEndGame(this.scene);
 		}
 
 		function updateSpectator(this: Phaser.Scene): void {
