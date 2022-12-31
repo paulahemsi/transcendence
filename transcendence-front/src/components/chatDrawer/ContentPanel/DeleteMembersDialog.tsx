@@ -4,6 +4,7 @@ import axios from 'axios';
 import UsersList from "../ControlPanel/UsersList";
 import ErrorToast from "../../utils/ErrorToast";
 import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken, objectSetState } from "../../utils/constants";
+import { chatSocket } from "../../context/socket";
 
 interface Props {
 	channelData: {[key: string]: any};
@@ -71,6 +72,7 @@ export const DeleteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 		
 		const authToken = getAuthToken();
 		axios.delete(`http://localhost:4444/channels/${channelData.id}/members/${selectedUser[0].id}`, { headers: authToken }).then( () => {
+			chatSocket.emit('refreshGroups');
 			setMembersMockData(selectedUser);
 			setOpenDialog(false);
 		}).catch( () => {
