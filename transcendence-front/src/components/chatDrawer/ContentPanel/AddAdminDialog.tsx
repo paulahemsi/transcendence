@@ -4,6 +4,7 @@ import axios from 'axios';
 import UsersList from "../ControlPanel/UsersList";
 import ErrorToast from "../../utils/ErrorToast";
 import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken, objectSetState } from "../../utils/constants";
+import { chatSocket } from "../../context/socket";
 
 interface Props {
 	channelData: {[key: string]: any};
@@ -68,7 +69,9 @@ export const AddAdminDialog : FunctionComponent<Props> = ({ setOpenDialog, setMe
 		}
 		
 		const authToken = getAuthToken();
-		axios.post(`http://localhost:4444/channels/${channelData.id}/admin`, { "userId": selectedUser[0].id },  { headers: authToken }).then( () => {
+		axios.post(`http://localhost:4444/channels/${channelData.id}/admin`,
+			{ "userId": selectedUser[0].id },  { headers: authToken }).then( () => {
+			chatSocket.emit('refreshGroups');
 			setOpenDialog(false);
 		}).catch( () => {
 			setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
