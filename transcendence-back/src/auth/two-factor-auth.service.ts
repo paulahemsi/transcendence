@@ -15,8 +15,10 @@ export class TwoFactorAuthService {
     const path = `./uploads/${userId}`;
 
     this.createDirectory(path);
-    await qrcode.toFile(`${path}/qrcode.png`, otpauth);
-    this.usersService.setSecret(userId, secret);
+    if (!user.hasTwoFactorAuth) {
+      await qrcode.toFile(`${path}/qrcode.png`, otpauth);
+      this.usersService.setSecret(userId, secret);
+    }
     return { url: `http://localhost:4444/images/${userId}/qrcode.png` };
   }
 
