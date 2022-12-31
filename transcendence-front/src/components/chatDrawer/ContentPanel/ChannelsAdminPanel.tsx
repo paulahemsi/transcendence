@@ -4,6 +4,7 @@ import axios, { AxiosRequestHeaders } from "axios";
 import ChannelMembers from "./ChannelMembers";
 import AdminControlPannel from "./AdminControlPannel";
 import { numberSetState, objectSetState } from "../../utils/constants";
+import { chatSocket } from "../../context/socket";
 
 interface BodyProps {
 	loading: boolean;
@@ -67,6 +68,10 @@ export const ChannelsAdminPanel = ( { activeChannel, setActiveChannel } : { acti
 	const [ membersMockData, setMembersMockData ] = useState<{[key: string]: any}>({});
 	const [ channelData, setChannelData ] = useState<{[key: string]: any}>({});
 	const [ loading, setLoading ] = useState(true);
+
+	chatSocket.off('refreshGroups').on('refreshGroups', () => {
+		requestChannelInfos()
+	});
 
 	const requestChannelInfos = async () => {
 		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};

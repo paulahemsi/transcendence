@@ -4,6 +4,7 @@ import axios from 'axios';
 import SearchGroupsList from "./SearchGroupsList";
 import ErrorToast from "../../utils/ErrorToast";
 import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken, objectSetState, reducer } from "../../utils/constants";
+import { chatSocket } from "../../context/socket";
 
 const PROTECTED = 'PROTECTED';
 const PUBLIC = 'PUBLIC'
@@ -81,6 +82,7 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 			"userId": userId,
 			"password": state.searchQuery
 		}, { headers: authToken }).then( () => {
+			chatSocket.emit('refreshGroups');
 			setUserGroupsData();
 			setOpenDialog(false);
 		}).catch( (error) => {
