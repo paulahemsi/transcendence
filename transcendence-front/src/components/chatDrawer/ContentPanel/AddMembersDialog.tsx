@@ -4,6 +4,7 @@ import axios from 'axios';
 import UsersList from "../ControlPanel/UsersList";
 import ErrorToast from "../../utils/ErrorToast";
 import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken, objectSetState, reducer } from "../../utils/constants";
+import { chatSocket } from "../../context/socket";
 
 interface Props {
 	channelData: {[key: string]: any};
@@ -71,6 +72,7 @@ export const AddMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, set
 		axios.patch(`http://localhost:4444/channels/${channelData.id}/members`, {
 			"userId": selectedUser[0].id,
 		}, { headers: authToken }).then( () => {
+			chatSocket.emit('refreshGroups');
 			setMembersMockData(selectedUser);
 			setOpenDialog(false);
 		}).catch( () => {

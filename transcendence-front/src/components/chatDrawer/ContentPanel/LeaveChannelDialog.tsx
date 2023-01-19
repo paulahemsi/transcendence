@@ -3,6 +3,7 @@ import { Button, DialogActions, DialogTitle } from "@mui/material"
 import axios from 'axios';
 import ErrorToast from "../../utils/ErrorToast";
 import { booleanSetState, DEFAULT_TOAST_MSG, getAuthToken, getIdFromToken, numberSetState, objectSetState } from "../../utils/constants";
+import { chatSocket } from "../../context/socket";
 
 interface Props {
 	channelData: {[key: string]: any};
@@ -25,6 +26,7 @@ export const LeaveChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, c
 		const userId = getIdFromToken();
 		const authToken = getAuthToken();
 		axios.delete(`http://localhost:4444/channels/${channelData.id}/members/${userId}`, { headers: authToken }).then( () => {
+			chatSocket.emit('refreshGroups');
 			setActiveChannel(0);
 			setOpenDialog(false);
 		}).catch( () => {

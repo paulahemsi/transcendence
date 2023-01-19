@@ -114,7 +114,6 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 export const ChatMessages: FunctionComponent<ChatMessageProps> = ({
 	activeChannel, isDM, friendId, setIsHost, setGameActive, setMatchRoom, setStandardMode}) => {
 	const [state, setState] = useReducer(reducer, {
-		joined: false,
 		muted: false,
 	});
 	const [mutedMockCounter, setMutedMockCounter] = useState(0)
@@ -122,12 +121,6 @@ export const ChatMessages: FunctionComponent<ChatMessageProps> = ({
 	useEffect(() => {requestMembersFromChannel(activeChannel, setState)}, [mutedMockCounter]);
 
 	chatSocket.emit('joinChannel', activeChannel);
-
-	chatSocket.on('joinChannel', (room) => {
-		if ( room == activeChannel) {
-			setState({ joined: true });
-		}
-	} )
 
 	chatSocket.off('muteUser').on('muteUser', () => {
 			const update = mutedMockCounter + 1;
@@ -143,7 +136,7 @@ export const ChatMessages: FunctionComponent<ChatMessageProps> = ({
 	return (
 		<>
 			{
-				state.joined && isDM &&
+				isDM &&
 				<DMButtons
 					friendId={friendId}
 					setIsHost={setIsHost}
@@ -153,7 +146,6 @@ export const ChatMessages: FunctionComponent<ChatMessageProps> = ({
 				/>
 			}
 			{
-				state.joined && 
 				<ChannelMessage activeChannel={activeChannel} />
 			}
 		</>

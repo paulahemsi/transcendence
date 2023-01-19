@@ -5,6 +5,7 @@ import ChatAuxiliaryButton from "./ChatAuxiliaryButton";
 import ChatButton from "./ChatButton";
 import axios from 'axios';
 import { booleanSetState, getAuthToken, getIdFromToken, numberSetState, objectSetState } from "../../utils/constants";
+import { chatSocket } from "../../context/socket";
 
 interface Props {
 	setChannelsAdminPanel: booleanSetState;
@@ -20,6 +21,10 @@ export const ControlPanel : FunctionComponent<Props> = ({ setChannelsAdminPanel,
 	const [direct, setDirect] = useState(true);
 	const [groupsData, setGroupsData] = useState<{[key: string]: any}>({});
 	const [loading, setLoading] = useState(true);
+
+	chatSocket.off('refreshGroups').on('refreshGroups', () => {
+		requestGroupsData()
+	});
 
 	const requestGroupsData = async () => {
 
