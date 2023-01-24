@@ -36,7 +36,9 @@ const requestMembersFromChannel = async ( activeChannel : number , setState : ob
 	const authToken = getAuthToken();
 	await axios.get(`http://localhost:4444/channels/${activeChannel}/members`, { headers: authToken }).then((response) => {
 		const user = response.data.filter((member: {[key: string]: any}) => member.id === userId)
+		console.log(user)
 		if (user.length) {
+			console.log(user[0].muted)
 			setState({muted: user[0].muted});
 		}
 	}).catch( () => {});
@@ -122,6 +124,7 @@ export const ChatMessages: FunctionComponent<ChatMessageProps> = ({
 	chatSocket.emit('joinChannel', activeChannel);
 
 	chatSocket.off('muteUser').on('muteUser', () => {
+			console.log('chegou')
 			requestMembersFromChannel(activeChannel, setState)
 	});
 
