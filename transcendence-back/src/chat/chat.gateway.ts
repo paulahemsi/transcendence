@@ -119,12 +119,11 @@ export class ChatGateway
     client.emit('muteUser', true);
     this.server.to(muteEvent.channel.toString()).emit('muteUser', true);
     setTimeout(() => {
-      this.channelService.handleMute(
-        muteEvent.channel,
-        muteEvent.mutedUser,
-        false,
-      );
-      this.server.to(muteEvent.channel.toString()).emit('muteUser', true);
+      this.channelService
+        .handleMute(muteEvent.channel, muteEvent.mutedUser, false)
+        .then(() => {
+          this.server.to(muteEvent.channel.toString()).emit('muteUser', true);
+        });
     }, muteEvent.duration);
   }
 
