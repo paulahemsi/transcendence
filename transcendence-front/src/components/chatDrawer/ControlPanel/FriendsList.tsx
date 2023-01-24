@@ -50,8 +50,6 @@ const NoFriends = () => {
 
 const WatchGame = ({ friendId } : { friendId: string }) => {
 	const handleClick = () => {
-		console.log("quero assisir esse jogo (:");
-		console.log(friendId);
 		gameSocket.emit('watchGame', friendId);
 	};
 
