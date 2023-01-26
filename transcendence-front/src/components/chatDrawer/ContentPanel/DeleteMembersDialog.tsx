@@ -72,7 +72,7 @@ export const DeleteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 		
 		const authToken = getAuthToken();
 		axios.delete(`http://localhost:4444/channels/${channelData.id}/members/${selectedUser[0].id}`, { headers: authToken }).then( () => {
-			chatSocket.emit('refreshGroups');
+			chatSocket.emit('refreshGroups', selectedUser[0].id);
 			setMembersMockData(selectedUser);
 			setOpenDialog(false);
 		}).catch( () => {
