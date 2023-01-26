@@ -204,11 +204,17 @@ export class ChannelsService {
         channel: true,
         user: true,
       },
-      where: {
-        channel: { id: channelId },
-        user: { id: userId },
-      },
+      where: [
+        {
+          channel: { id: channelId },
+          user: { id: userId },
+        },
+      ],
     });
+    if (member.user.id == channel.owner.id) {
+      throw new BadRequestException();
+    }
+
     await this.channelMemberRepository.delete(member.id);
     if (channel.owner.id === userId) {
       await this.defineNewOwner(channel);
@@ -332,7 +338,6 @@ export class ChannelsService {
     this.channelAdminRepository.save(newAdmin);
   }
 
-  //TODO: remover se a gente não for usar o endpoint
   async addMessage(channelId: number, messageDto: MessagelDto) {
     const { channel, user } = await this.checkChannelAndMember(
       channelId,
@@ -417,8 +422,6 @@ export class ChannelsService {
     if (!type) {
       throw new BadRequestException('Invalid Channel Type');
     }
-
-    // TODO: regras de publico e privado
 
     const channel = this.channelRepository.create({
       name: channelDto.name,
