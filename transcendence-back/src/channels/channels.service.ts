@@ -3,6 +3,7 @@ import {
   forwardRef,
   Inject,
   Injectable,
+  MethodNotAllowedException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -533,6 +534,10 @@ export class ChannelsService {
 
     if (!member) {
       throw new NotFoundException();
+    }
+
+    if (member.user.id == member.channel.owner.id) {
+      throw new BadRequestException();
     }
 
     member.muted = isMuted;
