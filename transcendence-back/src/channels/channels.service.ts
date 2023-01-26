@@ -539,7 +539,9 @@ export class ChannelsService {
       throw new NotFoundException();
     }
 
-    if (member.user.id == member.channel.owner.id) {
+    const channel = await this.findChannel(channelId);
+
+    if (member.user.id == channel.owner.id) {
       throw new BadRequestException();
     }
 
