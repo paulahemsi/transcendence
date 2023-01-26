@@ -3,6 +3,7 @@ import {
   forwardRef,
   Inject,
   Injectable,
+  MethodNotAllowedException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -54,7 +55,7 @@ type channel = {
   id: number;
   name: string;
   type: string;
-}
+};
 
 @Injectable()
 export class ChannelsService {
@@ -80,8 +81,8 @@ export class ChannelsService {
       },
       where: {
         id: id,
-      }
-      });
+      },
+    });
   }
 
   private async checkChannel(channelId: number) {
@@ -136,9 +137,11 @@ export class ChannelsService {
   }
 
   private wasProtected(oldType: channelType, newType: channelType) {
-    return  (oldType === channelType.PROTECTED) && (newType !== channelType.PROTECTED);
+    return (
+      oldType === channelType.PROTECTED && newType !== channelType.PROTECTED
+    );
   }
-  
+
   private async updateOwner(channel: Channel, ownerId: string) {
     if (ownerId) {
       const newOwner = await this.usersService.findUser(ownerId);
@@ -146,7 +149,11 @@ export class ChannelsService {
     }
   }
 
-  private async updatePassword(channel: Channel, dtoPassword: string, newType: channelType) {
+  private async updatePassword(
+    channel: Channel,
+    dtoPassword: string,
+    newType: channelType,
+  ) {
     if (dtoPassword) {
       const newPassword = await bcrypt.hash(dtoPassword, bcrypt.genSaltSync());
       channel.password = newPassword;
@@ -172,7 +179,7 @@ export class ChannelsService {
 
     this.channelRepository.save(channel);
   }
-  
+
   async defineNewOwner(channel: Channel) {
     const newOwner = await this.channelMemberRepository.findOne({
       relations: {
@@ -189,7 +196,7 @@ export class ChannelsService {
     this.updateOwner(channel, newOwner.user.id);
     this.channelRepository.save(channel);
   }
-  
+
   async deleteMember(channelId: number, userId: string) {
     const { channel } = await this.checkChannelAndMember(channelId, userId);
     const member = await this.channelMemberRepository.findOne({
@@ -197,11 +204,17 @@ export class ChannelsService {
         channel: true,
         user: true,
       },
-      where: {
-        channel: { id: channelId },
-        user: { id: userId },
-      },
+      where: [
+        {
+          channel: { id: channelId },
+          user: { id: userId },
+        },
+      ],
     });
+    if (member.user.id == channel.owner.id) {
+      throw new BadRequestException();
+    }
+
     await this.channelMemberRepository.delete(member.id);
     if (channel.owner.id === userId) {
       await this.defineNewOwner(channel);
@@ -217,7 +230,7 @@ export class ChannelsService {
     }
     return false;
   }
-  
+
   async joinChannel(channelId: number, userId: string, password: string) {
     const { channel, user } = await this.checkChannelAndMember(
       channelId,
@@ -231,8 +244,7 @@ export class ChannelsService {
     if (this.authorizedMember(channel, password)) {
       const newMember = this.createMemberEntity(user, channel);
       this.channelMemberRepository.save(newMember);
-    }
-    else {
+    } else {
       throw new ForbiddenException();
     }
   }
@@ -326,7 +338,6 @@ export class ChannelsService {
     this.channelAdminRepository.save(newAdmin);
   }
 
-  //TODO: remover se a gente não for usar o endpoint
   async addMessage(channelId: number, messageDto: MessagelDto) {
     const { channel, user } = await this.checkChannelAndMember(
       channelId,
@@ -412,8 +423,6 @@ export class ChannelsService {
       throw new BadRequestException('Invalid Channel Type');
     }
 
-    // TODO: regras de publico e privado
-
     const channel = this.channelRepository.create({
       name: channelDto.name,
       owner: user,
@@ -451,24 +460,23 @@ export class ChannelsService {
     const protectedMessageType = await this.channelTypeService.getChannelType(
       channelType.PROTECTED,
     );
-    
+
     return await this.channelRepository.find({
       relations: {
         type: true,
       },
       where: [
-      {
-        type: { id: publicMessageType.id },
-      },
-      {
-        type: { id: protectedMessageType.id },
-      }
-    ],
+        {
+          type: { id: publicMessageType.id },
+        },
+        {
+          type: { id: protectedMessageType.id },
+        },
+      ],
     });
   }
 
   async getPublicChannels() {
-
     const channels = await this.getAllPublicChannels();
     const channelsResponse: Array<channel> = [];
 
@@ -479,8 +487,8 @@ export class ChannelsService {
       channel.name = element.name;
       channel.type = element.type.type;
       channelsResponse.push(channel);
-    })
-    
+    });
+
     return channelsResponse;
   }
 
@@ -490,10 +498,10 @@ export class ChannelsService {
         owner: true,
       },
       where: [
-      {
-        id: channelId,
-      },
-    ],
+        {
+          id: channelId,
+        },
+      ],
     });
     if (!channel) {
       throw new NotFoundException();
@@ -501,21 +509,21 @@ export class ChannelsService {
 
     const members = await this.getMembers(channelId);
     const admins = await this.getAdmins(channelId);
-    
+
     const channelData = {
       id: channel.id,
       ownerId: channel.owner.id,
       name: channel.name,
       members: members,
       admin: admins,
-    }
+    };
 
-    return channelData
+    return channelData;
   }
 
   async handleMute(channelId: number, userId: string, isMuted: boolean) {
     const member = await this.channelMemberRepository.findOne({
-        relations: {
+      relations: {
         channel: true,
         user: true,
       },
@@ -523,14 +531,20 @@ export class ChannelsService {
         {
           channel: { id: channelId },
           user: { id: userId },
-        }
+        },
       ],
-    })
-    
+    });
+
     if (!member) {
       throw new NotFoundException();
     }
-    
+
+    const channel = await this.findChannel(channelId);
+
+    if (member.user.id == channel.owner.id) {
+      throw new BadRequestException();
+    }
+
     member.muted = isMuted;
     this.channelMemberRepository.save(member);
   }
