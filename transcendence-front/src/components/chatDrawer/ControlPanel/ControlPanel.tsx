@@ -18,17 +18,20 @@ interface Props {
 
 export const ControlPanel : FunctionComponent<Props> = ({ setChannelsAdminPanel, setExtraContent, setActiveChannel, friendsData, activeChannel, setFriendsData }) => {
 
+	const userId = getIdFromToken();
 	const [direct, setDirect] = useState(true);
 	const [groupsData, setGroupsData] = useState<{[key: string]: any}>({});
 	const [loading, setLoading] = useState(true);
 
-	chatSocket.off('refreshGroups').on('refreshGroups', () => {
+	chatSocket.off('refreshGroups').on('refreshGroups', (blockedUserId) => {
+		if (blockedUserId == userId) {
+			setExtraContent(false)
+		}
 		requestGroupsData()
 	});
 
 	const requestGroupsData = async () => {
 
-		const userId = getIdFromToken();
 		const authToken = getAuthToken();
 		await axios.get(`http://localhost:4444/users/${userId}/channels`, { headers: authToken }).then((response) => {
 			setGroupsData(response.data);

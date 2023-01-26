@@ -133,8 +133,8 @@ export class ChatGateway
   }
 
   @SubscribeMessage('refreshGroups')
-  async handleRefreshGroups(client: Socket, blockedEvent: boolean) {
-    this.server.emit('refreshGroups');
+  async handleRefreshGroups(client: Socket, userId: string) {
+    this.server.emit('refreshGroups', userId);
   }
 
   private disconnect(client: Socket) {
