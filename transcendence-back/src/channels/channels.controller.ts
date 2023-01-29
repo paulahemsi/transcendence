@@ -81,10 +81,7 @@ export class ChannelsController {
   }
 
   @Delete(':id/admin')
-  deleteAdmin(
-    @Param('id') channelId: number,
-    @Param('userId') userId: string,
-  ) {
+  deleteAdmin(@Param('id') channelId: number, @Param('userId') userId: string) {
     return this.channelService.deleteAdmin(channelId, userId);
   }
 
