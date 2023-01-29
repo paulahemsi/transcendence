@@ -3,7 +3,6 @@ import {
   forwardRef,
   Inject,
   Injectable,
-  MethodNotAllowedException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -36,12 +35,6 @@ type members = {
 type admins = {
   id: string;
   name: string;
-};
-
-type channelData = {
-  id: string;
-  name: string;
-  members: members[];
 };
 
 type channelMessage = {
@@ -214,6 +207,27 @@ export class ChannelsService {
     if (member.user.id == channel.owner.id) {
       throw new BadRequestException();
     }
+
+    await this.channelMemberRepository.delete(member.id);
+    if (channel.owner.id === userId) {
+      await this.defineNewOwner(channel);
+    }
+  }
+
+  async leave(channelId: number, userId: string) {
+    const { channel } = await this.checkChannelAndMember(channelId, userId);
+    const member = await this.channelMemberRepository.findOne({
+      relations: {
+        channel: true,
+        user: true,
+      },
+      where: [
+        {
+          channel: { id: channelId },
+          user: { id: userId },
+        },
+      ],
+    });
 
     await this.channelMemberRepository.delete(member.id);
     if (channel.owner.id === userId) {

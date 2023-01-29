@@ -8,7 +8,9 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Req,
 } from '@nestjs/common';
+import { Request } from 'express';
 import {
   CreateChannelDto,
   MessagelDto,
@@ -59,6 +61,12 @@ export class ChannelsController {
     @Param('userId') userId: string,
   ) {
     return this.channelService.deleteMember(channelId, userId);
+  }
+
+  @Delete('leave/:channelId')
+  leaveChannel(@Param('channelId') channelId: number, @Req() request: Request) {
+    const userId = request.user;
+    return this.channelService.leave(channelId, `${userId}`);
   }
 
   @Get(':id/members')
