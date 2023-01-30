@@ -8,7 +8,9 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Req,
 } from '@nestjs/common';
+import { Request } from 'express';
 import {
   CreateChannelDto,
   MessagelDto,
@@ -61,6 +63,12 @@ export class ChannelsController {
     return this.channelService.deleteMember(channelId, userId);
   }
 
+  @Delete('leave/:channelId')
+  leaveChannel(@Param('channelId') channelId: number, @Req() request: Request) {
+    const userId = request.user;
+    return this.channelService.leave(channelId, `${userId}`);
+  }
+
   @Get(':id/members')
   getMembers(@Param('id') channelId: number) {
     return this.channelService.getMembers(channelId);
@@ -81,10 +89,7 @@ export class ChannelsController {
   }
 
   @Delete(':id/admin')
-  deleteAdmin(
-    @Param('id') channelId: number,
-    @Param('userId') userId: string,
-  ) {
+  deleteAdmin(@Param('id') channelId: number, @Param('userId') userId: string) {
     return this.channelService.deleteAdmin(channelId, userId);
   }
 
