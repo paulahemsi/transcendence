@@ -25,7 +25,7 @@ const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) =
 const requestMessagesFromChannel = async ( activeChannel : number , setMessagesData : arraySetState ) =>  {
 
 	const authToken = getAuthToken();
-	await axios.get(`http://localhost:4444/channels/${activeChannel}/messages`, { headers: authToken }).then((response) => {
+	await axios.get(`${process.env.REACT_APP_BACK_HOST}/channels/${activeChannel}/messages`, { headers: authToken }).then((response) => {
 		setMessagesData(response.data);
 	}).catch( () => {});
 }
@@ -34,7 +34,7 @@ const requestMembersFromChannel = async ( activeChannel : number , setState : ob
 
 	const userId = getIdFromToken();
 	const authToken = getAuthToken();
-	await axios.get(`http://localhost:4444/channels/${activeChannel}/members`, { headers: authToken }).then((response) => {
+	await axios.get(`${process.env.REACT_APP_BACK_HOST}/channels/${activeChannel}/members`, { headers: authToken }).then((response) => {
 		const user = response.data.filter((member: {[key: string]: any}) => member.id === userId)
 		if (user.length) {
 			setState({muted: user[0].muted});

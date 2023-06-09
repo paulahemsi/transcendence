@@ -17,6 +17,8 @@ const LoginCardButton = () => {
 			setState({ toastError: true });
 		}, 7000 )
 	}
+
+	const loginLink = process.env.REACT_APP_BACK_HOST + "/auth/login"
 	
 	return (
 		<>
@@ -31,7 +33,7 @@ const LoginCardButton = () => {
 				background: '#9575CD',
 				':hover': { background: '#311B92'}
 			}}>
-				<Link href="http://localhost:4444/auth/login" style={{ textDecoration: 'none' }} sx={{
+				<Link href={loginLink} style={{ textDecoration: 'none' }} sx={{
 					width: 150,
 					height: 55,
 					textTransform: 'lowercase',

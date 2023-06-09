@@ -40,7 +40,7 @@ export const AddAdminDialog : FunctionComponent<Props> = ({ setOpenDialog, setMe
 
 	const requestUsersData = async () => {
 		const authToken = getAuthToken();
-		await axios.get("http://localhost:4444/users/", { headers: authToken }).then((response: {[key: string]: any}) => {
+		await axios.get(process.env.REACT_APP_BACK_HOST +"/users/", { headers: authToken }).then((response: {[key: string]: any}) => {
 			setState({ users: response.data });
 			var usersName: Array<string> = [];
 			response.data.forEach((userData: {[key: string]: any}) => {
@@ -69,7 +69,7 @@ export const AddAdminDialog : FunctionComponent<Props> = ({ setOpenDialog, setMe
 		}
 		
 		const authToken = getAuthToken();
-		axios.post(`http://localhost:4444/channels/${channelData.id}/admin`,
+		axios.post(`${process.env.REACT_APP_BACK_HOST}/channels/${channelData.id}/admin`,
 			{ "userId": selectedUser[0].id },  { headers: authToken }).then( () => {
 			chatSocket.emit('refreshGroups');
 			setOpenDialog(false);

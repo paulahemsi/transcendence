@@ -20,7 +20,7 @@ const TwoFactorAuthButton = ({
 	const handleAuthentication = () => {
 		axios
 			.post(
-				`http://localhost:4444/two-factor-auth/login?user=${userId}`,
+				`${process.env.REACT_APP_BACK_HOST}/two-factor-auth/login?user=${userId}`,
 				{ code: code })
 			.then((response) => {
 				document.cookie = response.data.cookie;

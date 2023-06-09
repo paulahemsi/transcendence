@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Link } from "@mui/material";
 
-const logoutUrl = 'http://localhost:4444/auth/logout'
+const logoutUrl = process.env.REACT_APP_BACK_HOST + '/auth/logout'
 
 export const LogoutButton = () => {
 	

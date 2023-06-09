@@ -43,7 +43,7 @@ const DisableContent = ({
 
 const disable = async (code: string) => {
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-		await axios.post('http://localhost:4444/two-factor-auth/disable', {code: code }, { headers: authToken });
+		await axios.post(process.env.REACT_APP_BACK_HOST + '/two-factor-auth/disable', {code: code }, { headers: authToken });
 }
 
 export const DisableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, setOpen, userData, setUserData }) => {
@@ -56,7 +56,7 @@ export const DisableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, se
 	const handleDisable = () => {
 		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 		axios.post(
-			'http://localhost:4444/two-factor-auth/disable',
+			process.env.REACT_APP_BACK_HOST + '/two-factor-auth/disable',
 			{code: state.code },
 			{ headers: authToken }
 		).then(() => {

@@ -23,7 +23,7 @@ export const BlockUserDialog : FunctionComponent<Props> = ({ setOpenDialog, frie
 	const handleBlock = () => {
 		const userId = getIdFromToken();
 		const authToken = getAuthToken();
-		axios.post(`http://localhost:4444/users/${userId}/block`, {
+		axios.post(`${process.env.REACT_APP_BACK_HOST}/users/${userId}/block`, {
 			"id": friendId
 		}, { headers: authToken }).then( () => {
 			chatSocket.emit('refreshFriends');

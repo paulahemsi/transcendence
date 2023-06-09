@@ -90,7 +90,7 @@ export const MuteMembersDialog : FunctionComponent<Props> = ({ setOpenDialog, ch
 	const requestUsersData = async () => {
 		const userId = getIdFromToken();
 		const authToken = getAuthToken();
-		await axios.get("http://localhost:4444/users/", { headers: authToken }).then((response: {[key: string]: any}) => {
+		await axios.get(process.env.REACT_APP_BACK_HOST + "/users/", { headers: authToken }).then((response: {[key: string]: any}) => {
 			setState({ users: response.data });
 			var usersName: Array<string> = [];
 			response.data.forEach((userData: {[key: string]: any}) => {

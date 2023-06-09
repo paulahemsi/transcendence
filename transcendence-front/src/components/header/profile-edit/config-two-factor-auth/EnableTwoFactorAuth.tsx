@@ -20,7 +20,7 @@ const enterCodeMessage = 'Enter code below and confirm to enable two-factor auth
 
 const getQRcode = async ({ setState } : { setState: React.Dispatch<React.SetStateAction<{ [key: string]: any; }>>}) => {
 	const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-	const response = (await axios.get('http://localhost:4444/two-factor-auth/generate', { headers: authToken }));
+	const response = (await axios.get(process.env.REACT_APP_BACK_HOST + '/two-factor-auth/generate', { headers: authToken }));
 	setState({ qrcode: response.data.url });
 }
 
@@ -80,7 +80,7 @@ export const EnableTwoFactorAuthDialog : FunctionComponent<Props> = ({ open, set
 	const handleEnable = () => {
 		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
 		axios.post(
-			'http://localhost:4444/two-factor-auth/enable',
+			process.env.REACT_APP_BACK_HOST + '/two-factor-auth/enable',
 			{ code: state.code },
 			{ headers: authToken }
 		).then(() => {

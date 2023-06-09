@@ -19,7 +19,7 @@ export class TwoFactorAuthService {
       await qrcode.toFile(`${path}/qrcode.png`, otpauth);
       this.usersService.setSecret(userId, secret);
     }
-    return { url: `http://localhost:4444/images/${userId}/qrcode.png` };
+    return { url: process.env.BACK_HOST + `/images/${userId}/qrcode.png` };
   }
 
   async enable(userId: string, code: string) {

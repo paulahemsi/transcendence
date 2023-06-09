@@ -18,7 +18,7 @@ interface Props {
 const requestFriendsData = async ({ setFriendsData } : { setFriendsData: React.Dispatch<React.SetStateAction<{[key: string]: any}>>}) => {
 	const userId = getIdFromToken();
 	const authToken = getAuthToken();
-	await axios.get(`http://localhost:4444/users/${userId}/friends`, { headers: authToken }).then((response) => {
+	await axios.get(`${process.env.REACT_APP_BACK_HOST}/users/${userId}/friends`, { headers: authToken }).then((response) => {
 		setFriendsData(response.data);
 })
 }
@@ -44,7 +44,7 @@ export const ChatDrawer : FunctionComponent<Props> = ({ setOpenDrawer, setIsHost
 			return ;
 		}
 		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-		await axios.get(`http://localhost:4444/channels/${activeChannel}`, { headers: authToken }).then((response) => {
+		await axios.get(`${process.env.REACT_APP_BACK_HOST}/channels/${activeChannel}`, { headers: authToken }).then((response) => {
 			if (response.data.name === "directMessage") {
 				setIsDM(true);
 			} else {

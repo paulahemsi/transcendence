@@ -25,7 +25,7 @@ export const LeaveChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, c
 	const handleSave = () => {
 		const userId = getIdFromToken();
 		const authToken = getAuthToken();
-		axios.delete(`http://localhost:4444/channels/leave/${channelData.id}`, { headers: authToken }).then( () => {
+		axios.delete(`${process.env.REACT_APP_BACK_HOST}/channels/leave/${channelData.id}`, { headers: authToken }).then( () => {
 			chatSocket.emit('refreshGroups');
 			setActiveChannel(0);
 			setOpenDialog(false);

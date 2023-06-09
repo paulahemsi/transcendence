@@ -40,7 +40,7 @@ interface ScoreDto {
 @WebSocketGateway({
   namespace: '/game',
   cors: {
-    origin: 'http://localhost:3000',
+    origin: process.env.FRONT_HOST,
     credentials: true,
   },
 })
