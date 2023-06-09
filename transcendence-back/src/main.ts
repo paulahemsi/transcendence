@@ -15,7 +15,7 @@ const appSession = session({
 
 function initialize(app: any) {
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: process.env.FRONT_HOST,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   });
   app.use(appSession);

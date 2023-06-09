@@ -51,7 +51,7 @@ export class ImagesController {
   ) {
     const userId = request.user;
     return {
-      url: `http://localhost:4444/images/${userId}/${file.filename}`,
+      url: process.env.BACK_HOST + `/images/${userId}/${file.filename}`,
     };
   }
 

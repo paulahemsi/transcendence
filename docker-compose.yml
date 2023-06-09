@@ -25,6 +25,8 @@ services:
             - back
         env_file:
             - .env
+        environment:
+            - REACT_APP_BACK_HOST=${BACK_HOST}
         ports:
             - 3000:${FRONT_PORT}
         networks:

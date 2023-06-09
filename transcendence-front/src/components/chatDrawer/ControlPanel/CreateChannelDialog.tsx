@@ -41,7 +41,7 @@ export const CreateChannelDialog : FunctionComponent<Props> = ({ setOpenDialog, 
 			return;
 		}
 		
-		axios.post(`http://localhost:4444/channels`, {
+		axios.post(`${process.env.REACT_APP_BACK_HOST}/channels`, {
 			"name": state.channelName,
 			"type": state.password ? PROTECTED : type,
 			"owner": userId,

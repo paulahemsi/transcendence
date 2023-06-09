@@ -28,6 +28,6 @@ export class AuthController {
   async logoutUser(@Res() response: Response) {
     await this.authService
       .logout(response)
-      .then(() => response.redirect('http://localhost:3000'));
+      .then(() => response.redirect(process.env.FRONT_HOST));
   }
 }

@@ -34,7 +34,7 @@ export interface MatchInviteAnswer {
 @WebSocketGateway({
   namespace: '/session',
   cors: {
-    origin: 'http://localhost:3000',
+    origin: process.env.FRONT_HOST,
     credentials: true,
   },
 })

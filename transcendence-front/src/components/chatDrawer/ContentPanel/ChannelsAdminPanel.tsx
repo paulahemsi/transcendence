@@ -75,7 +75,7 @@ export const ChannelsAdminPanel = ( { activeChannel, setActiveChannel } : { acti
 
 	const requestChannelInfos = async () => {
 		const authToken: AxiosRequestHeaders = {'Authorization': 'Bearer ' + document.cookie.substring('accessToken='.length)};
-		await axios.get(`http://localhost:4444/channels/${activeChannel}`, { headers: authToken }).then((response) => {
+		await axios.get(`${process.env.REACT_APP_BACK_HOST}/channels/${activeChannel}`, { headers: authToken }).then((response) => {
 			setChannelData(response.data);
 			setLoading(false);
 		})

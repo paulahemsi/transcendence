@@ -52,7 +52,7 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 	}
 
 	const requestGroupsData = async () => {
-		await axios.get(`http://localhost:4444/channels`, { headers: authToken }).then((response: {[key: string]: any}) => {
+		await axios.get(`${process.env.REACT_APP_BACK_HOST}/channels`, { headers: authToken }).then((response: {[key: string]: any}) => {
 			var groupsList: Array<groupsData> = [];
 			response.data.forEach((groupData: {[key: string]: any}) => {
 					const newGroup : groupsData = {
@@ -69,7 +69,7 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 	}
 
 	const setUserGroupsData = async () => {
-		await axios.get(`http://localhost:4444/users/${userId}/channels`, { headers: authToken }).then((response) => {
+		await axios.get(`${process.env.REACT_APP_BACK_HOST}/users/${userId}/channels`, { headers: authToken }).then((response) => {
 			setGroupsData(response.data);
 	}).catch( () => {
 		setState({ toastError: true, toastMessage: DEFAULT_TOAST_MSG });
@@ -78,7 +78,7 @@ export const AddGroupsDialog : FunctionComponent<Props> = ({ setOpenDialog, setG
 	
 	const handleSave = () => {
 		const group = state.title === JOIN_TITLE ? selectedGroup(state.searchQuery) : selectedGroup(state.groupName);
-		axios.post(`http://localhost:4444/channels/${group[0].id}/members`, {
+		axios.post(`${process.env.REACT_APP_BACK_HOST}/channels/${group[0].id}/members`, {
 			"userId": userId,
 			"password": state.searchQuery
 		}, { headers: authToken }).then( () => {

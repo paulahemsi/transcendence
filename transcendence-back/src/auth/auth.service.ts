@@ -13,13 +13,13 @@ export class AuthService {
   async login(response: any, intra42User: any): Promise<any> {
     const user: User = await this.usersService.validate(intra42User);
     if (user.hasTwoFactorAuth) {
-      return response.redirect(`http://localhost:3000/2fa?user=${user.id}`);
+      return response.redirect(process.env.FRONT_HOST + `/2fa?user=${user.id}`);
     }
     const payload = { id: user.id };
     response.cookie('accessToken', this.jwtService.sign(payload), {
       sameSite: 'Lax',
     });
-    return response.redirect('http://localhost:3000');
+    return response.redirect(process.env.FRONT_HOST);
   }
 
   async logout(response: any): Promise<any> {

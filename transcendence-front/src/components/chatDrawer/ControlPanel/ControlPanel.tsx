@@ -33,7 +33,7 @@ export const ControlPanel : FunctionComponent<Props> = ({ setChannelsAdminPanel,
 	const requestGroupsData = async () => {
 
 		const authToken = getAuthToken();
-		await axios.get(`http://localhost:4444/users/${userId}/channels`, { headers: authToken }).then((response) => {
+		await axios.get(`${process.env.REACT_APP_BACK_HOST}/users/${userId}/channels`, { headers: authToken }).then((response) => {
 			setGroupsData(response.data);
 			setLoading(false);
 		}).catch( () => {});
