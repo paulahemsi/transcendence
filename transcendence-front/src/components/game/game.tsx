@@ -24,6 +24,8 @@ interface Score {
 	player2: number;
 }
 
+const envType = process.env.REACT_APP_ENV;
+
 export const PhaserGame: FunctionComponent<Props> = ({
 	setScore,
 	setEndGameVisible,
@@ -142,7 +144,11 @@ export const PhaserGame: FunctionComponent<Props> = ({
 		}
 
 		function updatePlayer1Position() {
-			player1PosY = player1.y;
+			if (envType == "PROD") {
+				player1PosY = player1.y + (player1.body.velocity.y * 0.070);
+			} else {
+				player1PosY = player1.y;
+			}
 			gameSocket.emit('player1', { room: matchRoom, value: player1PosY / screenHeight });
 		}
 
@@ -153,8 +159,12 @@ export const PhaserGame: FunctionComponent<Props> = ({
 		}
 		
 		function updatePlayer2Position() {
+			if (envType == "PROD") {
+				player2PosY = player2.y + (player2.body.velocity.y * 0.070);
+			} else {
 				player2PosY = player2.y;
-				gameSocket.emit('player2', { room: matchRoom, value: player2PosY / screenHeight });
+			}
+			gameSocket.emit('player2', { room: matchRoom, value: player2PosY / screenHeight });
 		}
 
 		function updatePlayer2PositionFromSocket() {
@@ -164,8 +174,13 @@ export const PhaserGame: FunctionComponent<Props> = ({
 		}
 		
 		function updateBallPosition() {
-			ballPos.x = ball.x;
-			ballPos.y = ball.y;
+			if (envType == "PROD") {
+				ballPos.x = ball.x + (ball.body.velocity.x * 0.070);
+				ballPos.y = ball.y + (ball.body.velocity.y * 0.070);
+			} else {
+				ballPos.x = ball.x;
+				ballPos.y = ball.y;
+			}
 			let normalizedBallPos: Ball = {x: ballPos.x / screenWidth, y: ballPos.y / screenHeight}
 			gameSocket.emit('ball', { room: matchRoom, ball: normalizedBallPos });
 		}
