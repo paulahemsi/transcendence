@@ -1,8 +1,9 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { Chip, List, ListItem } from "@mui/material";
+import { Chip, List, ListItem, Typography } from "@mui/material";
 import { getAuthToken, getIdFromToken, LIST_CSS } from "../../../utils/constants";
 import axios from "axios";
 import Loading from "../../Loading";
+import { Stack } from "@mui/system";
 
 interface Props {
     messagesData: {[key: string]: any};
@@ -35,12 +36,28 @@ const messageCSS = ( isFromUser : boolean ) => {
 	}
 }
 
-export const MessagesList : FunctionComponent<Props> = ({ messagesData }) => {
-	const [blockedUsers, setBlockedUsers] = useState<{[key: string]: any}>({});
+const nameCSS = ( isFromUser : boolean ) => {
+	return {
+		marginBottom: '0.2vh',
+		marginTop: '0.7vh',
+		display:'flex',
+		justifyContent: isFromUser ? 'flex-end' : 'flex-start',
+		fontFamily: 'Orbitron',
+		fontWeight: 600,
+		fontSize: '2.2',
+		color: '#311B92',
+		paddingLeft: isFromUser ? '0vw' : '1vw',
+		paddingRight: isFromUser ? '1vw' : '0vw',
+	}
+}
+
+export const MessagesList: FunctionComponent<Props> = ({ messagesData }) => {
+	const [blockedUsers, setBlockedUsers] = useState<{ [key: string]: any }>({});
 	const [loading, setLoading] = useState(true);
 	const userId = getIdFromToken();
+	const [usernames, setUsernames] = useState<{ [key: string]: string }>({});
 	const messages = [] as JSX.Element[];
-	
+  
 	useEffect(() => {getBlockedUsers()}, [blockedUsers]);
 
 	const getBlockedUsers = async () => {
@@ -49,41 +66,68 @@ export const MessagesList : FunctionComponent<Props> = ({ messagesData }) => {
 			setLoading(false);
 		}).catch( () => {});
 	}
+  
+	useEffect(() => {
+	  const fetchUsernames = async () => {
+		const usernamePromises = messagesData.map((element: { [key: string]: any }) =>
+		  axios
+			.get(`${process.env.REACT_APP_BACK_HOST}/users/${element.userId}`, {
+			  headers: getAuthToken(),
+			})
+			.then((response) => ({
+			  userId: element.userId,
+			  username: response.data.username,
+			}))
+			.catch(() => ({
+			  userId: element.userId,
+			  username: "",
+			}))
+		);
+  
+		const resolvedUsernames = await Promise.all(usernamePromises);
+  
+		const updatedUsernames = resolvedUsernames.reduce(
+		  (acc, { userId, username }) => {
+			acc[userId] = username;
+			return acc;
+		  },
+		  { ...usernames }
+		);
+  
+		setUsernames(updatedUsernames);
+	  };
+  
+	  fetchUsernames();
+	}, [messagesData]);
 
 	if (loading) {
 		return <Loading/>
 	}
-	
-	messagesData.forEach((element : {[key: string]: any}, index : number) => {
-		const isFromUser = () => { return userId === element.userId }
-		const isFromBlockedUser = () => {
-			if (!blockedUsers) {
-				return false;
-			}
-			if (blockedUsers.filter((member: {[key: string]: string}) => member.id === element.userId).length) {
-				return true;
-			}
-			return false;
-		}
-		messages.push(
-		<ListItem 
-			disablePadding
-			key={index}
-			sx={messageCSS(isFromUser())}
-		> 
-			<Chip
-				label={element.message} 
-				sx={chipCSS(isFromUser(), isFromBlockedUser())}
-			/>
-		</ListItem>);
-	})
-
-	return (
-		<List disablePadding sx={LIST_CSS} >
-			{messages}
-		</List>
-		
-	)
-}
-
-export default MessagesList
+  
+	messagesData.forEach((element: { [key: string]: any }, index: number) => {
+	  const username = usernames[element.userId] || "";
+	  const isFromUser = () => { return userId === element.userId }
+	  const isFromBlockedUser = () => {
+		  if (!blockedUsers) {
+			  return false;
+		  }
+		  if (blockedUsers.filter((member: {[key: string]: string}) => member.id === element.userId).length) {
+			  return true;
+		  }
+		  return false;
+	  }
+  
+	  messages.push(
+		<ListItem disablePadding key={index} sx={messageCSS(isFromUser())}>
+		  <Stack>
+			<Typography sx={nameCSS(isFromUser())}>{username}</Typography>
+			<Chip label={element.message} sx={chipCSS(isFromUser(), isFromBlockedUser())} />
+		  </Stack>
+		</ListItem>
+	  );
+	});
+  
+	return <List disablePadding sx={LIST_CSS}>{messages}</List>;
+  };
+  
+  export default MessagesList;
