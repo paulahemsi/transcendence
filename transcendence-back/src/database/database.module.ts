@@ -14,6 +14,7 @@ import entities from '../entity';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
+        ssl: configService.get('DB_SSL'),
         entities: entities,
         synchronize: true,
       }),
