@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import { Typography, Box, Button, DialogTitle, DialogActions, Dialog, CircularProgress  } from '@mui/material';
 import Header from "./header/Header";
 import { Footer } from "./footer/Footer";
@@ -9,6 +9,8 @@ import { chatSocket, gameSocket, sessionSocket } from "./context/socket";
 import { booleanSetState, getIdFromToken, reducer, stringSetState } from "./utils/constants";
 import { MatchInfos, MatchInviteAnswer, matchInfosSetState } from "./utils/match-interfaces";
 import ErrorToast from "./utils/ErrorToast";
+import { MatchContext } from './context/MatchContext';
+
 
 const NO_ONE_AVAILABLE = "Ooops, nobody wanna play right now. Try again later"
 
@@ -48,6 +50,7 @@ const Matchmaker = ({
 	setStandardMode: booleanSetState,
 	setCanClose: booleanSetState,
 }) => {
+	const { setMatchInfos } = useContext(MatchContext);
 	const [state, setState] = useReducer(reducer, {
 		goGame: false,
 		loading: false,
@@ -73,6 +76,7 @@ const Matchmaker = ({
 			setIsHost(false);
 		}
 		setMatchRoom(match.id);
+		setMatchInfos(match);
 		setState({ loading: false });
 		setState({ goGame: true });
 	} )
@@ -108,7 +112,7 @@ const Matchmaker = ({
 			}}
 			sx={{fontFamily: 'Orbitron'}}
 		>
-			Stardard one
+			Standard one
 		</Button>
 		<Button
 			variant="contained"
@@ -285,7 +289,7 @@ export const Home = ({
 	const [openCard, setOpenCard] = useState(false)
 	const [gameActive, setGameActive] = useState(false);
 	const [openDialog, setOpenDialog] = useState(false);
-	const [matchInfos, setMatchInfos] = useState({ id: '', player1: '', player2: '' });
+	const { matchInfos, setMatchInfos } = useContext(MatchContext);
 
 	const userId = getIdFromToken();
 

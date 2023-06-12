@@ -8,6 +8,7 @@ import jwt from 'jwt-decode';
 import TwoFactorAuthCard from './components/TwoFactorAuthCard';
 import GamePage from './components/GamePage';
 import { booleanSetState, stringSetState } from './components/utils/constants';
+import { MatchContext } from './components/context/MatchContext';
 
 type tokenData = {
 	id: string;
@@ -59,29 +60,36 @@ function App() {
   const [isSpectator, setIsSpectator] = useState(false);
   const [matchRoom, setMatchRoom] = useState('');
   const [standardMode, setStandardMode] = useState(true);
+  const [matchInfos, setMatchInfos] = useState<{ id: string; player1: string; player2: string }>({
+    id: '',
+    player1: '',
+    player2: '',
+  });
   
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path='/' element={
-          <PreHome
-            setIsHost={setIsHost}
-            setIsSpectator={setIsSpectator}
-            setMatchRoom={setMatchRoom}
-            setStandardMode={setStandardMode}
-          />}
-        />
-        <Route path='/login' element={<LoginCard/>} />
-        <Route path='/2fa' element={<TwoFactorAuthCard/>} />
-        <Route path='/game' element={
-          <GamePage
-            isHost={isHost}
-            isSpectator={isSpectator}
-            matchRoom={matchRoom}
-            standardMode={standardMode}
-          />}
-        />
-      </Routes>
+      <MatchContext.Provider value={{ matchInfos, setMatchInfos }}>
+        <Routes>
+          <Route path='/' element={
+            <PreHome
+              setIsHost={setIsHost}
+              setIsSpectator={setIsSpectator}
+              setMatchRoom={setMatchRoom}
+              setStandardMode={setStandardMode}
+            />}
+          />
+          <Route path='/login' element={<LoginCard/>} />
+          <Route path='/2fa' element={<TwoFactorAuthCard/>} />
+          <Route path='/game' element={
+            <GamePage
+              isHost={isHost}
+              isSpectator={isSpectator}
+              matchRoom={matchRoom}
+              standardMode={standardMode}
+            />}
+          />
+        </Routes>
+      </MatchContext.Provider>
     </BrowserRouter>
   );
 }

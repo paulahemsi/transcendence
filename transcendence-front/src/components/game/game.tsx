@@ -1,8 +1,11 @@
 import Phaser from 'phaser';
-import React, { FunctionComponent } from 'react'
+import React, { FunctionComponent, useContext, useState } from 'react'
 import { useEffect } from 'react';
 import { gameSocket } from '../context/socket';
+import { MatchContext } from '../context/MatchContext';
 import { EndGameData } from '../GamePage';
+import { getAuthToken } from "../utils/constants";
+import axios from "axios";
 
 interface Props {
 	setScore: React.Dispatch<React.SetStateAction<number[]>>
@@ -212,8 +215,6 @@ export const PhaserGame: FunctionComponent<Props> = ({
 				phaserScene.pause();
 				setEndGameDisplay({
 					disconnected: false,
-					player1Name: "PLAYER 1",
-					player2Name: "PLAYER 2",
 					winner: winningPlayer,
 				})
 				setEndGameVisible(true);
@@ -310,8 +311,6 @@ export const PhaserGame: FunctionComponent<Props> = ({
 		phaserScene.pause();
 		setEndGameDisplay({
 			disconnected: true,
-			player1Name: "PLAYER 1",
-			player2Name: "PLAYER 2",
 			winner: winningPlayer,
 		})
 		setEndGameVisible(true);

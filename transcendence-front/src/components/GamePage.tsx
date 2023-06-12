@@ -1,8 +1,34 @@
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useContext, useEffect, useState } from "react";
 import { Typography, Box, Button, Card, CardContent, CardActions  } from '@mui/material';
 import { PhaserGame } from "./game/game"
 import { Navigate } from "react-router-dom";
-import { booleanSetState } from "./utils/constants";
+import { booleanSetState, getAuthToken } from "./utils/constants";
+import { MatchContext } from './context/MatchContext';
+import axios from "axios";
+
+const player1NameStyle = {
+	fontSize: '6vh',
+	fontFamily: 'Orbitron',
+	fontWeight: 500,
+	color: '#FFFFFF',
+	textShadow: '0px 0px 6px #FFFFFF',
+	margin: '2vh',
+	top: '2%',
+	right: '55%',
+	position: 'fixed'
+}
+
+const player2NameStyle = {
+	fontSize: '6vh',
+	fontFamily: 'Orbitron',
+	fontWeight: 500,
+	color: '#FFFFFF',
+	textShadow: '0px 0px 6px #FFFFFF',
+	margin: '2vh',
+	top: '2%',
+	left: '55%',
+	position: 'fixed'
+}
 
 const player1Score = {
 	fontSize: '14vh',
@@ -31,8 +57,6 @@ const player2Score = {
 
 export interface EndGameData {
 	disconnected: boolean,
-	player1Name: string,
-	player2Name: string,
 	winner: 1 | 2 | undefined
 }
 
@@ -44,12 +68,36 @@ interface EndGameCardProps {
 
 
 const EndGameCard: FunctionComponent<EndGameCardProps> = ({endGameDisplay, setEndGameVisible, setGameActive}) => {
+
+	const [ player1Name, setPlayer1Name ] = useState<string>('');
+	const [ player2Name, setPlayer2Name ] = useState<string>('');
+  	const { matchInfos } = useContext(MatchContext);
+ 	const authToken = getAuthToken();
+
+  	useEffect(() => {
+  		const fetchData = async () => {
+  			try {
+  	    		const response1 = await axios.get(
+  	    		  `${process.env.REACT_APP_BACK_HOST}/users/${matchInfos.player1}`, { headers: authToken }
+  	    		);
+  	    		const response2 = await axios.get(
+  	    		  `${process.env.REACT_APP_BACK_HOST}/users/${matchInfos.player2}`, { headers: authToken }
+  	    		);
+
+  	    		setPlayer1Name(response1.data.username);
+  	    		setPlayer2Name(response2.data.username);
+  	    	} catch (error) {
+  	    console.error('Error fetching user data:', error);
+  	    }
+  	};
+  	fetchData();
+  	}, [matchInfos]);
 	
 	function endGameContent() {
 		if (endGameDisplay.disconnected) {
 			return ('The game ended because one of the players disconnected');
 		}
-		const winner = endGameDisplay.winner == 1 ? endGameDisplay.player1Name : endGameDisplay.player2Name;
+		const winner = endGameDisplay.winner == 1 ? player1Name : player2Name;
 		return ( winner + ' is the winner!');
 	}
 
@@ -100,8 +148,32 @@ interface gameProps {
 const GamePage:  FunctionComponent<gameProps>  = ({isHost, isSpectator, matchRoom, standardMode}) => {
 	const [ score, setScore ] = useState<number[]>([0, 0]);
 	const [ endGameVisible, setEndGameVisible ] = useState<boolean>(false);
-	const [ endGameDisplay, setEndGameDisplay ] = useState<EndGameData>({ disconnected:false, player1Name: "player1", player2Name: "player2", winner: 1});
 	const [ gameActive, setGameActive ] = useState(true);
+	const [ endGameDisplay, setEndGameDisplay ] = useState<EndGameData>({ disconnected:false, winner: 1});
+	const [ player1Name, setPlayer1Name ] = useState<string>('');
+  	const [ player2Name, setPlayer2Name ] = useState<string>('');
+	const { matchInfos } = useContext(MatchContext);
+	const authToken = getAuthToken();
+
+  	useEffect(() => {
+  		const fetchData = async () => {
+  			try {
+  	    		const response1 = await axios.get(
+  	    		  `${process.env.REACT_APP_BACK_HOST}/users/${matchInfos.player1}`, { headers: authToken }
+  	    		);
+  	    		const response2 = await axios.get(
+  	    		  `${process.env.REACT_APP_BACK_HOST}/users/${matchInfos.player2}`, { headers: authToken }
+  	    		);
+
+  	    		setPlayer1Name(response1.data.username);
+  	    		setPlayer2Name(response2.data.username);
+  	    	} catch (error) {
+  	    console.error('Error fetching user data:', error);
+  	    }
+  	};
+
+  	fetchData();
+  	}, [matchInfos]);
 
 	if (gameActive === false) {
 		return (<Navigate to='/'/>)
@@ -110,6 +182,9 @@ const GamePage:  FunctionComponent<gameProps>  = ({isHost, isSpectator, matchRoo
 	return (
 		<Box position={'relative'}>
 			<Box position={'absolute'}>
+				<Typography textAlign={'right'} sx={player1NameStyle}>
+					{player1Name}
+				</Typography>
 				<Typography textAlign={'right'} sx={player1Score}>
 					{score[0]}
 				</Typography>
@@ -126,6 +201,9 @@ const GamePage:  FunctionComponent<gameProps>  = ({isHost, isSpectator, matchRoo
 					</Box>
 				</Box>
 			<Box position={'absolute'}>
+				<Typography textAlign={'right'} sx={player2NameStyle}>
+					{player2Name}
+				</Typography>
 				<Typography textAlign={'left'} sx={player2Score}>
 					{score[1]}
 				</Typography>
@@ -138,7 +216,7 @@ const GamePage:  FunctionComponent<gameProps>  = ({isHost, isSpectator, matchRoo
 					isHost={isHost}
 					isSpectator={isSpectator}
 					matchRoom={matchRoom}
-					standardMode={standardMode}
+					standardMode={standardMode}	
 				/>
 			</Box>
 			{ endGameVisible ? <EndGameCard endGameDisplay={endGameDisplay} setEndGameVisible={setEndGameVisible} setGameActive={setGameActive} /> : null }
