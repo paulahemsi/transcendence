@@ -18,9 +18,9 @@ const startGameButton = {
 	borderRadius: 3,
 	textTransform: 'lowercase',
 	background: '#F5F5F5',
-	borderColor: '#311B92',
+	borderColor: '#FFFFFF',
 	color: '#212980',
-	':hover': { background: '#F5F5F5', borderColor: '#9575CD', color: '#9575CD'},
+	':hover': { background: '#F5F5F5', borderColor: '#FFFFFF', color: '#9575CD'},
 	fontFamily: 'Orbitron',
 	fontSize: '4vh',
 	paddingLeft: '5vh',
@@ -35,6 +35,24 @@ const transcendenceText = {
 	color: '#FFFFFF',
 	textShadow: '0px 0px 6px #FFFFFF',
 	margin: '2vh'
+}
+
+const backgroundStyle = {
+	background: 'linear-gradient(-90deg, #6f0162, #a200a8, #4800a0, #090d38)',
+	backgroundSize: '350% 350%',
+	animation: 'gradient 10s ease infinite',
+	height: '100vh',
+	'@keyframes gradient': {
+		'0%': {
+			backgroundPosition: '0% 50%',
+		},
+		'50%': {
+			backgroundPosition: '100% 50%',
+		},
+		'100%': {
+			backgroundPosition: '0% 50%',
+		},
+	}
 }
 
 const Matchmaker = ({
@@ -152,7 +170,7 @@ const Background = ({
 
 	return (
 		<>
-			<Box display="flex" flexDirection="column" justifyContent="center" position="fixed" alignItems="center" height="86vh" width="100vw" sx={{backgroundImage: 'linear-gradient(to right, #212980 , #6f0162)'}}>
+			<Box display="flex" flexDirection="column" justifyContent="center" position="fixed" alignItems="center" height="86vh" width="100vw" sx={backgroundStyle}>
 				<Typography sx={transcendenceText}>
 					ft_transcendence
 				</Typography>

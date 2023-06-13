@@ -55,6 +55,24 @@ const player2Score = {
 	
 }
 
+const unicornBgStyle = {
+	background: 'linear-gradient(-90deg, #af0d01, #cc5202, #a88417, #032605, #030738, #110228)',
+	backgroundSize: '350% 350%',
+	animation: 'gradient 75s ease infinite',
+	height: '100vh',
+	'@keyframes gradient': {
+		'0%': {
+			backgroundPosition: '0% 50%',
+		},
+		'50%': {
+			backgroundPosition: '100% 50%',
+		},
+		'100%': {
+			backgroundPosition: '0% 50%',
+		},
+	}
+}
+
 export interface EndGameData {
 	disconnected: boolean,
 	winner: 1 | 2 | undefined
@@ -208,7 +226,7 @@ const GamePage:  FunctionComponent<gameProps>  = ({isHost, isSpectator, matchRoo
 					{score[1]}
 				</Typography>
 			</Box>
-			<Box zIndex={-1000} position={'absolute'} height="100vh" width="100vw" sx={{backgroundImage: 'linear-gradient(to right, #212980 , #6f0162)'}}>
+			<Box zIndex={-1000} position={'absolute'} height="100vh" width="100vw" sx={unicornBgStyle}>
 				<PhaserGame
 					setScore={setScore}
 					setEndGameVisible={setEndGameVisible}
