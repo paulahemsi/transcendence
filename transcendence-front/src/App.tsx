@@ -84,6 +84,7 @@ function App() {
             <GamePage
               isHost={isHost}
               isSpectator={isSpectator}
+              setIsSpectator={setIsSpectator}
               matchRoom={matchRoom}
               standardMode={standardMode}
             />}

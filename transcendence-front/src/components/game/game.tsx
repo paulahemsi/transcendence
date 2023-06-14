@@ -11,6 +11,7 @@ interface Props {
 	setScore: React.Dispatch<React.SetStateAction<number[]>>
 	setEndGameVisible: React.Dispatch<React.SetStateAction<boolean>>
 	setEndGameDisplay: React.Dispatch<React.SetStateAction<EndGameData>>
+	setIsSpectator: React.Dispatch<React.SetStateAction<boolean>>
 	isHost: boolean
 	isSpectator: boolean
 	matchRoom: string
@@ -33,6 +34,7 @@ export const PhaserGame: FunctionComponent<Props> = ({
 	setScore,
 	setEndGameVisible,
 	setEndGameDisplay,
+	setIsSpectator,
 	isHost,
 	isSpectator,
 	matchRoom,
@@ -235,6 +237,7 @@ export const PhaserGame: FunctionComponent<Props> = ({
 
 		function leaveGameRoom() {
 			if (isSpectator) {
+				setIsSpectator(false);
 				return gameSocket.emit('leaveGameRoomAsSpectator', matchRoom);
 			}
 			gameSocket.emit('leaveGameRoom', matchRoom);
