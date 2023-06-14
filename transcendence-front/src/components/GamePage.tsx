@@ -182,26 +182,30 @@ const GamePage:  FunctionComponent<gameProps>  = ({isHost, isSpectator, setIsSpe
 
   	useEffect(() => {
   		const fetchData = async () => {
-  			try {
-				const request1 = axios.get(
-					`${process.env.REACT_APP_BACK_HOST}/users/${matchInfos.player1}`,
-					{ headers: authToken }
-				);
-				const request2 = axios.get(
-					`${process.env.REACT_APP_BACK_HOST}/users/${matchInfos.player2}`,
-					{ headers: authToken }
-				);
-			  
-				const [response1, response2] = await Promise.all([request1, request2]);
-			  
-				const username1 = response1.data.username;
-				const username2 = response2.data.username;
-			  
-				setPlayer1Name(username1);
-				setPlayer2Name(username2);
-  	    	} catch (error) {
-  	    console.error('Error fetching user data:', error);
-  	    }
+			if (isSpectator) {
+				return;
+			} else {
+  				try {
+					const request1 = axios.get(
+						`${process.env.REACT_APP_BACK_HOST}/users/${matchInfos.player1}`,
+						{ headers: authToken }
+					);
+					const request2 = axios.get(
+						`${process.env.REACT_APP_BACK_HOST}/users/${matchInfos.player2}`,
+						{ headers: authToken }
+					);
+					
+					const [response1, response2] = await Promise.all([request1, request2]);
+					
+					const username1 = response1.data.username;
+					const username2 = response2.data.username;
+					
+					setPlayer1Name(username1);
+					setPlayer2Name(username2);
+  	    		} catch (error) {
+  	    	console.error('Error fetching user data:', error);
+  	    	}
+		}
   	};
 
   	fetchData();
@@ -210,6 +214,8 @@ const GamePage:  FunctionComponent<gameProps>  = ({isHost, isSpectator, setIsSpe
 	if (gameActive === false) {
 		return (<Navigate to='/'/>)
 	}
+
+	console.log(matchInfos);
 
 	return (
 		<Box position={'relative'}>
