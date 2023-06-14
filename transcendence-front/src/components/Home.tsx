@@ -10,6 +10,7 @@ import { booleanSetState, getIdFromToken, reducer, stringSetState } from "./util
 import { MatchInfos, MatchInviteAnswer, matchInfosSetState } from "./utils/match-interfaces";
 import ErrorToast from "./utils/ErrorToast";
 import { MatchContext } from './context/MatchContext';
+import { Stack } from "@mui/system";
 
 
 const NO_ONE_AVAILABLE = "Ooops, nobody wanna play right now. Try again later"
@@ -86,6 +87,13 @@ const Matchmaker = ({
 			setCanClose(true);
 		}, 25000)
 	}
+
+	const removeFromQueue = () => {
+		sessionSocket.emit('removeFromQueue');
+		setState({ loading: false });
+		setState({ goGame: false });
+		setCanClose(true);
+	}
 	
 	sessionSocket.on('joinGameQueue', (match: MatchInfos) => {
 		if (match.player1 == userId) {
@@ -99,6 +107,11 @@ const Matchmaker = ({
 		setState({ goGame: true });
 	} )
 
+	sessionSocket.on('removeFromQueue', () => {
+		setMatchRoom('');
+		setMatchInfos({ id: '', player1: '', player2: '' });
+	} )
+
 	if (state.goGame) {
 		return (<Navigate to='/game'/>)
 	}
@@ -110,9 +123,18 @@ const Matchmaker = ({
 					Searching for an opponent...
 				</DialogTitle>
 				<DialogActions sx={{justifyContent: "center", margin: '2vh'}}>
-					<Box display="flex" justifyContent="center" alignItems="center">
-						<CircularProgress />
-					</Box>
+					<Stack>
+						<Box display="flex" justifyContent="center" alignItems="center">
+							<CircularProgress />
+						</Box>
+						<Button
+							onClick={() => {
+								removeFromQueue();
+							}}
+							sx={{fontFamily: 'Orbitron', marginTop: '2vh'}}>
+							Exit queue
+						</Button>
+					</Stack>
 				</DialogActions>
 			</>
 		)
@@ -120,27 +142,27 @@ const Matchmaker = ({
 	return (
 		<>
 		<DialogTitle sx={{fontFamily: 'Orbitron'}}>
-			Which pong do you wanna play?
+			How do you want to play Pong?
 		</DialogTitle>
 		<DialogActions>
 		<Button
 			onClick={() => {
-				setStandardMode(true)
+				setStandardMode(true);
 				joinGameQueue();
 			}}
 			sx={{fontFamily: 'Orbitron'}}
 		>
-			Standard one
+			Standard mode
 		</Button>
 		<Button
 			variant="contained"
 			onClick={() => {
-				setStandardMode(false)
+				setStandardMode(false);
 				joinGameQueue();
 			}}
 			sx={{fontFamily: 'Orbitron'}}
 		>
-			Unicorn one
+			Unicorn mode
 		</Button>
 		</DialogActions>
 		<ErrorToast state={state} setState={setState}/>
