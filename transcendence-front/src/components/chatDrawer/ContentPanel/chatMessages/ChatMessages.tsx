@@ -7,6 +7,7 @@ import DMButtons from "./DMButtons";
 import Muted from "./Muted";
 import NoMessages from "./NoMessages";
 import { chatSocket } from "../../../context/socket";
+import { MatchInfos } from "../../../utils/match-interfaces";
 
 interface ChatMessageProps {
 	activeChannel : number;
@@ -16,6 +17,7 @@ interface ChatMessageProps {
 	setGameActive: booleanSetState;
 	setMatchRoom: stringSetState;
 	setStandardMode: booleanSetState;
+	setMatchInfos: React.Dispatch<React.SetStateAction<MatchInfos>>,
 }
 
 const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) => {
@@ -112,7 +114,7 @@ const ChannelMessage = ( { activeChannel } : { activeChannel : number }) => {
 }
 
 export const ChatMessages: FunctionComponent<ChatMessageProps> = ({
-	activeChannel, isDM, friendId, setIsHost, setGameActive, setMatchRoom, setStandardMode}) => {
+	activeChannel, isDM, friendId, setIsHost, setGameActive, setMatchRoom, setStandardMode, setMatchInfos}) => {
 	const [state, setState] = useReducer(reducer, {
 		muted: false,
 	});
@@ -141,6 +143,7 @@ export const ChatMessages: FunctionComponent<ChatMessageProps> = ({
 					setGameActive={setGameActive}
 					setMatchRoom={setMatchRoom}
 					setStandardMode={setStandardMode}
+					setMatchInfos={setMatchInfos}
 				/>
 			}
 			{
