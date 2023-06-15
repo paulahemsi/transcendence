@@ -309,12 +309,14 @@ function listenPlayWithFriend(
 function listenWatchGame(
 	setMatchRoom: stringSetState,
 	setGameActive: booleanSetState,
-	setIsSpectator: booleanSetState
+	setIsSpectator: booleanSetState,
+	setMatchInfos: React.Dispatch<React.SetStateAction<MatchInfos>>,
 	) {
-	gameSocket.off('watchGame').on('watchGame', (gameRoom: string) => {
-		setMatchRoom(gameRoom);
+	gameSocket.off('watchGame').on('watchGame', (matchInfos: MatchInfos) => {
+		setMatchRoom(matchInfos.id);
 		setGameActive(true);
 		setIsSpectator(true);
+		setMatchInfos(matchInfos);
 	})
 }
 
@@ -347,7 +349,7 @@ export const Home = ({
 	}, []);
 
 	listenPlayWithFriend(userId, setMatchInfos, setMatchRoom, setOpenDialog);
-	listenWatchGame(setMatchRoom, setGameActive, setIsSpectator);
+	listenWatchGame(setMatchRoom, setGameActive, setIsSpectator, setMatchInfos);
 
 	if (gameActive) {
 		return (<Navigate to='/game'/>)
