@@ -253,6 +253,7 @@ const GamePage:  FunctionComponent<gameProps>  = ({isHost, isSpectator, setIsSpe
 					isHost={isHost}
 					isSpectator={isSpectator}
 					matchRoom={matchRoom}
+					matchInfos={matchInfos}
 					standardMode={standardMode}	
 				/>
 			</Box>

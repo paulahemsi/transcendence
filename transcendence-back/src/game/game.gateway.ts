@@ -37,6 +37,12 @@ interface ScoreDto {
   score: Score;
 }
 
+interface MatchInfos {
+  id: string;
+  player1: string;
+  player2: string;
+}
+
 @WebSocketGateway({
   namespace: '/game',
   cors: {
@@ -92,7 +98,8 @@ export class GameGateway
   }
 
   @SubscribeMessage('joinGameRoom')
-  handleJoinGameRoom(client: Socket, gameRoom: string) {
+  handleJoinGameRoom(client: Socket, matchInfos: MatchInfos) {
+    const gameRoom = matchInfos.id;
     client.join(gameRoom);
     this.clientRoom.set(client.id, gameRoom);
     this.userRoom.set(client.data.user.id, gameRoom);

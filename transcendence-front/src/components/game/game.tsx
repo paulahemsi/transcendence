@@ -1,11 +1,9 @@
 import Phaser from 'phaser';
-import React, { FunctionComponent, useContext, useState } from 'react'
+import React, { FunctionComponent } from 'react'
 import { useEffect } from 'react';
 import { gameSocket } from '../context/socket';
-import { MatchContext } from '../context/MatchContext';
 import { EndGameData } from '../GamePage';
-import { getAuthToken } from "../utils/constants";
-import axios from "axios";
+import { MatchInfos } from '../utils/match-interfaces';
 
 interface Props {
 	setScore: React.Dispatch<React.SetStateAction<number[]>>
@@ -15,6 +13,7 @@ interface Props {
 	isHost: boolean
 	isSpectator: boolean
 	matchRoom: string
+	matchInfos: MatchInfos
 	standardMode: boolean
 }
 
@@ -38,6 +37,7 @@ export const PhaserGame: FunctionComponent<Props> = ({
 	isHost,
 	isSpectator,
 	matchRoom,
+	matchInfos,
 	standardMode,
 }) => {
 	useEffect(() =>  {
@@ -232,7 +232,7 @@ export const PhaserGame: FunctionComponent<Props> = ({
 			if (isSpectator) {
 				return gameSocket.emit('joinGameRoomAsSpectator', matchRoom);
 			}
-			return gameSocket.emit('joinGameRoom', matchRoom);
+			return gameSocket.emit('joinGameRoom', matchInfos);
 		}
 
 		function leaveGameRoom() {
