@@ -9,7 +9,6 @@ import { chatSocket, gameSocket, sessionSocket } from "./context/socket";
 import { booleanSetState, getIdFromToken, reducer, stringSetState } from "./utils/constants";
 import { MatchInfos, MatchInviteAnswer, matchInfosSetState } from "./utils/match-interfaces";
 import ErrorToast from "./utils/ErrorToast";
-import { MatchContext } from './context/MatchContext';
 import { Stack } from "@mui/system";
 
 
@@ -60,16 +59,17 @@ const Matchmaker = ({
 	userId,
 	setIsHost,
 	setMatchRoom,
+	setMatchInfos,
 	setStandardMode,
 	setCanClose,
 } : {
 	userId: string,
 	setIsHost: booleanSetState,
 	setMatchRoom: stringSetState,
+	setMatchInfos: React.Dispatch<React.SetStateAction<MatchInfos>>,
 	setStandardMode: booleanSetState,
 	setCanClose: booleanSetState,
 }) => {
-	const { setMatchInfos } = useContext(MatchContext);
 	const [state, setState] = useReducer(reducer, {
 		goGame: false,
 		loading: false,
@@ -174,11 +174,13 @@ const Background = ({
 	userId,
 	setIsHost,
 	setMatchRoom,
+	setMatchInfos,
 	setStandardMode,
 } : {
 	userId: string,
 	setIsHost: booleanSetState,
 	setMatchRoom: stringSetState,
+	setMatchInfos: React.Dispatch<React.SetStateAction<MatchInfos>>,
 	setStandardMode: booleanSetState,
 }) => {
 	const [ openDialog, setOpenDialog ] = useState(false);
@@ -206,6 +208,7 @@ const Background = ({
 					userId={userId}
 					setIsHost={setIsHost}
 					setMatchRoom={setMatchRoom}
+					setMatchInfos={setMatchInfos}
 					setStandardMode={setStandardMode}
 					setCanClose={setCanClose}
 				/>
@@ -287,6 +290,7 @@ function listenPlayWithFriend(
 	) {
 	sessionSocket.off('playWithFriend').on('playWithFriend', (matchInfosInvite: MatchInfos) => {
 		if (matchInfosInvite.player2 == userId) {
+			console.log(matchInfosInvite);
 			setMatchInfos(matchInfosInvite);
 			setMatchRoom(matchInfosInvite.id);
 			setOpenDialog(true);
@@ -318,18 +322,21 @@ export const Home = ({
 	setIsHost,
 	setIsSpectator,
 	setMatchRoom,
-	setStandardMode
+	matchInfos,
+	setMatchInfos,
+	setStandardMode,
 } : {
 	setIsHost: booleanSetState,
-	setIsSpectator: booleanSetState
+	setIsSpectator: booleanSetState,
 	setMatchRoom: stringSetState,
+	matchInfos: MatchInfos,
+	setMatchInfos: React.Dispatch<React.SetStateAction<MatchInfos>>,
 	setStandardMode: booleanSetState,
 }) => {
-	const [openDrawer, setOpenDrawer] = useState(false)
-	const [openCard, setOpenCard] = useState(false)
+	const [openDrawer, setOpenDrawer] = useState(false);
+	const [openCard, setOpenCard] = useState(false);
 	const [gameActive, setGameActive] = useState(false);
 	const [openDialog, setOpenDialog] = useState(false);
-	const { matchInfos, setMatchInfos } = useContext(MatchContext);
 
 	const userId = getIdFromToken();
 
@@ -359,6 +366,7 @@ export const Home = ({
 				userId={userId}
 				setIsHost={setIsHost}
 				setMatchRoom={setMatchRoom}
+				setMatchInfos={setMatchInfos}
 				setStandardMode={setStandardMode}
 			  /> }
 			{ openDrawer &&
@@ -368,6 +376,7 @@ export const Home = ({
 					setGameActive={setGameActive}
 					setMatchRoom={setMatchRoom}
 					setStandardMode={setStandardMode}
+					setMatchInfos={setMatchInfos}
 					/> }
 			{ <Footer/> }
 			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>

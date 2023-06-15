@@ -3,8 +3,8 @@ import { Typography, Box, Button, Card, CardContent, CardActions  } from '@mui/m
 import { PhaserGame } from "./game/game"
 import { Navigate } from "react-router-dom";
 import { booleanSetState, getAuthToken } from "./utils/constants";
-import { MatchContext } from './context/MatchContext';
 import axios from "axios";
+import { MatchInfos } from "./utils/match-interfaces";
 
 const player1NameStyle = {
 	fontSize: '6vh',
@@ -82,13 +82,13 @@ interface EndGameCardProps {
 	endGameDisplay: EndGameData
 	setEndGameVisible: booleanSetState 
 	setGameActive: booleanSetState 
+	matchInfos: MatchInfos
 }
 
-const EndGameCard: FunctionComponent<EndGameCardProps> = ({endGameDisplay, setEndGameVisible, setGameActive}) => {
+const EndGameCard: FunctionComponent<EndGameCardProps> = ({endGameDisplay, setEndGameVisible, setGameActive, matchInfos}) => {
 
 	const [ player1Name, setPlayer1Name ] = useState<string>('');
 	const [ player2Name, setPlayer2Name ] = useState<string>('');
-  	const { matchInfos } = useContext(MatchContext);
  	const authToken = getAuthToken();
 
   	useEffect(() => {
@@ -165,19 +165,19 @@ const EndGameCard: FunctionComponent<EndGameCardProps> = ({endGameDisplay, setEn
 interface gameProps {
 	isHost: boolean;
 	isSpectator: boolean;
-	setIsSpectator: booleanSetState
+	setIsSpectator: booleanSetState;
 	matchRoom: string;
+	matchInfos: MatchInfos;
 	standardMode: boolean;
 }
 
-const GamePage:  FunctionComponent<gameProps>  = ({isHost, isSpectator, setIsSpectator, matchRoom, standardMode}) => {
+const GamePage:  FunctionComponent<gameProps>  = ({isHost, isSpectator, setIsSpectator, matchRoom, matchInfos, standardMode}) => {
 	const [ score, setScore ] = useState<number[]>([0, 0]);
 	const [ endGameVisible, setEndGameVisible ] = useState<boolean>(false);
 	const [ gameActive, setGameActive ] = useState(true);
 	const [ endGameDisplay, setEndGameDisplay ] = useState<EndGameData>({ disconnected:false, winner: 1});
 	const [ player1Name, setPlayer1Name ] = useState<string>('');
   	const [ player2Name, setPlayer2Name ] = useState<string>('');
-	const { matchInfos } = useContext(MatchContext);
 	const authToken = getAuthToken();
 
   	useEffect(() => {
@@ -214,8 +214,6 @@ const GamePage:  FunctionComponent<gameProps>  = ({isHost, isSpectator, setIsSpe
 	if (gameActive === false) {
 		return (<Navigate to='/'/>)
 	}
-
-	console.log(matchInfos);
 
 	return (
 		<Box position={'relative'}>
@@ -258,7 +256,13 @@ const GamePage:  FunctionComponent<gameProps>  = ({isHost, isSpectator, setIsSpe
 					standardMode={standardMode}	
 				/>
 			</Box>
-			{ endGameVisible ? <EndGameCard endGameDisplay={endGameDisplay} setEndGameVisible={setEndGameVisible} setGameActive={setGameActive} /> : null }
+			{ endGameVisible ?
+				<EndGameCard
+					endGameDisplay={endGameDisplay}
+					setEndGameVisible={setEndGameVisible}
+					setGameActive={setGameActive}
+					matchInfos={matchInfos}
+				/> : null }
 		</Box>
 	);
 }

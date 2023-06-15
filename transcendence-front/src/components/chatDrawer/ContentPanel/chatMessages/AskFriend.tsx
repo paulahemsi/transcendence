@@ -1,7 +1,6 @@
 import React, { FunctionComponent, useContext, useReducer } from "react";
 import { Box, DialogTitle, DialogActions, CircularProgress } from "@mui/material";
 import { sessionSocket } from "../../../context/socket";
-import { MatchContext } from '../../../context/MatchContext';
 import { booleanSetState, DEFAULT_TOAST_MSG, getIdFromToken, stringSetState } from "../../../utils/constants";
 import ErrorToast from "./ErrorToast";
 import { MatchInfos, MatchInviteAnswer } from "../../../utils/match-interfaces";
@@ -14,6 +13,7 @@ interface Props {
     setOpenDialog: booleanSetState;
 	friendId: string;
 	setMatchRoom: stringSetState;
+	setMatchInfos: React.Dispatch<React.SetStateAction<MatchInfos>>,
 }
 
 const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) => {
@@ -21,7 +21,7 @@ const reducer = (state: {[key: string]: any}, newState : {[key: string]: any}) =
 }
 
 export const AskFriend: FunctionComponent<Props> = ({
-	setGameActive, setIsHost, setOpenDialog, friendId, setMatchRoom
+	setGameActive, setIsHost, setOpenDialog, friendId, setMatchRoom, setMatchInfos
 }) => {
 	const [stateToast, setStateToast] = useReducer(reducer, {
 		toastError: false,
@@ -29,7 +29,6 @@ export const AskFriend: FunctionComponent<Props> = ({
 	});
 	
 	sessionSocket.off('answerToGameRequest').on('answerToGameRequest', (answer: MatchInviteAnswer) => {
-		const { setMatchInfos } = useContext(MatchContext);
 		const userId = getIdFromToken();
 		const answerMatchInfos: MatchInfos = answer.matchInfos;
 		const isNotMyMatch: boolean = !(answerMatchInfos.player1 == userId && answerMatchInfos.player2 == friendId);
@@ -41,7 +40,6 @@ export const AskFriend: FunctionComponent<Props> = ({
 			setIsHost(true);
 			setGameActive(true);
 			setMatchInfos(answerMatchInfos);
-			
 		}
 		else {
 			setStateToast({ toastError: true, toastMessage: GAME_DECLINED });

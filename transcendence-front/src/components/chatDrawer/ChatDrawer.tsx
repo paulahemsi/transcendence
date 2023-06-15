@@ -6,6 +6,7 @@ import ChannelsAdminPanel from "./ContentPanel/ChannelsAdminPanel";
 import axios, { AxiosRequestHeaders } from "axios";
 import { chatSocket, sessionSocket } from "../context/socket";
 import { booleanSetState, getAuthToken, getIdFromToken, stringSetState } from "../utils/constants";
+import { MatchInfos } from "../utils/match-interfaces";
 
 interface Props {
     setOpenDrawer: booleanSetState;
@@ -13,6 +14,7 @@ interface Props {
 	setGameActive: booleanSetState;
 	setMatchRoom: stringSetState;
 	setStandardMode: booleanSetState;
+	setMatchInfos: React.Dispatch<React.SetStateAction<MatchInfos>>,
 }
 
 const requestFriendsData = async ({ setFriendsData } : { setFriendsData: React.Dispatch<React.SetStateAction<{[key: string]: any}>>}) => {
@@ -23,7 +25,8 @@ const requestFriendsData = async ({ setFriendsData } : { setFriendsData: React.D
 })
 }
 
-export const ChatDrawer : FunctionComponent<Props> = ({ setOpenDrawer, setIsHost, setGameActive, setMatchRoom, setStandardMode }) => {
+export const ChatDrawer : FunctionComponent<Props> = ({
+	setOpenDrawer, setIsHost, setGameActive, setMatchRoom, setStandardMode, setMatchInfos }) => {
 	const [friendsData, setFriendsData] = useState<{[key: string]: any}>({});
 	const [extraContent, setExtraContent] = useState(false);
 	const [channelsAdminPanel, setChannelsAdminPanel] = useState(false);
@@ -88,6 +91,7 @@ export const ChatDrawer : FunctionComponent<Props> = ({ setOpenDrawer, setIsHost
 							setGameActive={setGameActive}
 							setMatchRoom={setMatchRoom}
 							setStandardMode={setStandardMode}
+							setMatchInfos={setMatchInfos}
 						/>
 					}
 					{
