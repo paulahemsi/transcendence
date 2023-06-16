@@ -36,7 +36,7 @@ const typographyCSS = (fontSize: number) => {
 		whiteSpace: 'nowrap',
 		overflow: 'hidden',
 		textOverflow: 'ellipsis',
-		maxWidth: '80vh'
+		maxWidth: '50vw'
 	}
 }
 
