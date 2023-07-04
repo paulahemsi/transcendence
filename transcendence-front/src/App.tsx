@@ -8,6 +8,7 @@ import jwt from 'jwt-decode';
 import TwoFactorAuthCard from './components/TwoFactorAuthCard';
 import GamePage from './components/GamePage';
 import { booleanSetState, stringSetState } from './components/utils/constants';
+import { MatchInfos } from './components/utils/match-interfaces';
 
 type tokenData = {
 	id: string;
@@ -31,10 +32,12 @@ function isLoggedIn() {
   return validateToken(cookie);
 }
 
-const PreHome = ({setIsHost, setIsSpectator, setMatchRoom,  setStandardMode } : {
+const PreHome = ({setIsHost, setIsSpectator, setMatchRoom, matchInfos ,setMatchInfos, setStandardMode } : {
   setIsHost: booleanSetState
   setIsSpectator: booleanSetState
   setMatchRoom: stringSetState
+  matchInfos: MatchInfos
+  setMatchInfos: React.Dispatch<React.SetStateAction<MatchInfos>>
   setStandardMode: booleanSetState
 }) => {
 
@@ -47,6 +50,8 @@ const PreHome = ({setIsHost, setIsSpectator, setMatchRoom,  setStandardMode } : 
           setIsHost={setIsHost}
           setIsSpectator={setIsSpectator}
           setMatchRoom={setMatchRoom} 
+          matchInfos={matchInfos}
+          setMatchInfos={setMatchInfos}
           setStandardMode={setStandardMode}
         />
       : <LoginCard/> }
@@ -59,29 +64,38 @@ function App() {
   const [isSpectator, setIsSpectator] = useState(false);
   const [matchRoom, setMatchRoom] = useState('');
   const [standardMode, setStandardMode] = useState(true);
+  const [matchInfos, setMatchInfos] = useState<MatchInfos>({
+    id: '',
+    player1: '',
+    player2: '',
+  });
   
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path='/' element={
-          <PreHome
-            setIsHost={setIsHost}
-            setIsSpectator={setIsSpectator}
-            setMatchRoom={setMatchRoom}
-            setStandardMode={setStandardMode}
-          />}
-        />
-        <Route path='/login' element={<LoginCard/>} />
-        <Route path='/2fa' element={<TwoFactorAuthCard/>} />
-        <Route path='/game' element={
-          <GamePage
-            isHost={isHost}
-            isSpectator={isSpectator}
-            matchRoom={matchRoom}
-            standardMode={standardMode}
-          />}
-        />
-      </Routes>
+        <Routes>
+          <Route path='/' element={
+            <PreHome
+              setIsHost={setIsHost}
+              setIsSpectator={setIsSpectator}
+              setMatchRoom={setMatchRoom}
+              matchInfos={matchInfos} 
+              setMatchInfos={setMatchInfos}
+              setStandardMode={setStandardMode}
+            />}
+          />
+          <Route path='/login' element={<LoginCard/>} />
+          <Route path='/2fa' element={<TwoFactorAuthCard/>} />
+          <Route path='/game' element={
+            <GamePage
+              isHost={isHost}
+              isSpectator={isSpectator}
+              setIsSpectator={setIsSpectator}
+              matchRoom={matchRoom}
+              matchInfos={matchInfos} 
+              standardMode={standardMode}
+            />}
+          />
+        </Routes>
     </BrowserRouter>
   );
 }

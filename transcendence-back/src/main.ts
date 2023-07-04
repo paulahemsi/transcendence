@@ -8,7 +8,7 @@ const appSession = session({
   cookie: {
     maxAge: 86400000, // this is the number of miliseconds in 1 day. The session cookie will last 24h.
   },
-  secret: 'dj9w8ryw47fh370w9rfhe7w9hfa379w8rgfwea78fha0783wghfa', // essa string é tirada do cu, a gente tem que arrumar algo mais seguro depois.
+  secret: 'dj9w8ryw47fh370w9rfhe7w9hfa379w8rgfwea78fha0783wghfa',
   resave: false,
   saveUninitialized: false,
 });

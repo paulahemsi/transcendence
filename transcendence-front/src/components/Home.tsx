@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import { Typography, Box, Button, DialogTitle, DialogActions, Dialog, CircularProgress  } from '@mui/material';
 import Header from "./header/Header";
 import { Footer } from "./footer/Footer";
@@ -9,6 +9,8 @@ import { chatSocket, gameSocket, sessionSocket } from "./context/socket";
 import { booleanSetState, getIdFromToken, reducer, stringSetState } from "./utils/constants";
 import { MatchInfos, MatchInviteAnswer, matchInfosSetState } from "./utils/match-interfaces";
 import ErrorToast from "./utils/ErrorToast";
+import { Stack } from "@mui/system";
+
 
 const NO_ONE_AVAILABLE = "Ooops, nobody wanna play right now. Try again later"
 
@@ -16,9 +18,9 @@ const startGameButton = {
 	borderRadius: 3,
 	textTransform: 'lowercase',
 	background: '#F5F5F5',
-	borderColor: '#311B92',
+	borderColor: '#FFFFFF',
 	color: '#212980',
-	':hover': { background: '#F5F5F5', borderColor: '#9575CD', color: '#9575CD'},
+	':hover': { background: '#F5F5F5', borderColor: '#FFFFFF', color: '#9575CD'},
 	fontFamily: 'Orbitron',
 	fontSize: '4vh',
 	paddingLeft: '5vh',
@@ -35,16 +37,36 @@ const transcendenceText = {
 	margin: '2vh'
 }
 
+const backgroundStyle = {
+	background: 'linear-gradient(-90deg, #6f0162, #a200a8, #4800a0, #090d38)',
+	backgroundSize: '350% 350%',
+	animation: 'gradient 10s ease infinite',
+	height: '100vh',
+	'@keyframes gradient': {
+		'0%': {
+			backgroundPosition: '0% 50%',
+		},
+		'50%': {
+			backgroundPosition: '100% 50%',
+		},
+		'100%': {
+			backgroundPosition: '0% 50%',
+		},
+	}
+}
+
 const Matchmaker = ({
 	userId,
 	setIsHost,
 	setMatchRoom,
+	setMatchInfos,
 	setStandardMode,
 	setCanClose,
 } : {
 	userId: string,
 	setIsHost: booleanSetState,
 	setMatchRoom: stringSetState,
+	setMatchInfos: React.Dispatch<React.SetStateAction<MatchInfos>>,
 	setStandardMode: booleanSetState,
 	setCanClose: booleanSetState,
 }) => {
@@ -65,6 +87,13 @@ const Matchmaker = ({
 			setCanClose(true);
 		}, 25000)
 	}
+
+	const removeFromQueue = () => {
+		sessionSocket.emit('removeFromQueue');
+		setState({ loading: false });
+		setState({ goGame: false });
+		setCanClose(true);
+	}
 	
 	sessionSocket.on('joinGameQueue', (match: MatchInfos) => {
 		if (match.player1 == userId) {
@@ -73,8 +102,14 @@ const Matchmaker = ({
 			setIsHost(false);
 		}
 		setMatchRoom(match.id);
+		setMatchInfos(match);
 		setState({ loading: false });
 		setState({ goGame: true });
+	} )
+
+	sessionSocket.on('removeFromQueue', () => {
+		setMatchRoom('');
+		setMatchInfos({ id: '', player1: '', player2: '' });
 	} )
 
 	if (state.goGame) {
@@ -88,9 +123,18 @@ const Matchmaker = ({
 					Searching for an opponent...
 				</DialogTitle>
 				<DialogActions sx={{justifyContent: "center", margin: '2vh'}}>
-					<Box display="flex" justifyContent="center" alignItems="center">
-						<CircularProgress />
-					</Box>
+					<Stack>
+						<Box display="flex" justifyContent="center" alignItems="center">
+							<CircularProgress />
+						</Box>
+						<Button
+							onClick={() => {
+								removeFromQueue();
+							}}
+							sx={{fontFamily: 'Orbitron', marginTop: '2vh'}}>
+							Exit queue
+						</Button>
+					</Stack>
 				</DialogActions>
 			</>
 		)
@@ -98,27 +142,27 @@ const Matchmaker = ({
 	return (
 		<>
 		<DialogTitle sx={{fontFamily: 'Orbitron'}}>
-			Which pong do you wanna play?
+			How do you want to play Pong?
 		</DialogTitle>
 		<DialogActions>
 		<Button
 			onClick={() => {
-				setStandardMode(true)
+				setStandardMode(true);
 				joinGameQueue();
 			}}
 			sx={{fontFamily: 'Orbitron'}}
 		>
-			Stardard one
+			Standard mode
 		</Button>
 		<Button
 			variant="contained"
 			onClick={() => {
-				setStandardMode(false)
+				setStandardMode(false);
 				joinGameQueue();
 			}}
 			sx={{fontFamily: 'Orbitron'}}
 		>
-			Unicorn one
+			Unicorn mode
 		</Button>
 		</DialogActions>
 		<ErrorToast state={state} setState={setState}/>
@@ -130,11 +174,13 @@ const Background = ({
 	userId,
 	setIsHost,
 	setMatchRoom,
+	setMatchInfos,
 	setStandardMode,
 } : {
 	userId: string,
 	setIsHost: booleanSetState,
 	setMatchRoom: stringSetState,
+	setMatchInfos: React.Dispatch<React.SetStateAction<MatchInfos>>,
 	setStandardMode: booleanSetState,
 }) => {
 	const [ openDialog, setOpenDialog ] = useState(false);
@@ -148,7 +194,7 @@ const Background = ({
 
 	return (
 		<>
-			<Box display="flex" flexDirection="column" justifyContent="center" position="fixed" alignItems="center" height="86vh" width="100vw" sx={{backgroundImage: 'linear-gradient(to right, #212980 , #6f0162)'}}>
+			<Box display="flex" flexDirection="column" justifyContent="center" position="fixed" alignItems="center" height="86vh" width="100vw" sx={backgroundStyle}>
 				<Typography sx={transcendenceText}>
 					ft_transcendence
 				</Typography>
@@ -162,6 +208,7 @@ const Background = ({
 					userId={userId}
 					setIsHost={setIsHost}
 					setMatchRoom={setMatchRoom}
+					setMatchInfos={setMatchInfos}
 					setStandardMode={setStandardMode}
 					setCanClose={setCanClose}
 				/>
@@ -243,6 +290,7 @@ function listenPlayWithFriend(
 	) {
 	sessionSocket.off('playWithFriend').on('playWithFriend', (matchInfosInvite: MatchInfos) => {
 		if (matchInfosInvite.player2 == userId) {
+			console.log(matchInfosInvite);
 			setMatchInfos(matchInfosInvite);
 			setMatchRoom(matchInfosInvite.id);
 			setOpenDialog(true);
@@ -261,12 +309,14 @@ function listenPlayWithFriend(
 function listenWatchGame(
 	setMatchRoom: stringSetState,
 	setGameActive: booleanSetState,
-	setIsSpectator: booleanSetState
+	setIsSpectator: booleanSetState,
+	setMatchInfos: React.Dispatch<React.SetStateAction<MatchInfos>>,
 	) {
-	gameSocket.off('watchGame').on('watchGame', (gameRoom: string) => {
-		setMatchRoom(gameRoom);
+	gameSocket.off('watchGame').on('watchGame', (matchInfos: MatchInfos) => {
+		setMatchRoom(matchInfos.id);
 		setGameActive(true);
 		setIsSpectator(true);
+		setMatchInfos(matchInfos);
 	})
 }
 
@@ -274,18 +324,21 @@ export const Home = ({
 	setIsHost,
 	setIsSpectator,
 	setMatchRoom,
-	setStandardMode
+	matchInfos,
+	setMatchInfos,
+	setStandardMode,
 } : {
 	setIsHost: booleanSetState,
-	setIsSpectator: booleanSetState
+	setIsSpectator: booleanSetState,
 	setMatchRoom: stringSetState,
+	matchInfos: MatchInfos,
+	setMatchInfos: React.Dispatch<React.SetStateAction<MatchInfos>>,
 	setStandardMode: booleanSetState,
 }) => {
-	const [openDrawer, setOpenDrawer] = useState(false)
-	const [openCard, setOpenCard] = useState(false)
+	const [openDrawer, setOpenDrawer] = useState(false);
+	const [openCard, setOpenCard] = useState(false);
 	const [gameActive, setGameActive] = useState(false);
 	const [openDialog, setOpenDialog] = useState(false);
-	const [matchInfos, setMatchInfos] = useState({ id: '', player1: '', player2: '' });
 
 	const userId = getIdFromToken();
 
@@ -296,7 +349,7 @@ export const Home = ({
 	}, []);
 
 	listenPlayWithFriend(userId, setMatchInfos, setMatchRoom, setOpenDialog);
-	listenWatchGame(setMatchRoom, setGameActive, setIsSpectator);
+	listenWatchGame(setMatchRoom, setGameActive, setIsSpectator, setMatchInfos);
 
 	if (gameActive) {
 		return (<Navigate to='/game'/>)
@@ -315,6 +368,7 @@ export const Home = ({
 				userId={userId}
 				setIsHost={setIsHost}
 				setMatchRoom={setMatchRoom}
+				setMatchInfos={setMatchInfos}
 				setStandardMode={setStandardMode}
 			  /> }
 			{ openDrawer &&
@@ -324,6 +378,7 @@ export const Home = ({
 					setGameActive={setGameActive}
 					setMatchRoom={setMatchRoom}
 					setStandardMode={setStandardMode}
+					setMatchInfos={setMatchInfos}
 					/> }
 			{ <Footer/> }
 			<Dialog open={openDialog} fullWidth maxWidth="sm" onClose={handleClose}>

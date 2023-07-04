@@ -120,6 +120,16 @@ export class SessionGateway
     }
   }
 
+  @SubscribeMessage('removeFromQueue')
+  async handleRemoveFromQueue(@ConnectedSocket() client: Socket) {
+    const player: Player = {
+      socket: client,
+      userId: client.data.user.id,
+    };
+      this.gameQueue = this.gameQueue.filter((currentPlayer: {[key: string]: any}) => currentPlayer.userId !== player.userId);
+      player.socket.emit('removeFromQueue');
+  }
+
   async createMatch(playerId1: string, playerId2: string) {
     const match = await this.matchHistoryService.createMatch(
       playerId1,

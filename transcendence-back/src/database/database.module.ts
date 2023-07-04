@@ -3,6 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import entities from '../entity';
 
+const SSLAuth = process.env.ENV == "DEV" ? false : true;
+
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({

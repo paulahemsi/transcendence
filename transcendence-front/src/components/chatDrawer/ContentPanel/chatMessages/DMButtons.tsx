@@ -5,6 +5,7 @@ import BlockUserDialog from "./BlockUserDialog";
 import { sessionSocket } from "../../../context/socket";
 import { booleanSetState, stringSetState } from "../../../utils/constants";
 import AskFriend from "./AskFriend";
+import { MatchInfos } from "../../../utils/match-interfaces";
 
 const PROFILE = "Go to profile";
 const BLOCK = "Block";
@@ -37,6 +38,7 @@ interface Props {
 	friendId: string;
 	setMatchRoom: stringSetState;
 	setStandardMode: booleanSetState;
+	setMatchInfos: React.Dispatch<React.SetStateAction<MatchInfos>>,
 }
 
 interface inviteProps {
@@ -45,6 +47,7 @@ interface inviteProps {
 	friendId: string;
 	setMatchRoom: stringSetState;
 	setStandardMode: booleanSetState;
+	setMatchInfos: React.Dispatch<React.SetStateAction<MatchInfos>>,
 }
 
 const ChooseGameMode = ({setStandardMode, setOpenWaitingDialog, setOpenDialog, friendId } : {setStandardMode: booleanSetState, setOpenWaitingDialog: booleanSetState, setOpenDialog: booleanSetState, friendId: string}) => {
@@ -83,7 +86,14 @@ const ChooseGameMode = ({setStandardMode, setOpenWaitingDialog, setOpenDialog, f
 		</>
 	)
 }
-const InviteToGame: FunctionComponent<inviteProps> = ({ setIsHost, setGameActive, friendId, setMatchRoom, setStandardMode }) => {
+const InviteToGame: FunctionComponent<inviteProps> = ({
+	setIsHost,
+	setGameActive,
+	friendId,
+	setMatchRoom,
+	setStandardMode,
+	setMatchInfos,
+}) => {
 	const [ openDialog, setOpenDialog] = useState(false);
 	const [ openWaitingDialog, setOpenWaitingDialog] = useState(false);
 	
@@ -126,6 +136,7 @@ const InviteToGame: FunctionComponent<inviteProps> = ({ setIsHost, setGameActive
 					setOpenDialog={setOpenWaitingDialog}
 					friendId={friendId}
 					setMatchRoom={setMatchRoom}
+					setMatchInfos={setMatchInfos}
 				/>
 			</Dialog>
 		</>
@@ -172,7 +183,14 @@ const GoToProfile = ({ setOpenCard } : { setOpenCard: booleanSetState }) => {
 	)
 }
 
-export const DMButtons: FunctionComponent<Props> = ({ friendId, setIsHost, setGameActive, setMatchRoom, setStandardMode }) => {
+export const DMButtons: FunctionComponent<Props> = ({
+	friendId,
+	setIsHost,
+	setGameActive,
+	setMatchRoom,
+	setStandardMode,
+	setMatchInfos,
+}) => {
 
 	const [openProfile, setOpenProfile] = useState(false);
 	const [openDialog, setOpenDialog] = useState(false)
@@ -190,6 +208,7 @@ export const DMButtons: FunctionComponent<Props> = ({ friendId, setIsHost, setGa
 					friendId={friendId}
 					setMatchRoom={setMatchRoom}
 					setStandardMode={setStandardMode}
+					setMatchInfos={setMatchInfos}
 				/>
 				<BlockUser setOpenDialog={setOpenDialog}/>
 				<GoToProfile setOpenCard={setOpenProfile}/>

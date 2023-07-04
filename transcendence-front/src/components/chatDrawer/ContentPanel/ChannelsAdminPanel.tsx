@@ -5,6 +5,7 @@ import ChannelMembers from "./ChannelMembers";
 import AdminControlPannel from "./AdminControlPannel";
 import { numberSetState, objectSetState } from "../../utils/constants";
 import { chatSocket } from "../../context/socket";
+import { maxHeight } from "@mui/system";
 
 interface BodyProps {
 	loading: boolean;
@@ -32,7 +33,10 @@ const typographyCSS = (fontSize: number) => {
 		fontWeight: 600,
 		fontSize: `${fontSize}vh`,
 		paddingLeft: '1.7vh',
-		whiteSpace: 'pre-wrap', overflowWrap: 'break-word', width: '24vw'
+		whiteSpace: 'nowrap',
+		overflow: 'hidden',
+		textOverflow: 'ellipsis',
+		maxWidth: '50vw'
 	}
 }
 

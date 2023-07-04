@@ -37,6 +37,12 @@ interface ScoreDto {
   score: Score;
 }
 
+interface MatchInfos {
+  id: string;
+  player1: string;
+  player2: string;
+}
+
 @WebSocketGateway({
   namespace: '/game',
   cors: {
@@ -57,7 +63,7 @@ export class GameGateway
   @WebSocketServer()
   server: Server;
   clientRoom: Map<string, string> = new Map();
-  userRoom: Map<string, string> = new Map();
+  userRoom: Map<string, MatchInfos> = new Map();
 
   afterInit() {
     this.logger.log('Initialize');
@@ -92,10 +98,11 @@ export class GameGateway
   }
 
   @SubscribeMessage('joinGameRoom')
-  handleJoinGameRoom(client: Socket, gameRoom: string) {
+  handleJoinGameRoom(client: Socket, matchInfos: MatchInfos) {
+    const gameRoom = matchInfos.id;
     client.join(gameRoom);
     this.clientRoom.set(client.id, gameRoom);
-    this.userRoom.set(client.data.user.id, gameRoom);
+    this.userRoom.set(client.data.user.id, matchInfos);
     this.sessionGateway.setStatusInGame(client.data.user);
     client.emit('joinGameRoom', gameRoom);
   }
@@ -154,7 +161,7 @@ export class GameGateway
 
   @SubscribeMessage('watchGame')
   handleWatchGame(client: Socket, friendId: string) {
-    const gameRoom = this.userRoom.get(friendId);
-    client.emit('watchGame', gameRoom);
+    const matchInfos = this.userRoom.get(friendId);
+    client.emit('watchGame', matchInfos);
   }
 }
