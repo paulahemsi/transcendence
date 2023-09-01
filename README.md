@@ -10,6 +10,16 @@
 * [Encryption_and_Hashing](#Encryption_and_Hashing)
 * [Study_Resources](#Study_Resources)
 
+
+![amigo-rejeita-jogo](https://github.com/paulahemsi/transcendence/assets/63563271/90b45fe2-a56d-4a0f-a5b5-21d3c0d0a5a4)
+
+
+![game-funcionandoooo](https://github.com/paulahemsi/transcendence/assets/63563271/e2a33317-0661-479c-9b58-0d56a9159cd6)
+
+
+![blocked-blur](https://github.com/paulahemsi/transcendence/assets/63563271/092ccf48-84e2-4226-aa6e-a64f808fc4bf)
+
+
 ## Setup
 
 **NodeJS Installation step-by-step:**
